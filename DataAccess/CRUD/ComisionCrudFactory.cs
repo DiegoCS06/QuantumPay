@@ -46,7 +46,7 @@ namespace DataAccess.CRUD
         }
 
         public override T Retrieve<T>() => throw new NotImplementedException();
-        public override T RetrieveById<T>() => throw new NotImplementedException();
+        public override T RetrieveById<T>(int Id) => throw new NotImplementedException();
 
         public T RetrieveById<T>(Comision c)
         {

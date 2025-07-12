@@ -11,7 +11,7 @@ namespace CoreApp
     public class AdminManager : BaseManager
     {
 
-        public void Create(Admin admin)
+        public async Task  Create(Admin admin)
         {
             try
             {
@@ -42,10 +42,10 @@ namespace CoreApp
 
         }
 
-        public Admin RetrieveById(Admin admin)
+        public Admin RetrieveById(int Id)
         {
             var aCrud = new AdminCrudFactory();
-            return aCrud.RetrieveById<Admin>(admin);
+            return aCrud.RetrieveById<Admin>(Id);
         }
 
 
@@ -57,25 +57,11 @@ namespace CoreApp
             return aCrud.RetrieveByUserName<Admin>(admin);
         }
 
-        public void Update(Admin admin)
+        public Admin Update(Admin admin)
         {
-            try
-            {
-                    var aCrud = new AdminCrudFactory();
-                    var aExist = aCrud.RetrieveById<Admin>(admin);
-                    if (aExist != null)
-                    {
-                        aCrud.Update(admin);
-                    }
-                    else
-                    {
-                        throw new Exception("No existe un admin con ese ID");
-                    }
-            }
-            catch (Exception ex)
-            {
-                ManageException(ex);
-            }
+            var aCrud = new AdminCrudFactory();
+            aCrud.Update(admin);
+            return RetrieveById(admin.Id);
         }
 
         public void Delete(int id)
@@ -84,7 +70,7 @@ namespace CoreApp
             {
                 var aCrud = new AdminCrudFactory();
                 var admin = new Admin { Id = id };
-                var aExist = aCrud.RetrieveById<Admin>(admin);
+                var aExist = aCrud.RetrieveById<Admin>(admin.Id);
                 if (aExist != null)
                 {
                     aCrud.Delete(admin);

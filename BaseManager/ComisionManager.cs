@@ -12,7 +12,7 @@ namespace BaseManager
     {
         private readonly ComisionCrudFactory crud = new();
 
-        public void Crear(Comision c) => crud.Create(c);
+        public async Task Create(Comision c) => crud.Create(c);
         public void Actualizar(Comision c) => crud.Update(c);
         public void Eliminar(Comision c) => crud.Delete(c);
         public Comision Obtener(int id) => crud.RetrieveById<Comision>(new Comision { Id = id });

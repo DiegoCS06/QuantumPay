@@ -11,25 +11,25 @@ namespace CoreApp
     public class InstitucionBancariaManager : BaseManager
     {
 
-        public void Create(InstitucionBancaria institucionBancaria)
+        public async Task Create(InstitucionBancaria institucionBancaria)
         {
             try
             {
                 var iCrud = new InstitucionBancariaCrudFactory();
 
-                var iExist = iCrud.RetrieveByCodigoIdentidad<InstitucionBancaria>(institucionBancaria);
+                var iExist = iCrud.RetrieveById<InstitucionBancaria>(institucionBancaria.Id);
 
                 if (iExist == null)
                 {
-                    iExist = iCrud.RetrieveByIBAN<InstitucionBancaria>(institucionBancaria);
+                    iExist = iCrud.RetrieveByIBAN<InstitucionBancaria>(institucionBancaria.codigoIBAN);
 
                     if (iExist == null)
                     {
-                        iExist = iCrud.RetrieveByEmail<InstitucionBancaria>(institucionBancaria);
+                        iExist = iCrud.RetrieveByEmail<InstitucionBancaria>(institucionBancaria.correoElectronico);
 
                         if (iExist == null)
                         {
-                            iExist = iCrud.RetrieveByTelefono<InstitucionBancaria>(institucionBancaria);
+                            iExist = iCrud.RetrieveByTelefono<InstitucionBancaria>(institucionBancaria.telefono);
 
                             if(iExist == null)
                             {
@@ -69,34 +69,28 @@ namespace CoreApp
 
         }
 
-        public InstitucionBancaria RetrieveById(InstitucionBancaria institucionBancaria)
+        public InstitucionBancaria RetrieveById(int Id)
         {
             var iCrud = new InstitucionBancariaCrudFactory();
-            return iCrud.RetrieveById<InstitucionBancaria>(institucionBancaria);
+            return iCrud.RetrieveById<InstitucionBancaria>(Id);
         }
 
-        public InstitucionBancaria RetrieveByEmail(InstitucionBancaria institucionBancaria)
+        public InstitucionBancaria RetrieveByEmail(string correoElectronico)
         {
             var iCrud = new InstitucionBancariaCrudFactory();
-            return iCrud.RetrieveByEmail<InstitucionBancaria>(institucionBancaria);
+            return iCrud.RetrieveByEmail<InstitucionBancaria>(correoElectronico);
         }
 
-        public InstitucionBancaria RetrieveByCodigoIdentidad(InstitucionBancaria institucionBancaria)
+        public InstitucionBancaria RetrieveByIBAN(int codigoIBAN)
         {
             var iCrud = new InstitucionBancariaCrudFactory();
-            return iCrud.RetrieveByCodigoIdentidad<InstitucionBancaria>(institucionBancaria);
+            return iCrud.RetrieveByIBAN<InstitucionBancaria>(codigoIBAN);
         }
 
-        public InstitucionBancaria RetrieveByTelefono(InstitucionBancaria institucionBancaria)
+        public InstitucionBancaria RetrieveByTelefono(int telefono)
         {
             var iCrud = new InstitucionBancariaCrudFactory();
-            return iCrud.RetrieveByTelefono<InstitucionBancaria>(institucionBancaria);
-        }
-
-        public InstitucionBancaria RetrieveByIBAN(InstitucionBancaria institucionBancaria)
-        {
-            var iCrud = new InstitucionBancariaCrudFactory();
-            return iCrud.RetrieveByIBAN<InstitucionBancaria>(institucionBancaria);
+            return iCrud.RetrieveByTelefono<InstitucionBancaria>(telefono);
         }
 
         public void Update(InstitucionBancaria institucionBancaria)
@@ -104,7 +98,7 @@ namespace CoreApp
             try
             {
                 var iCrud = new InstitucionBancariaCrudFactory();
-                var iExist = iCrud.RetrieveById<InstitucionBancaria>(institucionBancaria);
+                var iExist = iCrud.RetrieveById<InstitucionBancaria>(institucionBancaria.Id);
                 if (iExist != null)
                 {
                     iCrud.Update(institucionBancaria);
@@ -126,7 +120,7 @@ namespace CoreApp
             {
                 var iCrud = new InstitucionBancariaCrudFactory();
                 var institucionBancaria = new InstitucionBancaria { Id = id };
-                var iExist = iCrud.RetrieveById<InstitucionBancaria>(institucionBancaria);
+                var iExist = iCrud.RetrieveById<InstitucionBancaria>(institucionBancaria.Id);
                 if (iExist != null)
                 {
                     iCrud.Delete(institucionBancaria);

@@ -32,7 +32,7 @@ namespace DataAccess.CRUD
 
         public abstract T Retrieve<T>();
 
-        public abstract T RetrieveById<T>();
+        public abstract T RetrieveById<T>(int Id);
 
         public abstract List<T> RetrieveAll<T>();
 

@@ -55,36 +55,36 @@ namespace DataAccess.CRUD
             return lstComercios;
         }
 
-        public T RetrieveById<T>(Comercio comercio)
+        public override T RetrieveById<T>(int Id)
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_COMERCIO_BY_ID_PR" };
 
-            sqlOperation.AddIntParam("P_Id", comercio.Id);
+            sqlOperation.AddIntParam("P_Id", Id);
 
             var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
 
             if (lstResult.Count > 0)
             {
                 var row = lstResult[0];
-                comercio = BuildComercio(row);
+                var comercio = BuildComercio(row);
                 return (T)Convert.ChangeType(comercio, typeof(T));
             }
 
             return default(T);
         }
 
-        public T RetrieveByComercioName<T>(Comercio comercio)
+        public T RetrieveByComercioName<T>(string nombre)
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_COMERCIO_BY_NAME_PR" };
 
-            sqlOperation.AddStringParameter("P_Nombre", comercio.Nombre);
+            sqlOperation.AddStringParameter("P_Nombre", nombre);
 
             var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
 
             if (lstResult.Count > 0)
             {
                 var row = lstResult[0];
-                comercio = BuildComercio(row);
+                var comercio = BuildComercio(row);
 
                 return (T)Convert.ChangeType(comercio, typeof(T));
             }
@@ -128,10 +128,6 @@ namespace DataAccess.CRUD
             };
         }
 
-        public override T RetrieveById<T>()
-        {
-            throw new NotImplementedException();
-        }
 
         public T RetrieveByEmail<T>(T comercio)
         {

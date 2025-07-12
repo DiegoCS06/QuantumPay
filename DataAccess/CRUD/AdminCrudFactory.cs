@@ -75,18 +75,18 @@ namespace DataAccess.CRUD
             return default(T);
         }
 
-        public T RetrieveById<T>(Admin admin)
+        public override T RetrieveById<T>(int Id)
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_ADMIN_BY_ID_PR" };
 
-            sqlOperation.AddIntParam("P_Id", admin.Id);
+            sqlOperation.AddIntParam("P_Id", Id);
 
             var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
 
             if (lstResult.Count > 0)
             {
                 var row = lstResult[0];
-                admin = BuildAdmin(row);
+                var admin = BuildAdmin(row);
                 return (T)Convert.ChangeType(admin, typeof(T));
             }
 
@@ -129,9 +129,5 @@ namespace DataAccess.CRUD
             };
         }
 
-        public override T RetrieveById<T>()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

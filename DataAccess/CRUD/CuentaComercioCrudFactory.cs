@@ -61,18 +61,18 @@ namespace DataAccess.CRUD
         }
 
 
-        public T RetrieveById<T>(CuentaComercio cuentaComercio)
+        public override T RetrieveById<T>(int Id)
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_CUENTACOMERCIO_BY_ID_PR" };
 
-            sqlOperation.AddIntParam("P_Id", cuentaComercio.Id);
+            sqlOperation.AddIntParam("P_Id", Id);
 
             var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
 
             if (lstResult.Count > 0)
             {
                 var row = lstResult[0];
-                cuentaComercio = BuildCuentasComercio(row);
+                var cuentaComercio = BuildCuentasComercio(row);
                 return (T)Convert.ChangeType(cuentaComercio, typeof(T));
             }
 
@@ -80,18 +80,18 @@ namespace DataAccess.CRUD
         }
 
 
-        public T RetrieveByUserName<T>(CuentaComercio cuentaComercio)
+        public T RetrieveByUserName<T>(string NombreUsuario)
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_CUENTACOMERCIO_BY_USERNAME_PR" };
 
-            sqlOperation.AddStringParameter("P_NombreUsuario", cuentaComercio.NombreUsuario);
+            sqlOperation.AddStringParameter("P_NombreUsuario", NombreUsuario);
 
             var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
 
             if (lstResult.Count > 0)
             {
                 var row = lstResult[0];
-                cuentaComercio = BuildCuentasComercio(row);
+                var cuentaComercio = BuildCuentasComercio(row);
 
                 return (T)Convert.ChangeType(cuentaComercio, typeof(T));
             }
@@ -99,18 +99,18 @@ namespace DataAccess.CRUD
             return default(T);
         }
 
-        public T RetrieveByTelefono<T>(CuentaComercio cuentaComercio)
+        public T RetrieveByTelefono<T>(int Telefono)
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_CUENTACOMERCIO_BY_TELEFONO_PR" };
 
-            sqlOperation.AddIntParam("P_Telefono", cuentaComercio.Telefono);
+            sqlOperation.AddIntParam("P_Telefono", Telefono);
 
             var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
 
             if (lstResult.Count > 0)
             {
                 var row = lstResult[0];
-                cuentaComercio = BuildCuentasComercio(row);
+                var cuentaComercio = BuildCuentasComercio(row);
 
                 return (T)Convert.ChangeType(cuentaComercio, typeof(T));
             }
@@ -118,18 +118,18 @@ namespace DataAccess.CRUD
             return default(T);
         }
 
-        public T RetrieveByEmail<T>(CuentaComercio cuentaComercio)
+        public T RetrieveByEmail<T>(string CorreoElectronico)
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_CUENTACOMERCIO_BY_EMAIL_PR" };
 
-            sqlOperation.AddStringParameter("P_CorreoElectronico", cuentaComercio.CorreoElectronico);
+            sqlOperation.AddStringParameter("P_CorreoElectronico", CorreoElectronico);
 
             var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
 
             if (lstResult.Count > 0)
             {
                 var row = lstResult[0];
-                cuentaComercio = BuildCuentasComercio(row);
+                var cuentaComercio = BuildCuentasComercio(row);
                 return (T)Convert.ChangeType(cuentaComercio, typeof(T));
             }
             return default(T);
@@ -177,11 +177,6 @@ namespace DataAccess.CRUD
                 CorreoElectronico = row["CorreoElectronico"].ToString(),
                 Direccion = row["Direccion"].ToString()
             };
-        }
-
-        public override T RetrieveById<T>()
-        {
-            throw new NotImplementedException();
         }
 
         public T RetrieveByEmail<T>(T cuentaComercio)

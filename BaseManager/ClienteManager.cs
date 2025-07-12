@@ -11,7 +11,7 @@ namespace CoreApp
     public class ClienteManager : BaseManager
     {
 
-        public void Create(Cliente cliente)
+        public async Task Create(Cliente cliente)
         {
             try
             {
@@ -19,7 +19,7 @@ namespace CoreApp
                 {
                     var cCrud = new ClienteCrudFactory();
 
-                    var cExist = cCrud.RetrieveByCedula<Cliente>(cliente);
+                    var cExist = cCrud.RetrieveByCedula<Cliente>(cliente.cedula);
 
                     if (cExist == null)
                     {
@@ -31,7 +31,7 @@ namespace CoreApp
 
                             if ((cExist == null))
                             {
-                                cExist = cCrud.RetrieveByTelefono<Cliente>(cliente);
+                                cExist = cCrud.RetrieveByTelefono<Cliente>(cliente.telefono);
                             }
                             else
                             {
@@ -64,59 +64,37 @@ namespace CoreApp
         {
             var cCrud = new ClienteCrudFactory();
             return cCrud.RetrieveAll<Cliente>();
-
         }
 
-        public Cliente RetrieveById(Cliente cliente)
+        public Cliente RetrieveById(int Id)
         {
             var cCrud = new ClienteCrudFactory();
-            return cCrud.RetrieveById<Cliente>(cliente);
+            return cCrud.RetrieveById<Cliente>(Id);
         }
 
-        public Cliente RetrieveByEmail(Cliente cliente)
+        public Cliente RetrieveByEmail(string correo)
         {
             var uCrud = new ClienteCrudFactory();
-            return uCrud.RetrieveByEmail<Cliente>(cliente);
+            return uCrud.RetrieveByEmail<Cliente>(correo);
         }
 
-        public Cliente RetrieveByCedula(Cliente cliente)
+        public Cliente RetrieveByCedula(string cedula)
         {
             var cCrud = new ClienteCrudFactory();
-            return cCrud.RetrieveByCedula<Cliente>(cliente);
+            return cCrud.RetrieveByCedula<Cliente>(cedula);
         }
 
-        public Cliente RetrieveByTelefono(Cliente cliente)
+        public Cliente RetrieveByTelefono(int telefono)
         {
             var cCrud = new ClienteCrudFactory();
-            return cCrud.RetrieveByTelefono<Cliente>(cliente);
+            return cCrud.RetrieveByTelefono<Cliente>(telefono);
         }
 
-        public void Update(Cliente cliente)
+        public Cliente Update(Cliente cliente)
         {
-            try
-            {
-                if (IsOver18(cliente))
-                {
-                    var cCrud = new ClienteCrudFactory();
-                    var cExist = cCrud.RetrieveById<Cliente>(cliente);
-                    if (cExist != null)
-                    {
-                        cCrud.Update(cliente);
-                    }
-                    else
-                    {
-                        throw new Exception("No existe un cliente con ese ID");
-                    }
-                }
-                else
-                {
-                    throw new Exception("No cumple con la edad minima");
-                }
-            }
-            catch (Exception ex)
-            {
-                ManageException(ex);
-            }
+            var cCrud = new ClienteCrudFactory();
+            cCrud.Update(cliente);
+            return RetrieveById(cliente.Id);
         }
 
         public void Delete(int id)
@@ -125,7 +103,7 @@ namespace CoreApp
             {
                 var cCrud = new ClienteCrudFactory();
                 var cliente = new Cliente { Id = id };
-                var cExist = cCrud.RetrieveById<Cliente>(cliente);
+                var cExist = cCrud.RetrieveById<Cliente>(cliente.Id);
                 if (cExist != null)
                 {
                     cCrud.Delete(cliente);

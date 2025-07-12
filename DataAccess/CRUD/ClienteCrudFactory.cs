@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace DataAccess.CRUD
 {
-    public class ClienteCrudFactory : CrudFactory
+    public class ClienteCrudFactory
+        : CrudFactory
     {
 
         public ClienteCrudFactory()
@@ -65,18 +66,18 @@ namespace DataAccess.CRUD
             return lstClientes;
         }
 
-        public T RetrieveByCedula<T>(Cliente cliente)
+        public T RetrieveByCedula<T>(string cedula)
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_CLIENTE_BY_CEDULA_PR" };
 
-            sqlOperation.AddStringParameter("P_Cedula", cliente.cedula);
+            sqlOperation.AddStringParameter("P_Cedula", cedula);
 
             var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
 
             if (lstResult.Count > 0)
             {
                 var row = lstResult[0];
-                cliente = BuildCliente(row);
+                var cliente = BuildCliente(row);
 
                 return (T)Convert.ChangeType(cliente, typeof(T));
             }
@@ -84,18 +85,18 @@ namespace DataAccess.CRUD
             return default(T);
         }
 
-        public T RetrieveByTelefono<T>(Cliente cliente)
+        public T RetrieveByTelefono<T>(int telefono)
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_CLIENTE_BY_TELEFONO_PR" };
 
-            sqlOperation.AddIntParam("P_Telefono", cliente.telefono);
+            sqlOperation.AddIntParam("P_Telefono", telefono);
 
             var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
 
             if (lstResult.Count > 0)
             {
                 var row = lstResult[0];
-                cliente = BuildCliente(row);
+                var cliente = BuildCliente(row);
 
                 return (T)Convert.ChangeType(cliente, typeof(T));
             }
@@ -103,36 +104,36 @@ namespace DataAccess.CRUD
             return default(T);
         }
 
-        public T RetrieveById<T>(Cliente cliente)
+        public override T RetrieveById<T>(int Id)
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_CLIENTE_BY_ID_PR" };
 
-            sqlOperation.AddIntParam("P_Id", cliente.Id);
+            sqlOperation.AddIntParam("P_Id", Id);
 
             var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
 
             if (lstResult.Count > 0)
             {
                 var row = lstResult[0];
-                cliente = BuildCliente(row);
+                var cliente = BuildCliente(row);
                 return (T)Convert.ChangeType(cliente, typeof(T));
             }
 
             return default(T);
         }
 
-        public T RetrieveByEmail<T>(Cliente cliente)
+        public T RetrieveByEmail<T>(string correo)
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_CLIENTE_BY_EMAIL_PR" };
 
-            sqlOperation.AddStringParameter("P_Correo", cliente.correo);
+            sqlOperation.AddStringParameter("P_Correo", correo);
 
             var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
 
             if (lstResult.Count > 0)
             {
                 var row = lstResult[0];
-                cliente = BuildCliente(row);
+                var cliente = BuildCliente(row);
                 return (T)Convert.ChangeType(cliente, typeof(T));
             }
             return default(T);
@@ -190,10 +191,6 @@ namespace DataAccess.CRUD
             };
         }
 
-        public override T RetrieveById<T>()
-        {
-            throw new NotImplementedException();
-        }
 
         public T RetrieveByEmail<T>(T cliente)
         {

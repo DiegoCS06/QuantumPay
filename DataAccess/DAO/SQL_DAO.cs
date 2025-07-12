@@ -62,7 +62,7 @@ namespace DataAccess.DAOs
                     }
                     //Ejectura el SP
                     conn.Open();
-                    command.ExecuteNonQuery();
+                   var resultExute = command.ExecuteNonQuery();
                 }
 
             }

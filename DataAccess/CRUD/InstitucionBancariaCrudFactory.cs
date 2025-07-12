@@ -61,55 +61,36 @@ namespace DataAccess.CRUD
         }
 
 
-        public T RetrieveById<T>(InstitucionBancaria institucionBancaria)
+        public override T RetrieveById<T>(int Id)
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_INSTITUCIONBANCARIA_BY_ID_PR" };
 
-            sqlOperation.AddIntParam("P_Id", institucionBancaria.Id);
+            sqlOperation.AddIntParam("P_Id", Id);
 
             var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
 
             if (lstResult.Count > 0)
             {
                 var row = lstResult[0];
-                institucionBancaria = BuildInstitucionBancaria(row);
+                var institucionBancaria = BuildInstitucionBancaria(row);
                 return (T)Convert.ChangeType(institucionBancaria, typeof(T));
             }
 
             return default(T);
         }
 
-        public T RetrieveByCodigoIdentidad<T>(InstitucionBancaria institucionBancaria)
-        {
-            var sqlOperation = new SQLOperation() { ProcedureName = "RET_INSTITUCIONBANCARIA_BY_CODIGOIDENTIDAD_PR" };
-
-            sqlOperation.AddIntParam("P_CodigoIdentidadBancaria", institucionBancaria.codigoIBAN);
-
-            var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
-
-            if (lstResult.Count > 0)
-            {
-                var row = lstResult[0];
-                institucionBancaria = BuildInstitucionBancaria(row);
-
-                return (T)Convert.ChangeType(institucionBancaria, typeof(T));
-            }
-
-            return default(T);
-        }
-
-        public T RetrieveByIBAN<T>(InstitucionBancaria institucionBancaria)
+        public T RetrieveByIBAN<T>(int codigoIBAN)
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_INSTITUCIONBANCARIA_BY_IBAN_PR" };
 
-            sqlOperation.AddIntParam("P_CodigoIBAN", institucionBancaria.codigoIBAN);
+            sqlOperation.AddIntParam("P_CodigoIBAN", codigoIBAN);
 
             var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
 
             if (lstResult.Count > 0)
             {
                 var row = lstResult[0];
-                institucionBancaria = BuildInstitucionBancaria(row);
+                var institucionBancaria = BuildInstitucionBancaria(row);
 
                 return (T)Convert.ChangeType(institucionBancaria, typeof(T));
             }
@@ -117,18 +98,18 @@ namespace DataAccess.CRUD
             return default(T);
         }
 
-        public T RetrieveByTelefono<T>(InstitucionBancaria institucionBancaria)
+        public T RetrieveByTelefono<T>(int telefono)
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_INSTITUCIONBANCARIA_BY_TELEFONO_PR" };
 
-            sqlOperation.AddIntParam("P_Telefono", institucionBancaria.telefono);
+            sqlOperation.AddIntParam("P_Telefono", telefono);
 
             var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
 
             if (lstResult.Count > 0)
             {
                 var row = lstResult[0];
-                institucionBancaria = BuildInstitucionBancaria(row);
+                var institucionBancaria = BuildInstitucionBancaria(row);
 
                 return (T)Convert.ChangeType(institucionBancaria, typeof(T));
             }
@@ -136,18 +117,18 @@ namespace DataAccess.CRUD
             return default(T);
         }
 
-        public T RetrieveByEmail<T>(InstitucionBancaria institucionBancaria)
+        public T RetrieveByEmail<T>(string correoElectronico)
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_INSTITUCIONBANCARIA_BY_EMAIL_PR" };
 
-            sqlOperation.AddStringParameter("P_CorreoElectronico", institucionBancaria.correoElectronico);
+            sqlOperation.AddStringParameter("P_CorreoElectronico", correoElectronico);
 
             var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
 
             if (lstResult.Count > 0)
             {
                 var row = lstResult[0];
-                institucionBancaria = BuildInstitucionBancaria(row);
+                var institucionBancaria = BuildInstitucionBancaria(row);
                 return (T)Convert.ChangeType(institucionBancaria, typeof(T));
             }
             return default(T);
@@ -197,10 +178,6 @@ namespace DataAccess.CRUD
             };
         }
 
-        public override T RetrieveById<T>()
-        {
-            throw new NotImplementedException();
-        }
 
         public T RetrieveByEmail<T>(T institucionBancaria)
         {

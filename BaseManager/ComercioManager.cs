@@ -11,13 +11,13 @@ namespace CoreApp
     public class ComercioManager : BaseManager
     {
 
-        public void Create(Comercio comercio)
+        public async Task Create(Comercio comercio)
         {
             try
             {
                 var uCrud = new ComercioCrudFactory();
                 
-                var uExist = uCrud.RetrieveByComercioName<Comercio>(comercio);
+                var uExist = uCrud.RetrieveByComercioName<Comercio>(comercio.Nombre);
                 
                 if (uExist == null)
                 {
@@ -42,41 +42,39 @@ namespace CoreApp
 
         }
 
-        public Comercio RetrieveById(Comercio comercio)
+        public Comercio RetrieveById(int Id)
         {
             var uCrud = new ComercioCrudFactory();
-            return uCrud.RetrieveById<Comercio>(comercio);
+            return uCrud.RetrieveById<Comercio>(Id);
         }
 
-        public void Update(Comercio comercio)
+        public Comercio Update(Comercio comercio)
+        {
+            var cCrud = new ClienteCrudFactory();
+            cCrud.Update(comercio);
+            return RetrieveById(comercio.Id);
+        }
+
+        public Comercio RetrieveByComercioName(string nombre)
         {
             try
             {
                 var uCrud = new ComercioCrudFactory();
-                var uExist = uCrud.RetrieveById<Comercio>(comercio);
-                if (uExist != null)
-                {
-                    uCrud.Update(comercio);
-                }
-                else
-                {
-                    throw new Exception("No existe un comercio con ese ID");
-                }
-                
+                return uCrud.RetrieveByComercioName<Comercio>(nombre);
             }
             catch (Exception ex)
             {
                 ManageException(ex);
+                return null; // In case of exception, return null
             }
         }
-
         public void Delete(int id)
         {
             try
             {
                 var uCrud = new ComercioCrudFactory();
                 var comercio = new Comercio { Id = id };
-                var uExist = uCrud.RetrieveById<Comercio>(comercio);
+                var uExist = uCrud.RetrieveById<Comercio>(comercio.Id);
                 if (uExist != null)
                 {
                     uCrud.Delete(comercio);

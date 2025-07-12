@@ -11,13 +11,13 @@ namespace CoreApp
     public class CuentaComercioManager : BaseManager
     {
 
-        public void Create(CuentaComercio cuentaComercio)
+        public async Task Create(CuentaComercio cuentaComercio)
         {
             try
             {
                 var cCrud = new CuentaComercioCrudFactory();
 
-                var cExist = cCrud.RetrieveByUserName<CuentaComercio>(cuentaComercio);
+                var cExist = cCrud.RetrieveByUserName<CuentaComercio>(cuentaComercio.NombreUsuario);
 
                 if (cExist == null)
                 {
@@ -25,7 +25,7 @@ namespace CoreApp
 
                     if (cExist == null)
                     {
-                        cExist = cCrud.RetrieveByTelefono<CuentaComercio>(cuentaComercio);
+                        cExist = cCrud.RetrieveByTelefono<CuentaComercio>(cuentaComercio.Telefono);
 
                         if (cExist == null)
                         {
@@ -60,28 +60,28 @@ namespace CoreApp
 
         }
 
-        public CuentaComercio RetrieveById(CuentaComercio cuentaComercio)
+        public CuentaComercio RetrieveById(int Id)
         {
             var cCrud = new CuentaComercioCrudFactory();
-            return cCrud.RetrieveById<CuentaComercio>(cuentaComercio);
+            return cCrud.RetrieveById<CuentaComercio>(Id);
         }
 
-        public CuentaComercio RetrieveByEmail(CuentaComercio cuentaComercio)
+        public CuentaComercio RetrieveByEmail(string CorreoElectronico)
         {
             var cCrud = new CuentaComercioCrudFactory();
-            return cCrud.RetrieveByEmail<CuentaComercio>(cuentaComercio);
+            return cCrud.RetrieveByEmail<CuentaComercio>(CorreoElectronico);
         }
 
-        public CuentaComercio RetrieveByUserName(CuentaComercio cuentaComercio)
+        public CuentaComercio RetrieveByUserName(string NombreUsuario)
         {
             var cCrud = new CuentaComercioCrudFactory();
-            return cCrud.RetrieveByUserName<CuentaComercio>(cuentaComercio);
+            return cCrud.RetrieveByUserName<CuentaComercio>(NombreUsuario);
         }
 
-        public CuentaComercio RetrieveByTelefono(CuentaComercio cuentaComercio)
+        public CuentaComercio RetrieveByTelefono(int Telefono)
         {
             var cCrud = new CuentaComercioCrudFactory();
-            return cCrud.RetrieveByTelefono<CuentaComercio>(cuentaComercio);
+            return cCrud.RetrieveByTelefono<CuentaComercio>(Telefono);
         }
 
         public void Update(CuentaComercio cuentaComercio)
@@ -89,7 +89,7 @@ namespace CoreApp
             try
             {
                 var cCrud = new CuentaComercioCrudFactory();
-                var cExist = cCrud.RetrieveById<CuentaComercio>(cuentaComercio);
+                var cExist = cCrud.RetrieveById<CuentaComercio>(cuentaComercio.Id);
                 if (cExist != null)
                 {
                     cCrud.Update(cuentaComercio);
@@ -111,7 +111,7 @@ namespace CoreApp
             {
                 var cCrud = new CuentaComercioCrudFactory();
                 var cuentaComercio = new CuentaComercio { Id = id };
-                var cExist = cCrud.RetrieveById<CuentaComercio>(cuentaComercio);
+                var cExist = cCrud.RetrieveById<CuentaComercio>(cuentaComercio.Id);
                 if (cExist != null)
                 {
                     cCrud.Delete(cuentaComercio);

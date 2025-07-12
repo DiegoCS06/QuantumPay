@@ -17,7 +17,7 @@ namespace CoreApp
             {
                 var iCrud = new InstitucionBancariaCrudFactory();
 
-                var iExist = iCrud.RetrieveById<InstitucionBancaria>(institucionBancaria.Id);
+                var iExist = iCrud.RetrieveById<InstitucionBancaria>(institucionBancaria.codigoIdentidad);
 
                 if (iExist == null)
                 {
@@ -87,6 +87,11 @@ namespace CoreApp
             return iCrud.RetrieveByIBAN<InstitucionBancaria>(codigoIBAN);
         }
 
+        public InstitucionBancaria RetrieveByCodigoIdentidad(InstitucionBancaria institucionBancaria)
+        {
+            var iCrud = new InstitucionBancariaCrudFactory();
+            return iCrud.RetrieveByCodigoIdentidad<InstitucionBancaria>(institucionBancaria);
+        }
         public InstitucionBancaria RetrieveByTelefono(int telefono)
         {
             var iCrud = new InstitucionBancariaCrudFactory();

@@ -79,6 +79,25 @@ namespace DataAccess.CRUD
             return default(T);
         }
 
+        public T RetrieveByCodigoIdentidad<T>(InstitucionBancaria institucionBancaria)
+        {
+            var sqlOperation = new SQLOperation() { ProcedureName = "RET_INSTITUCIONBANCARIA_BY_CODIGOIDENTIDAD_PR" };
+
+            sqlOperation.AddIntParam("P_CodigoIdentidadBancaria", institucionBancaria.codigoIBAN);
+
+            var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
+
+            if (lstResult.Count > 0)
+            {
+                var row = lstResult[0];
+                institucionBancaria = BuildInstitucionBancaria(row);
+
+                return (T)Convert.ChangeType(institucionBancaria, typeof(T));
+            }
+
+            return default(T);
+        }
+
         public T RetrieveByIBAN<T>(int codigoIBAN)
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_INSTITUCIONBANCARIA_BY_IBAN_PR" };

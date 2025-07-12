@@ -30,7 +30,7 @@ namespace DataAccess.DAOs
         //IMPORTANTE CAMBIAR ESTE CONNECTION STRING A LA BASE DE DATOS CORRESPONDIENTE!!!!!!!!
         private SQL_DAO()
         {
-            _connectionString = @"srv-quantumpay.database.windows.net;Initial Catalog=quantumpay-db;Persist Security Info=True;User ID=qp_admin;Password=QuantumPay23!;Trust Server Certificate=True";
+            _connectionString = @"Data Source=srv-quantumpay.database.windows.net;Initial Catalog=quantumpay-db;Persist Security Info=True;User ID=qp_admin;Password=QuantumPay123!;";
         }
 
         //Paso 3: Definir el metodo que expone la unica instancia de SqlDao

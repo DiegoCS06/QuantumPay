@@ -60,7 +60,7 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Route("RetrieveByCodigoIdentidad")]
-        public ActionResult RetrieveByIBAN(int codigoIdentidad)
+        public ActionResult RetrieveByCodigoIdentidad(InstitucionBancaria codigoIdentidad)
         {
             try
             {

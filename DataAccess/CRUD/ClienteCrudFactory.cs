@@ -29,7 +29,7 @@ namespace DataAccess.CRUD
             sqlOperation.AddStringParameter("P_Nombre", cliente.nombre);
             sqlOperation.AddStringParameter("P_Apellidos", cliente.apellido);
             sqlOperation.AddIntParam("P_Telefono", cliente.telefono);
-            sqlOperation.AddStringParameter("P_Correo", cliente.correo);
+            sqlOperation.AddStringParameter("P_correoElectronico", cliente.correo);
             sqlOperation.AddStringParameter("P_Direccion", cliente.direccion);
             sqlOperation.AddStringParameter("P_FotoCedula", cliente.fotoCedula);
             sqlOperation.AddDateTimeParam("P_FechaNacimiento", cliente.fechaNacimiento.ToDateTime(TimeOnly.MinValue));
@@ -149,7 +149,7 @@ namespace DataAccess.CRUD
             sqlOperation.AddStringParameter("P_Nombre", cliente.nombre);
             sqlOperation.AddStringParameter("P_Apellidos", cliente.apellido);
             sqlOperation.AddIntParam("P_Telefono", cliente.telefono);
-            sqlOperation.AddStringParameter("P_Correo", cliente.correo);
+            sqlOperation.AddStringParameter("P_correoElectronico", cliente.correo);
             sqlOperation.AddStringParameter("P_Direccion", cliente.direccion);
             sqlOperation.AddStringParameter("P_FotoCedula", cliente.fotoCedula);
             sqlOperation.AddDateTimeParam("P_FechaNacimiento", cliente.fechaNacimiento.ToDateTime(TimeOnly.MinValue));

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Identity.Client" Version="4.73.1" />
+    <PackageReference Include="Twilio" Version="7.11.5" />
   </ItemGroup>
 
   <ItemGroup>

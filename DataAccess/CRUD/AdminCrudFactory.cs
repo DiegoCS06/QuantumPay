@@ -40,7 +40,7 @@ namespace DataAccess.CRUD
         {
             var lstAdmins = new List<T>();
 
-            var sqlOperation = new SQLOperation() { ProcedureName = "RET_ALL_ADMIN_PR" };
+            var sqlOperation = new SQLOperation() { ProcedureName = "RET_ALL_ADMINS_PR" };
 
             var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
 
@@ -79,7 +79,7 @@ namespace DataAccess.CRUD
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_ADMIN_BY_ID_PR" };
 
-            sqlOperation.AddIntParam("P_Id", Id);
+            sqlOperation.AddIntParam("@P_idAdmin", Id);
 
             var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
 

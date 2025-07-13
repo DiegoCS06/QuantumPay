@@ -75,6 +75,22 @@ namespace WebAPI.Controllers
             }
         }
 
+        [HttpPut]
+        [Route("Update")]
+        public ActionResult Update(Admin admin)
+        {
+            try
+            {
+                var cm = new AdminManager();
+                var update = cm.Update(admin);
+                return Ok(update);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpDelete]
         [Route("Delete/{id}")]
         public ActionResult Delete(int id)

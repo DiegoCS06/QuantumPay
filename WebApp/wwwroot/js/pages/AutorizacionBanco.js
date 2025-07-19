@@ -10,15 +10,15 @@ function BancoViewController() {
 
         //Asignar eventos a los botones
         $('#btnCreate').click(function () {
-            var vc = new InstitucionBancariaViewController();
+            var vc = new BancoViewController();
             vc.Create();
         });
         $('#btnUpdate').click(function () {
-            var vc = new InstitucionBancariaViewController();
+            var vc = new BancoViewController();
             vc.Update();
         });
         $('#btnDelete').click(function () {
-            var vc = new InstitucionBancariaViewController();
+            var vc = new BancoViewController();
             vc.Delete();
         });
     }
@@ -119,6 +119,6 @@ function BancoViewController() {
     }
 }
 $(document).ready(function () {
-    var vc = new InstitucionBancariaViewController();
+    var vc = new BancoViewController();
     vc.InitView();
 })

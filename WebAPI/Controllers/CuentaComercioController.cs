@@ -55,8 +55,12 @@ namespace WebAPI.Controllers
             {
                 var cm = new CuentaComercioManager();
                 var result = cm.RetrieveById(Id);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
 
-                return Ok(result);
+                return Ok(new List<object> { result});
             }
             catch (Exception ex)
             {
@@ -72,8 +76,12 @@ namespace WebAPI.Controllers
             {
                 var cm = new CuentaComercioManager();
                 var result = cm.RetrieveByEmail(CorreoElectronico);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
 
-                return Ok(result);
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {
@@ -89,8 +97,12 @@ namespace WebAPI.Controllers
             {
                 var cm = new CuentaComercioManager();
                 var result = cm.RetrieveByUserName(NombreUsuario);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
 
-                return Ok(result);
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {
@@ -106,8 +118,12 @@ namespace WebAPI.Controllers
             {
                 var cm = new CuentaComercioManager();
                 var result = cm.RetrieveByTelefono(telefono);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
 
-                return Ok(result);
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {

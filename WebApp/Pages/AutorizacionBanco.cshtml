@@ -62,14 +62,18 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="txtEstadoSolicitud" class="form-label mt-$">Estado Solicitud</label>
-                            <input id="txtEstadoSolicitud" type="text" class="form-control" />
-                        </div>
-                        <div class="form-group">
                             <label for="txtCorreoElectronico" class="form-label mt-$">Correo Electronico</label>
                             <input id="txtCorreoElectronico" readonly type="text" class="form-control" />
                         </div>
 
+                        <div class="form-group">
+                            <select for="txtEstadoSolicitud" class="form-select mt-3" id="txtEstadoSolicitud">
+                                <option>PENDIENTE</option>
+                                <option>APROBADO</option>
+                                <option>RECHAZADO</option>
+                            </select>
+                        </div>
+                        
                     </fieldset>
                 </form>
                 <br />

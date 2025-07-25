@@ -2,6 +2,7 @@
 using CoreApp;
 using DTOs;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -68,7 +69,12 @@ namespace WebAPI.Controllers
             {
                 var tm = new TransaccionManager();
                 var lstResults = tm.ObtenerPorBanco(iban);
-                return Ok(lstResults);
+                if (lstResults == null)
+                {
+                    return Ok(new List<object>());
+                }
+
+                return Ok(new List<object> { lstResults });
             }
             catch (Exception ex)
             {
@@ -86,7 +92,12 @@ namespace WebAPI.Controllers
                 var tm = new TransaccionManager();
                 var result = tm.ObtenerPorComercio(idComercio);
 
-                return Ok(result);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
+
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {

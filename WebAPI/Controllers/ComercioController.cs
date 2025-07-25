@@ -50,7 +50,12 @@ namespace WebAPI.Controllers
                 var cm = new ComercioManager();
                 var result = cm.RetrieveById(Id);
 
-                return Ok(result);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
+
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {

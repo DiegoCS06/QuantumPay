@@ -39,7 +39,12 @@
                 var vc = new CuentaComercioViewController();
                 vc.fillForm(cuentaComercioDTO);
             } else {
-                alert('Comercio no encontrado');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ID de Comercio requerido',
+                    text: 'Por favor, ingrese un ID válido antes de continuar.',
+                    confirmButtonText: 'Aceptar'
+                });
             }
             // Disparar búsqueda con Enter
             $('#txtSearchComercioId').keyup(function (e) {
@@ -95,7 +100,7 @@
             columns: columns
         });
         //asignar eventos de carga de datos o bindin segun la tabla
-        $('tblcuentaComercio tbody').on('click', 'tr', function () {
+        $('#tblcuentaComercio tbody').on('click', 'tr', function () {
 
             //Extraemos la fila y los datos de la tabla
             var row = $(this).closest("tr");
@@ -106,9 +111,9 @@
             var cuentaComercioDTO = $('#tblcuentaComercio').DataTable().row(this).data();
 
             //Binding en el form
-            $('#txtIdcuenta').val(cuentaComercioDTO.id);
+            $('#txtIdCuenta').val(cuentaComercioDTO.id);
             $('#txtNombreUsuario').val(cuentaComercioDTO.nombreUsuario);
-            $('txtCedulaJuridica').val(cuentaComercioDTO.cedulaJuridica);
+            $('#txtCedulaJuridica').val(cuentaComercioDTO.cedulaJuridica);
             $('#txtTelefono').val(cuentaComercioDTO.telefono);
             $('#txtCorreoElectronico').val(cuentaComercioDTO.correoElectronico);
             $('#txtDireccion').val(cuentaComercioDTO.direccion);

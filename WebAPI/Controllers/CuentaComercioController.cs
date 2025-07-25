@@ -1,4 +1,5 @@
-﻿using BCrypt.Net;
+﻿using BaseManager;
+using BCrypt.Net;
 using CoreApp;
 using DTOs;
 using Microsoft.AspNetCore.Authentication;
@@ -197,6 +198,38 @@ namespace WebAPI.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Ok(new { Message = "Sesión cerrada correctamente." });
+        }
+
+        [HttpPost]
+        [Route("SendPasswordResetCode")]
+        public ActionResult SendPasswordResetCode([FromBody] string email)
+        {
+            var user = new CuentaComercioManager().RetrieveByEmail(email);
+            if (user == null)
+                return NotFound("Usuario no encontrado.");
+
+            var emailVerifier = new EmailVerificationManager();
+            emailVerifier.SendVerificationCode(email);
+            return Ok("Código de recuperación enviado por email.");
+        }
+
+        [HttpPost]
+        [Route("ResetPassword")]
+        public ActionResult ResetPassword([FromBody] DTOs.PasswordResetRequest request)
+        {
+            var emailVerifier = new EmailVerificationManager();
+            bool verified = emailVerifier.VerifyCode(request.email, request.Code);
+            if (!verified)
+                return BadRequest("Código de verificación inválido.");
+
+            var cm = new CuentaComercioManager();
+            var user = cm.RetrieveByEmail(request.email);
+            if (user == null)
+                return NotFound("Usuario no encontrado.");
+
+            user.Contrasena = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            cm.Update(user);
+            return Ok("Contraseña actualizada correctamente.");
         }
     }
 }

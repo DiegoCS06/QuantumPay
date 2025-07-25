@@ -311,6 +311,52 @@ namespace WebAPI.Controllers
             return Ok(new { Message = "Sesión cerrada correctamente." });
         }
 
+        [HttpPost]
+        [Route("SendPasswordResetCode")]
+        public ActionResult SendPasswordResetCode([FromBody] string email)
+        {
+            try
+            {
+                var user = new ClienteManager().RetrieveByEmail(email);
+                if (user == null)
+                    return NotFound("Usuario no encontrado.");
+
+                var emailVerifier = new EmailVerificationManager();
+                emailVerifier.SendVerificationCode(email);
+                return Ok("Código de recuperación enviado por email.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("ResetPassword")]
+        public ActionResult ResetPassword([FromBody] DTOs.PasswordResetRequest request)
+        {
+            try
+            {
+                var emailVerifier = new EmailVerificationManager();
+                bool verified = emailVerifier.VerifyCode(request.email, request.Code);
+                if (!verified)
+                    return BadRequest("Código de verificación inválido.");
+
+                var cm = new ClienteManager();
+                var user = cm.RetrieveByEmail(request.email);
+                if (user == null)
+                    return NotFound("Usuario no encontrado.");
+
+                user.contrasena = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+                cm.Update(user);
+                return Ok("Contraseña actualizada correctamente.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         private bool IsBase64String(string base64)
         {
             if (string.IsNullOrWhiteSpace(base64))

@@ -9,7 +9,8 @@ BEGIN
         direccionSedePrincipal,
         telefono,
         estadoSolicitud,
-        correoElectronico
+        correoElectronico,
+        contrasena
     FROM institucionBancaria
 END
 GO

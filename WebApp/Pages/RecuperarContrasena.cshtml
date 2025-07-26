@@ -1,8 +1,10 @@
 ﻿@page
+@using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.RecuperarContrasenaModel
 @{
     ViewData["Title"] = "Recuperar Contraseña";
 }
+@attribute [AllowAnonymous]
 <h2>Recuperar Contraseña</h2>
 <form id="request-reset-form">
     <label for="email">Correo electrónico</label>

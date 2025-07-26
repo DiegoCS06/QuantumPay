@@ -1,8 +1,9 @@
 ﻿@page
+@using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.Clientes.ClienteHomeModel
 @{
 }
-
+@attribute [Authorize(Roles = "Cliente")]
 <h2 class="mb-4">Bienvenido, Cliente</h2>
 
 <!-- Sección: Cuentas del Usuario -->

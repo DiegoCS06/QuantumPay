@@ -1,7 +1,9 @@
 ﻿@page
+@using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.AdminPages.AdminHomeModel
 @{
 }
+@attribute [Authorize(Roles = "Admin")]
 <script src="~/js/pages/adminhome.js"></script>
 <link href="~/css/AdminHome.css" rel="stylesheet" />
 

@@ -1,7 +1,9 @@
 ﻿@page
+@using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.BancoPages.BancoHomeModel
 @{
 }
+@attribute [Authorize(Roles = "InstitucionBancaria")]
 <h2 class="mb-4">Panel de Inicio - Institución Bancaria</h2>
 
 <!-- Sección: Promociones Activas -->

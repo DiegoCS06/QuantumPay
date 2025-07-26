@@ -27,6 +27,15 @@
         <input asp-for="LoginRequest.Password" type="password" />
     </div>
     <button type="submit">Entrar</button>
+
+    <div class="mt-3"> @* Agregado para ir a pantalla de registro *@
+        <p>¿No tienes una cuenta? <a asp-page="/SignUp">Regístrate aquí</a></p>
+    </div>
+
+    <div class="mt-3">@* Agregado para ir a pantalla de bienvenida *@
+        <p> <a asp-page="/Welcome">Ir a portal de bienvenida</a></p>
+    </div>
+
 </form>
 @if (!string.IsNullOrEmpty(Model.ErrorMessage))
 {

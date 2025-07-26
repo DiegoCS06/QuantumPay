@@ -71,7 +71,8 @@ namespace WebApp.Pages
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, LoginRequest.Email)
+            new Claim(ClaimTypes.Name, LoginRequest.Email),
+            new Claim(ClaimTypes.Role, LoginRequest.UserType) // Agrega el rol aquí
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -86,11 +87,11 @@ namespace WebApp.Pages
 
             return LoginRequest.UserType switch
             {
-                "Admin" => RedirectToPage("/Adminpages/AdminHome"),
+                "Admin" => RedirectToPage("/AdminPages/AdminHome"),
                 "Cliente" => RedirectToPage("/ClientesPages/ClienteHome"),
                 "CuentaComercio" => RedirectToPage("/ComercioPages/ComercioHome"),
-                "InstitucionBancaria" => RedirectToPage("/BancoPagess/BancoHome"),
-                _ => RedirectToPage("/Index") // en caso de tipo inesperado
+                "InstitucionBancaria" => RedirectToPage("/BancoPages/BancoHome"),
+                _ => RedirectToPage("/") // en caso de tipo inesperado
             };
         }
     }

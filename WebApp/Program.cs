@@ -29,13 +29,25 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizeFolder("/"); // Protege todo
 });
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Welcome";
+});
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Login";
+        options.LoginPath = "/Welcome";
         options.LogoutPath = "/Logout";
         options.AccessDeniedPath = "/AccessDenied";
     });
+builder.Services.AddAuthorization();
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizeFolder("/"); // Protege todo
+    options.Conventions.AllowAnonymousToPage("/Login");    // Excepción
+    options.Conventions.AllowAnonymousToPage("/Welcome");  // Excepción
+});
 
 var app = builder.Build();
 
@@ -46,8 +58,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
-app.MapFallbackToPage("/Welcome");
+app.UseStatusCodePagesWithReExecute("/Error/{0}");
+//app.MapFallbackToPage("/Welcome");
 
 app.UseHttpsRedirection();
 
@@ -61,6 +73,11 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.MapGet("/", context =>
+{
+    context.Response.Redirect("/Welcome"); 
+    return Task.CompletedTask;
+});
 app.MapRazorPages();
 
 app.MapControllers();

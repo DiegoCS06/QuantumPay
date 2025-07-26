@@ -1,7 +1,9 @@
 ﻿@page
+@using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.ComercioPages.ComercioHomeModel
 @{
 }
+@attribute [Authorize(Roles = "CuentaComercio")]
 <h2 class="mb-4">Panel del Comercio</h2>
 
 <div class="row">

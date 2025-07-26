@@ -1,4 +1,5 @@
 ﻿@page
+@using Microsoft.AspNetCore.Authorization
 @{
     Layout = "~/Pages/Shared/_Layout.cshtml";
 }
@@ -6,7 +7,7 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/welcome.css" />
 }
-
+@attribute [AllowAnonymous]
 <div class="welcome-container text-center mt-5">
     <h1>Bienvenido a QuantumPay</h1>
     <p class="lead">Por favor, elige una opción para continuar:</p>

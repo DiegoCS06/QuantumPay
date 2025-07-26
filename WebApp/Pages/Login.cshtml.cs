@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net.Http.Headers;
@@ -9,6 +10,7 @@ using System.Text.Json;
 
 namespace WebApp.Pages
 {
+    [AllowAnonymous]
     public class LoginModel : PageModel
     {
         [BindProperty]
@@ -91,11 +93,14 @@ namespace WebApp.Pages
                     IsPersistent = true
                 });
 
-            if (LoginRequest.UserType == "Admin")
+            return LoginRequest.UserType switch
             {
-                return RedirectToPage("/AdminHome");
-            }
-            return RedirectToPage("/AdminHome");
+                "Admin" => RedirectToPage("/Adminpages/AdminHome"),
+                "Cliente" => RedirectToPage("/ClientesPages/ClienteHome"),
+                "CuentaComercio" => RedirectToPage("/ComercioPages/ComercioHome"),
+                "InstitucionBancaria" => RedirectToPage("/BancoPagess/BancoHome"),
+                _ => RedirectToPage("/Index") // en caso de tipo inesperado
+            };
         }
     }
 

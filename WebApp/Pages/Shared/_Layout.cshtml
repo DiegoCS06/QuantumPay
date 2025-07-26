@@ -26,7 +26,7 @@
 
     <!-- Tu helper AJAX -->
     <script src="~/js/ControlActions.js" asp-append-version="true"></script>
-    <script src="~/js/site.js"></script>
+    <!--<script src="~/js/site.js"></script>-->
 
     @RenderSection("Styles", required: false)
 </head>
@@ -47,9 +47,9 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Welcome">Home</a>
                         </li>
-                        <li class="nav-item">
+                        <!--<li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/AdminHome">Admin</a>
                         </li>
                         <li class="dropdown">
@@ -71,16 +71,8 @@
                                asp-area="" asp-page="/Comisiones/Comisiones">
                                 Comisiones
                             </a>
-                        </li>
-                        @if (!HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/SignUp">
-                                    Registro de Usuario
-                                </a>
-                            </li>
-                        }
-                    </ul>
+                        </li>-->
+                        
                     @{
                         var displayName = ViewContext.ActionDescriptor.DisplayName ?? "";
                         var isWelcomePage = displayName.Contains("Welcome", StringComparison.OrdinalIgnoreCase);
@@ -114,7 +106,7 @@
         </div>
     </footer>
       <!-- Sitio JS global -->
-  <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- <script src="~/js/site.js" asp-append-version="true"></script>-->
 
   <!-- Aquí se inyectan los scripts específicos de cada Razor Page -->
   @RenderSection("Scripts", required: false)

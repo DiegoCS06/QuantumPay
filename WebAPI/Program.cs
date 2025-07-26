@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.UseUrls("http://localhost:5221", "https://localhost:5001");
@@ -6,6 +8,7 @@ builder.WebHost.UseUrls("http://localhost:5221", "https://localhost:5001");
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 builder.Services.AddCors(options =>
 {
@@ -18,6 +21,12 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Login"; 
+});
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie();
 var app = builder.Build();
 
 app.UseCors("AllowLocalhost");
@@ -32,7 +41,7 @@ app.UseHttpsRedirection();
 
 // 3) ¡Importante!  
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 // 5) Luego mapea los controladores

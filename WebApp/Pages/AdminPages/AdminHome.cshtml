@@ -1,5 +1,5 @@
 ﻿@page
-@model WebApp.Pages.AdminHomeModel
+@model WebApp.Pages.AdminPages.AdminHomeModel
 @{
 }
 <script src="~/js/pages/adminhome.js"></script>
@@ -46,6 +46,10 @@
                     <p>Administrar promociones activas.</p>
                 </a>
             </div>
+             <a class="nav-link text-dark" asp-area="" asp-page="/ClientesPages/ClienteHome">Clientes</a>
+            <a class="nav-link text-dark" asp-area="" asp-page="/ComercioPages/ComercioHome">Comercios</a>
+            <a class="nav-link text-dark" asp-area="" asp-page="/BancoPages/BancoHome">Bancos</a>
+               
         </section>
     </main>
 </body>

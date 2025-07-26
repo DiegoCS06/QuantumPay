@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace WebApp.Pages
 {
     [AllowAnonymous]
-    public class WelcomeModel : PageModel
+    public class RecuperarContrasenaModel : PageModel
     {
         public void OnGet()
         {

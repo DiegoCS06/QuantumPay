@@ -1,4 +1,5 @@
-﻿using CoreApp;
+﻿using BaseManager;
+using CoreApp;
 using DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +16,8 @@ namespace WebAPI.Controllers
         {
             try
             {
+                institucionBancaria.contrasena = BCrypt.Net.BCrypt.HashPassword(institucionBancaria.contrasena);
+
                 var im = new InstitucionBancariaManager();
                 await im.Create(institucionBancaria);
                 return Ok(institucionBancaria);
@@ -48,8 +51,12 @@ namespace WebAPI.Controllers
             {
                 var im = new InstitucionBancariaManager();
                 var result = im.RetrieveById(Id);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
 
-                return Ok(result);
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {
@@ -59,14 +66,19 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Route("RetrieveByCodigoIdentidad")]
-        public ActionResult RetrieveByCodigoIdentidad(int codigoIdentidad)
+        public ActionResult RetrieveByCodigoIdentidad(string codigoIdentidad)
         {
             try
             {
                 var im = new InstitucionBancariaManager();
                 var result = im.RetrieveByCodigoIdentidad(codigoIdentidad);
 
-                return Ok(result);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
+
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {
@@ -76,14 +88,19 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Route("RetrieveByIBAN")]
-        public ActionResult RetrieveByIBAN(int codigoIBAN)
+        public ActionResult RetrieveByIBAN(string codigoIBAN)
         {
             try
             {
                 var im = new InstitucionBancariaManager();
                 var result = im.RetrieveByIBAN(codigoIBAN);
 
-                return Ok(result);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
+
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {
@@ -100,7 +117,12 @@ namespace WebAPI.Controllers
                 var im = new InstitucionBancariaManager();
                 var result = im.RetrieveByTelefono(telefono);
 
-                return Ok(result);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
+
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {
@@ -117,7 +139,12 @@ namespace WebAPI.Controllers
                 var im = new InstitucionBancariaManager();
                 var result = im.RetrieveByEmail(correoElectronico);
 
-                return Ok(result);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
+
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {
@@ -161,35 +188,56 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public ActionResult Login([FromBody] DTOs.LoginInstiBancariaRequest request)
+        public ActionResult Login([FromBody] DTOs.LoginRequest request)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.CedulaJuridica))
-                    return Unauthorized("Usuario o cédula jurídica incorrectos.");
+                var im = new InstitucionBancariaManager();
+                var user = im.RetrieveByEmail(request.Email);
+                if (user == null)
+                    return Unauthorized("Usuario o contraseña incorrectos.");
 
-                var manager = new InstitucionBancariaManager();
-                var institucion = manager.RetrieveByEmail(request.Email.Trim());
+                if (!BCrypt.Net.BCrypt.Verify(request.Password, user.contrasena))
+                    return Unauthorized("Usuario o contraseña incorrectos.");
 
-                if (institucion == null)
-                    return Unauthorized("Usuario o cédula jurídica incorrectos.");
-
-                // Normaliza y compara la cédula jurídica
-                var cedulaInput = request.CedulaJuridica.Trim();
-                var cedulaDb = institucion.cedulaJuridica?.Trim();
-
-                if (!string.Equals(cedulaDb, cedulaInput, StringComparison.OrdinalIgnoreCase))
-                    return Unauthorized("Usuario o cédula jurídica incorrectos.");
-
-                if (!string.Equals(institucion.estadoSolicitud, "aprobada", StringComparison.OrdinalIgnoreCase))
-                    return Unauthorized("Error al iniciar sesion, su institucion no ha sido aprobada.");
-
-                return Ok(new { Message = "Login exitoso", UserId = institucion.Id });
+                return Ok(new { Message = "Login exitoso", UserId = user.Id });
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
+        }
+
+        [HttpPost]
+        [Route("SendPasswordResetCode")]
+        public ActionResult SendPasswordResetCode([FromBody] string email)
+        {
+            var user = new InstitucionBancariaManager().RetrieveByEmail(email);
+            if (user == null)
+                return NotFound("Usuario no encontrado.");
+
+            var emailVerifier = new EmailVerificationManager();
+            emailVerifier.SendVerificationCode(email);
+            return Ok("Código de recuperación enviado por email.");
+        }
+
+        [HttpPost]
+        [Route("ResetPassword")]
+        public ActionResult ResetPassword([FromBody] DTOs.PasswordResetRequest request)
+        {
+            var emailVerifier = new EmailVerificationManager();
+            bool verified = emailVerifier.VerifyCode(request.email, request.Code);
+            if (!verified)
+                return BadRequest("Código de verificación inválido.");
+
+            var im = new InstitucionBancariaManager();
+            var user = im.RetrieveByEmail(request.email);
+            if (user == null)
+                return NotFound("Usuario no encontrado.");
+
+            user.contrasena = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            im.Update(user);
+            return Ok("Contraseña actualizada correctamente.");
         }
     }
 }

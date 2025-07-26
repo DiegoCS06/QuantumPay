@@ -1,0 +1,92 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model WebApp.Pages.Clientes.ClienteHomeModel
+@{
+}
+@attribute [Authorize(Roles = "Cliente")]
+<h2 class="mb-4">Bienvenido, Cliente</h2>
+
+<!-- Sección: Cuentas del Usuario -->
+<div class="row">
+    <div class="col-sm-6"">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                Cuentas Asociadas
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-sm">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Banco</th>
+                            <th>Tipo de Cuenta</th>
+                            <th>Número IBAN</th>
+                            <th>Saldo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>BAC San José</td>
+                            <td>Ahorros</td>
+                            <td>CR12000123456789123456</td>
+                            <td>₡250,000</td>
+                        </tr>
+                        <tr>
+                            <td>Banco Nacional</td>
+                            <td>Corriente</td>
+                            <td>CR05000123456789012345</td>
+                            <td>₡75,500</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección: Últimas Transacciones -->
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                Últimas Transacciones
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-sm-6">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Descripción</th>
+                            <th>Monto</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>24/07/2025</td>
+                            <td>Pago a Súper Salón</td>
+                            <td>₡12,000</td>
+                            <td><span class="badge bg-success">Completado</span></td>
+                        </tr>
+                        <tr>
+                            <td>23/07/2025</td>
+                            <td>Transferencia a Juan Pérez</td>
+                            <td>₡5,000</td>
+                            <td><span class="badge bg-success">Completado</span></td>
+                        </tr>
+                        <tr>
+                            <td>22/07/2025</td>
+                            <td>Recarga celular</td>
+                            <td>₡3,500</td>
+                            <td><span class="badge bg-danger">Fallido</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enlaces adicionales -->
+<div class="footer-links">
+    <a href="/cuentas/agregar" class="btn btn-outline-primary me-2">➕ Agregar Cuenta</a>
+    <a href="/transacciones/todas" class="btn btn-outline-secondary me-2">📄 Ver Todas las Transacciones</a>
+    <a href="/inicio" class="btn btn-outline-dark">⬅️ Volver</a>
+</div>

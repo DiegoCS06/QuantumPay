@@ -8,13 +8,14 @@ namespace DTOs
 {
     public class InstitucionBancaria : BaseDTO
     {
-        public int codigoIdentidad { get; set; }
-        public int codigoIBAN { get; set; }
+        public string codigoIdentidad { get; set; }
+        public string codigoIBAN { get; set; }
         public string cedulaJuridica { get; set; }
         public string direccionSedePrincipal { get; set; }
         public int telefono { get; set; }
         public string correoElectronico { get; set; }
         public string estadoSolicitud { get; set; }
+        public string contrasena { get; set; }
 
 
         public void iniciarSesion()

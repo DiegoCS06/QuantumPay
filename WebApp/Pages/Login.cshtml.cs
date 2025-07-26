@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net.Http.Headers;
@@ -9,6 +10,7 @@ using System.Text.Json;
 
 namespace WebApp.Pages
 {
+    [AllowAnonymous]
     public class LoginModel : PageModel
     {
         [BindProperty]
@@ -27,15 +29,6 @@ namespace WebApp.Pages
             {
                 ErrorMessage = "Debe ingresar el tipo de usuario y el correo.";
                 return Page();
-            }
-
-            if (LoginRequest.UserType == "InstitucionBancaria")
-            {
-                if (string.IsNullOrWhiteSpace(LoginRequest.CedulaJuridica))
-                {
-                    ErrorMessage = "Debe ingresar la cédula jurídica.";
-                    return Page();
-                }
             }
             else
             {
@@ -61,7 +54,7 @@ namespace WebApp.Pages
             {
                 "Admin" => new { UserName = LoginRequest.Email, Password = LoginRequest.Password },
                 "CuentaComercio" => new { Email = LoginRequest.Email, Password = LoginRequest.Password },
-                "InstitucionBancaria" => new { Email = LoginRequest.Email, CedulaJuridica = LoginRequest.CedulaJuridica },
+                "InstitucionBancaria" => new { Email = LoginRequest.Email, Password = LoginRequest.Password },
                 _ => new { Email = LoginRequest.Email, Password = LoginRequest.Password }
             };
 
@@ -78,7 +71,8 @@ namespace WebApp.Pages
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, LoginRequest.Email)
+            new Claim(ClaimTypes.Name, LoginRequest.Email),
+            new Claim(ClaimTypes.Role, LoginRequest.UserType) // Agrega el rol aquí
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -91,11 +85,14 @@ namespace WebApp.Pages
                     IsPersistent = true
                 });
 
-            if (LoginRequest.UserType == "Admin")
+            return LoginRequest.UserType switch
             {
-                return RedirectToPage("/AdminHome");
-            }
-            return RedirectToPage("/AdminHome");
+                "Admin" => RedirectToPage("/AdminPages/AdminHome"),
+                "Cliente" => RedirectToPage("/ClientesPages/ClienteHome"),
+                "CuentaComercio" => RedirectToPage("/ComercioPages/ComercioHome"),
+                "InstitucionBancaria" => RedirectToPage("/BancoPages/BancoHome"),
+                _ => RedirectToPage("/") // en caso de tipo inesperado
+            };
         }
     }
 
@@ -104,6 +101,5 @@ namespace WebApp.Pages
         public string UserType { get; set; }
         public string Email { get; set; }
         public string? Password { get; set; }
-        public string? CedulaJuridica { get; set; }
     }
 }

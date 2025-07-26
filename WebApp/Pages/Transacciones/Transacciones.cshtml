@@ -1,52 +1,42 @@
 ﻿@page
 @model WebApp.Pages.Transacciones.TransaccionesModel
 @{
-    ViewData["Title"] = "Transacciones";
+    ViewData["Title"] = "Gestión de Transacciones";
 }
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
 
-<h1>Gestión de Transacciones</h1>
+    <div class="form-inline mb-3">
+        <label for="transaccionFiltro" class="mr-2">Mostrar:</label>
+        <select id="transaccionFiltro" class="form-control mr-2">
+            <option value="all">Todas</option>
+            <option value="banco">Por Banco (IBAN)</option>
+            <option value="comercio">Por Comercio (ID)</option>
+        </select>
 
-<div class="bs-docs-section">
+        <input type="text"
+               id="filtroValor"
+               class="form-control mr-2"
+               placeholder="IBAN o ID de Comercio" />
 
-    <div class="row mb-3">
-        <div class="col-md-3">
-            <label for="transaccionFiltro">Mostrar:</label>
-            <select id="transaccionFiltro" class="form-control">
-                <option value="all">Todas</option>
-                <option value="banco">Por Banco (IBAN)</option>
-                <option value="comercio">Por Comercio (ID)</option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <label for="filtroValor">Valor de filtro:</label>
-            <input id="filtroValor" type="text" class="form-control" placeholder="IBAN o ID de Comercio" />
-        </div>
-        <div class="col-md-2 d-flex align-items-end">
-            <button id="btnBuscar" class="btn btn-primary w-100">Buscar</button>
-        </div>
+        <button id="btnBuscar" class="btn btn-primary">Buscar</button>
     </div>
 
-    <!-- Tabla -->
-    <div class="row">
-        <legend>Lista de Transacciones</legend>
-        <div class="col-lg-12">
-            <table id="tblTransacciones" class="table table-striped" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Cuenta Bancaria</th>
-                        <th>Cuenta Comercio</th>
-                        <th>Monto</th>
-                        <th>Comisión</th>
-                        <th>Descuento</th>
-                        <th>Fecha</th>
-                        <th>Método</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-    </div>
+    <table id="tblTransacciones" class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Cuenta Bancaria</th>
+                <th>Cuenta Comercio</th>
+                <th>Monto</th>
+                <th>Comisión</th>
+                <th>Descuento</th>
+                <th>Fecha</th>
+                <th>Método Pago</th>
+            </tr>
+        </thead>
+    </table>
+</div>
 
     <!-- Formulario de CRUD -->
     <div class="row mt-4">

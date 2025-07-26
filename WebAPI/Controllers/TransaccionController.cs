@@ -2,6 +2,7 @@
 using CoreApp;
 using DTOs;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -18,7 +19,7 @@ namespace WebAPI.Controllers
             try
             {
                 var tm = new TransaccionManager();
-                await Task.Run(() => tm.Registrar(transaccion)); // If Registrar is not async
+                await Task.Run(() => tm.Registrar(transaccion));
                 return Ok(transaccion);
             }
             catch (Exception ex)
@@ -32,9 +33,9 @@ namespace WebAPI.Controllers
         {
             try
             {
-                transaccion.Id = id; // Asegúrate de asignar el id del path
+                transaccion.Id = id;
                 var tm = new TransaccionManager();
-                tm.Actualizar(transaccion); // Debes tener este método en tu Manager
+                tm.Actualizar(transaccion);
                 return Ok(transaccion);
             }
             catch (Exception ex)
@@ -68,7 +69,12 @@ namespace WebAPI.Controllers
             {
                 var tm = new TransaccionManager();
                 var lstResults = tm.ObtenerPorBanco(iban);
-                return Ok(lstResults);
+                if (lstResults == null)
+                {
+                    return Ok(new List<object>());
+                }
+
+                return Ok(new List<object> { lstResults });
             }
             catch (Exception ex)
             {
@@ -86,7 +92,12 @@ namespace WebAPI.Controllers
                 var tm = new TransaccionManager();
                 var result = tm.ObtenerPorComercio(idComercio);
 
-                return Ok(result);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
+
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {

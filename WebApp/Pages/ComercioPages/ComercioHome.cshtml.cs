@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace WebApp.Pages
+namespace WebApp.Pages.ComercioPages
 {
-    [AllowAnonymous]
-    public class WelcomeModel : PageModel
+    [Authorize(Roles = "CuentaComercio")]
+    public class ComercioHomeModel : PageModel
     {
         public void OnGet()
         {

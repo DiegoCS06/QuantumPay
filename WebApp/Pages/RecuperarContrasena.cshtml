@@ -1,0 +1,91 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model WebApp.Pages.RecuperarContrasenaModel
+@{
+    ViewData["Title"] = "Recuperar Contraseña";
+}
+@attribute [AllowAnonymous]
+<h2>Recuperar Contraseña</h2>
+<form id="request-reset-form">
+    <label for="email">Correo electrónico</label>
+    <input type="email" id="email" name="email" required />
+    <label for="userTypeSelect">Tipo de usuario</label>
+    <select id="userTypeSelect">
+        <option value="Cliente">Cliente</option>
+        <option value="CuentaComercio">Comercio</option>
+        <option value="InstitucionBancaria">Institución Bancaria</option>
+    </select>
+    <button type="submit">Enviar código</button>
+</form>
+
+<form id="reset-password-form" style="display:none;">
+    <label for="code">Código recibido</label>
+    <input type="text" id="code" name="code" required />
+    <label for="new-password">Nueva contraseña</label>
+    <input type="password" id="new-password" name="new-password" required minlength="6" />
+    <button type="submit">Restablecer contraseña</button>
+</form>
+
+@section Scripts {
+<script>
+document.getElementById('request-reset-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const userType = document.getElementById('userTypeSelect').value;
+    let endpoint = '';
+    switch (userType) {
+        case 'Cliente':
+            endpoint = 'Cliente';
+            break;
+        case 'CuentaComercio':
+            endpoint = 'CuentaComercio';
+            break;
+        case 'InstitucionBancaria':
+            endpoint = 'InstitucionBancaria';
+            break;
+    }
+    const resp = await fetch(`https://localhost:5001/api/${endpoint}/SendPasswordResetCode`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(email)
+    });
+    if (resp.ok) {
+        alert('Código enviado. Revisa tu correo.');
+        document.getElementById('reset-password-form').style.display = '';
+    } else {
+        alert('Error enviando código.');
+    }
+});
+
+document.getElementById('reset-password-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const code = document.getElementById('code').value;
+    const newPassword = document.getElementById('new-password').value;
+    const userType = document.getElementById('userTypeSelect').value;
+    let endpoint = '';
+    switch (userType) {
+        case 'Cliente':
+            endpoint = 'Cliente';
+            break;
+        case 'CuentaComercio':
+            endpoint = 'CuentaComercio';
+            break;
+        case 'InstitucionBancaria':
+            endpoint = 'InstitucionBancaria';
+            break;
+    }
+    const resp = await fetch(`https://localhost:5001/api/${endpoint}/ResetPassword`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, Code: code, NewPassword: newPassword })
+    });
+    if (resp.ok) {
+        alert('Contraseña restablecida. Puedes iniciar sesión.');
+        window.location.href = '/Login';
+    } else {
+        alert('Error restableciendo contraseña.');
+    }
+});
+</script>
+}

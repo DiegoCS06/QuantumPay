@@ -61,8 +61,8 @@ function BancoViewController() {
         columns[3] = { 'data': 'cedulaJuridica' }
         columns[4] = { 'data': 'direccionSedePrincipal' }
         columns[5] = { 'data': 'telefono' }
-        columns[6] = { 'data': 'estadoSolicitud' }
-        columns[7] = { 'data': 'correoElectronico' }
+        columns[6] = { 'data': 'correoElectronico' }
+        columns[7] = { 'data': 'estadoSolicitud' }
 
         $('#tblinstitucionBancaria').dataTable({
             "ajax": {
@@ -89,8 +89,32 @@ function BancoViewController() {
             $('#txtCedulaJuridica').val(bancoDTO.cedulaJuridica);
             $('#txtDireccionSedePrincipal').val(bancoDTO.direccionSedePrincipal);
             $('#txtTelefono').val(bancoDTO.telefono);
-            $('#txtEstadoSolicitud').val(bancoDTO.estadoSolicitud);
             $('#txtCorreoElectronico').val(bancoDTO.correoElectronico);
+            $('#txtEstadoSolicitud').val(bancoDTO.estadoSolicitud);
+            
+        })
+    }
+    this.Create = function () {
+        var bancoDTO = {};
+        //Atributos con valores default, que son coltrolados por el API
+        bancoDTO.id = 0; //ID del banco
+        bancoDTO.codigoIdentidad = $('#txtCodigoIdentidad').val();
+
+
+        //Valores capturados en pantalla
+        bancoDTO.codigoIBAN = $('#txtCodigoIBAN').val();
+        bancoDTO.cedulaJuridica = $('#txtCedulaJuridica').val();
+        bancoDTO.direccionSedePrincipal = $('#txtDireccionSedePrincipal').val();
+        bancoDTO.telefono = $('#txtTelefono').val();
+        bancoDTO.correoElectronico = $('#txtCorreoElectronico').val();
+        bancoDTO.estadoSolicitud = $('#txtEstadoSolicitud').val();
+        //Enviar la data al API
+        var ca = new ControlActions();
+        var urlService = this.ApiEndPointName + "/Create";
+
+        ca.PostToAPI(urlService, bancoDTO, function () {
+            //Recargar la tabla
+            $('#tblinstitucionBancaria').DataTable().ajax.reload();
         })
     }
     this.Update = function () {
@@ -105,14 +129,36 @@ function BancoViewController() {
         bancoDTO.cedulaJuridica = $('#txtCedulaJuridica').val();
         bancoDTO.direccionSedePrincipal = $('#txtDireccionSedePrincipal').val();
         bancoDTO.telefono = $('#txtTelefono').val();
-        bancoDTO.estadoSolicitud = $('#txtEstadoSolicitud').val();
         bancoDTO.correoElectronico = $('#txtCorreoElectronico').val();
-
+        bancoDTO.estadoSolicitud = $('#txtEstadoSolicitud').val();
         //Enviar la data al API
         var ca = new ControlActions();
         var urlService = this.ApiEndPointName + "/Update";
 
         ca.PutToAPI(urlService, bancoDTO, function () {
+            //Recargar la tabla
+            $('#tblinstitucionBancaria').DataTable().ajax.reload();
+        })
+    }
+    this.Delete = function () {
+        var bancoDTO = {};
+        //Atributos con valores default, que son coltrolados por el API
+        bancoDTO.id = $('#txtId').val(); //ID del banco
+        bancoDTO.codigoIdentidad = $('#txtCodigoIdentidad').val();
+
+
+        //Valores capturados en pantalla
+        bancoDTO.codigoIBAN = $('#txtCodigoIBAN').val();
+        bancoDTO.cedulaJuridica = $('#txtCedulaJuridica').val();
+        bancoDTO.direccionSedePrincipal = $('#txtDireccionSedePrincipal').val();
+        bancoDTO.telefono = $('#txtTelefono').val();
+        bancoDTO.correoElectronico = $('#txtCorreoElectronico').val();
+        bancoDTO.estadoSolicitud = $('#txtEstadoSolicitud').val();
+        //Enviar la data al API
+        var ca = new ControlActions();
+        var urlService = this.ApiEndPointName + "/Delete";
+
+        ca.DeleteToAPI(urlService, bancoDTO, function () {
             //Recargar la tabla
             $('#tblinstitucionBancaria').DataTable().ajax.reload();
         })

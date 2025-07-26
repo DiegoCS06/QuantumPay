@@ -7,8 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\AdminPages\" />
-    <Folder Include="Pages\ComercioPages\" />
     <Folder Include="wwwroot\js\pages\AdminPages\" />
     <Folder Include="wwwroot\js\pages\ComercioPages\" />
     <Folder Include="wwwroot\lib\NewFolder\" />

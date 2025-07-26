@@ -24,13 +24,14 @@ namespace DataAccess.CRUD
 
             sqlOperation.ProcedureName = "CRE_INSTITUCIONBANCARIA_PR";
 
-            sqlOperation.AddIntParam("P_codigoIdentidad", institucionBancaria.codigoIdentidad);
-            sqlOperation.AddIntParam("P_codigoIBAN", institucionBancaria.codigoIBAN);
+            sqlOperation.AddStringParameter("P_codigoIdentidad", institucionBancaria.codigoIdentidad);
+            sqlOperation.AddStringParameter("P_codigoIBAN", institucionBancaria.codigoIBAN);
             sqlOperation.AddStringParameter("P_cedulaJuridica", institucionBancaria.cedulaJuridica);
             sqlOperation.AddStringParameter("P_direccionSedePrincipal", institucionBancaria.direccionSedePrincipal);
             sqlOperation.AddIntParam("@P_telefono", institucionBancaria.telefono);
             sqlOperation.AddStringParameter("P_estadoSolicitud", institucionBancaria.estadoSolicitud);
             sqlOperation.AddStringParameter("P_correoElectronico", institucionBancaria.correoElectronico);
+            sqlOperation.AddStringParameter("P_contrasena", institucionBancaria.contrasena);
 
             _sqlDao.ExecuteProcedure(sqlOperation);
 
@@ -80,11 +81,11 @@ namespace DataAccess.CRUD
             return default(T);
         }
 
-        public T RetrieveByCodigoIdentidad<T>(int codigoIdentidad)
+        public T RetrieveByCodigoIdentidad<T>(string codigoIdentidad)
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_INSTITUCIONBANCARIA_BY_CODIGOIDENTIDAD_PR" };
 
-            sqlOperation.AddIntParam("P_codigoIdentidad", codigoIdentidad);
+            sqlOperation.AddStringParameter("P_codigoIdentidad", codigoIdentidad);
 
             var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
 
@@ -99,11 +100,11 @@ namespace DataAccess.CRUD
             return default(T);
         }
 
-        public T RetrieveByIBAN<T>(int codigoIBAN)
+        public T RetrieveByIBAN<T>(string codigoIBAN)
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_INSTITUCIONBANCARIA_BY_IBAN_PR" };
 
-            sqlOperation.AddIntParam("P_codigoIBAN", codigoIBAN);
+            sqlOperation.AddStringParameter("P_codigoIBAN", codigoIBAN);
 
             var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
 
@@ -160,13 +161,14 @@ namespace DataAccess.CRUD
             var sqlOperation = new SQLOperation() { ProcedureName = "UPD_INSTITUCIONBANCARIA_PR" };
 
             sqlOperation.AddIntParam("P_idInstBancaria", institucionBancaria.Id);
-            sqlOperation.AddIntParam("P_codigoIdentidad", institucionBancaria.codigoIdentidad);
-            sqlOperation.AddIntParam("P_codigoIBAN", institucionBancaria.codigoIBAN);
+            sqlOperation.AddStringParameter("P_codigoIdentidad", institucionBancaria.codigoIdentidad);
+            sqlOperation.AddStringParameter("P_codigoIBAN", institucionBancaria.codigoIBAN);
             sqlOperation.AddStringParameter("P_cedulaJuridica", institucionBancaria.cedulaJuridica);
             sqlOperation.AddStringParameter("P_direccionSedePrincipal", institucionBancaria.direccionSedePrincipal);
             sqlOperation.AddIntParam("P_telefono", institucionBancaria.telefono);
             sqlOperation.AddStringParameter("P_estadoSolicitud", institucionBancaria.estadoSolicitud);
             sqlOperation.AddStringParameter("P_correoElectronico", institucionBancaria.correoElectronico);
+            sqlOperation.AddStringParameter("P_contrasena", institucionBancaria.contrasena);
 
             _sqlDao.ExecuteProcedure(sqlOperation);
         }
@@ -180,22 +182,21 @@ namespace DataAccess.CRUD
             _sqlDao.ExecuteProcedure(sqlOperation);
         }
 
-        //Metodo que convierte diccionario en un usuario
         private InstitucionBancaria BuildInstitucionBancaria(Dictionary<string, object> row)
         {
             return new InstitucionBancaria()
             {
                 Id = (int)row["idInstBancaria"],
-                codigoIdentidad = row["codigoIdentidad"] == DBNull.Value ? 0 : Convert.ToInt32(row["codigoIdentidad"]),
-                codigoIBAN = row["codigoIBAN"] == DBNull.Value ? 0 : Convert.ToInt32(row["codigoIBAN"]),
+                codigoIdentidad = row["codigoIdentidad"].ToString(),
+                codigoIBAN = row["codigoIBAN"].ToString(),
                 cedulaJuridica = row["cedulaJuridica"].ToString(),
                 direccionSedePrincipal = row["direccionSedePrincipal"].ToString(),
                 telefono = row["telefono"] == DBNull.Value ? 0 : Convert.ToInt32(row["telefono"]),
                 estadoSolicitud = row["estadoSolicitud"].ToString(),
-                correoElectronico = row["correoElectronico"].ToString()
+                correoElectronico = row["correoElectronico"].ToString(),
+                contrasena = row["contrasena"].ToString()
             };
         }
-
 
         public T RetrieveByEmail<T>(T institucionBancaria)
         {

@@ -10,7 +10,8 @@ BEGIN
         direccionSedePrincipal,
         telefono,
         estadoSolicitud,
-        correoElectronico
+        correoElectronico,
+        contrasena
     FROM institucionBancaria
     WHERE correoElectronico = @P_correoElectronico
 END

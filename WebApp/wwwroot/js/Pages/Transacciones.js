@@ -1,4 +1,4 @@
-﻿// wwwroot/js/pages/Transacciones.js
+﻿
 function TransaccionesViewController() {
     const ca = new ControlActions();
     const self = this;
@@ -6,24 +6,39 @@ function TransaccionesViewController() {
     this.Api = "Transaccion";
 
     this.initView = function () {
-        this.loadTable(); // Carga por defecto "todas"
+        this.bindFilterPlaceholder();
+        this.loadTable(); 
         this.bindEvents();
         console.log("Transacciones init → OK");
-        this.loadTable();
     };
+
+
+    this.bindFilterPlaceholder = function () {
+        $('#transaccionFiltro').on('change', function () {
+            const tipo = $(this).val();
+            const $input = $('#filtroValor');
+            if (tipo === 'banco') {
+                $input.prop('disabled', false).attr('placeholder', 'Ingrese IBAN');
+            } else if (tipo === 'comercio') {
+                $input.prop('disabled', false).attr('placeholder', 'Ingrese ID de Comercio');
+            } else {
+                $input.val('').prop('disabled', true).attr('placeholder', 'IBAN o ID de Comercio');
+            }
+        }).trigger('change');
+    };
+
 
     this.loadTable = function () {
         const filtro = $('#transaccionFiltro').val();
-        const valor = $('#filtroValor').val();
+        const valor = $('#filtroValor').val().trim();
 
-        let endpoint = "";
-        if (filtro === "banco" && valor) {
-            endpoint = `Transaccion/RetrieveByBanco?iban=${valor}`;
-        } else if (filtro === "comercio" && valor) {
-            endpoint = `Transaccion/RetrieveByComercio?idComercio=${valor}`;
-        } else {
-            endpoint = `Transaccion/RetrieveAll`;
+        let endpoint = `${this.Api}/RetrieveAll`;
+        if (filtro === 'banco' && valor) {
+            endpoint = `${this.Api}/RetrieveByBanco?iban=${encodeURIComponent(valor)}`;
+        } else if (filtro === 'comercio' && valor) {
+            endpoint = `${this.Api}/RetrieveByComercio?idComercio=${encodeURIComponent(valor)}`;
         }
+
         const url = ca.GetUrlApiService(endpoint);
 
         if (!$.fn.dataTable.isDataTable('#tblTransacciones')) {
@@ -47,22 +62,19 @@ function TransaccionesViewController() {
     };
 
     this.bindEvents = function () {
-        var self = this;
-        // Botón para recargar según el filtro
-        $('#btnBuscar').click(function () {
-            self.loadTable();
-        });
+       
+        $('#btnBuscar').click(() => this.loadTable());
 
-        // Recargar automáticamente al cambiar el filtro (opcional)
-        $('#transaccionFiltro').change(function () {
-            if ($(this).val() === "all") {
+
+        $('#transaccionFiltro').change(() => {
+            if ($('#transaccionFiltro').val() === 'all') {
                 $('#filtroValor').val('');
             }
         });
 
-        // CRUD (igual que antes)
-        $('#btnCreate').click(function () {
-            var dto = {
+
+        $('#btnCreate').click(() => {
+            const dto = {
                 idCuentaBancaria: $('#txtIdCuentaBancaria').val(),
                 idCuentaComercio: parseInt($('#txtIdCuentaComercio').val(), 10),
                 monto: parseFloat($('#txtMonto').val()),
@@ -71,12 +83,13 @@ function TransaccionesViewController() {
                 fecha: $('#txtFecha').val(),
                 metodoPago: $('#txtMetodoPago').val()
             };
-            ca.PostToAPI(self.Api + "/Create", dto, () => self.loadTable());
+            ca.PostToAPI(`${this.Api}/Create`, dto, () => this.loadTable());
         });
 
-        $('#btnUpdate').click(function () {
-            var id = parseInt($('#txtId').val(), 10); // Debe estar cargado al seleccionar una fila de la tabla
-            var dto = {
+
+        $('#btnUpdate').click(() => {
+            const id = parseInt($('#txtId').val(), 10);
+            const dto = {
                 id: id,
                 idCuentaBancaria: $('#txtIdCuentaBancaria').val(),
                 idCuentaComercio: parseInt($('#txtIdCuentaComercio').val(), 10),
@@ -86,13 +99,12 @@ function TransaccionesViewController() {
                 fecha: $('#txtFecha').val(),
                 metodoPago: $('#txtMetodoPago').val()
             };
-            ca.PutToAPI(self.Api + "/" + id, dto, () => self.loadTable());
+            ca.PutToAPI(`${this.Api}/${id}`, dto, () => this.loadTable());
         });
 
 
-
         $('#tblTransacciones tbody').on('click', 'tr', function () {
-            var data = $('#tblTransacciones').DataTable().row(this).data();
+            const data = $('#tblTransacciones').DataTable().row(this).data();
             $('#txtId').val(data.id);
             $('#txtIdCuentaBancaria').val(data.idCuentaBancaria);
             $('#txtIdCuentaComercio').val(data.idCuentaComercio);
@@ -105,6 +117,4 @@ function TransaccionesViewController() {
     };
 }
 
-$(document).ready(function () {
-    new TransaccionesViewController().initView();
-});
+$(document).ready(() => new TransaccionesViewController().initView());

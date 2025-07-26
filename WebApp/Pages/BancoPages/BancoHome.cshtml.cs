@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace WebApp.Pages
+namespace WebApp.Pages.BancoPages
 {
-    [AllowAnonymous]
-    public class WelcomeModel : PageModel
+    [Authorize(Roles = "InstitucionBancaria")]
+    public class BancoHomeModel : PageModel
     {
         public void OnGet()
         {

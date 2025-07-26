@@ -30,15 +30,6 @@ namespace WebApp.Pages
                 ErrorMessage = "Debe ingresar el tipo de usuario y el correo.";
                 return Page();
             }
-
-            if (LoginRequest.UserType == "InstitucionBancaria")
-            {
-                if (string.IsNullOrWhiteSpace(LoginRequest.CedulaJuridica))
-                {
-                    ErrorMessage = "Debe ingresar la cédula jurídica.";
-                    return Page();
-                }
-            }
             else
             {
                 if (string.IsNullOrWhiteSpace(LoginRequest.Password))
@@ -63,7 +54,7 @@ namespace WebApp.Pages
             {
                 "Admin" => new { UserName = LoginRequest.Email, Password = LoginRequest.Password },
                 "CuentaComercio" => new { Email = LoginRequest.Email, Password = LoginRequest.Password },
-                "InstitucionBancaria" => new { Email = LoginRequest.Email, CedulaJuridica = LoginRequest.CedulaJuridica },
+                "InstitucionBancaria" => new { Email = LoginRequest.Email, Password = LoginRequest.Password },
                 _ => new { Email = LoginRequest.Email, Password = LoginRequest.Password }
             };
 
@@ -110,6 +101,5 @@ namespace WebApp.Pages
         public string UserType { get; set; }
         public string Email { get; set; }
         public string? Password { get; set; }
-        public string? CedulaJuridica { get; set; }
     }
 }

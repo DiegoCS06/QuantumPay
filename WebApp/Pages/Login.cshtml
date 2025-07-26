@@ -20,10 +20,6 @@
         <label id="login-label">Correo electrónico</label>
         <input asp-for="LoginRequest.Email" id="login-input" placeholder="Correo electrónico" />
     </div>
-    <div id="cedula-juridica-div" style="display:none;">
-        <label for="cedulaJuridica-input">Cédula Jurídica</label>
-        <input id="cedulaJuridica-input" name="LoginRequest.CedulaJuridica" placeholder="Cédula Jurídica" />
-    </div>
     <div id="password-div">
         <label>Contraseña</label>
         <input asp-for="LoginRequest.Password" type="password" />
@@ -44,25 +40,12 @@
     document.getElementById('userTypeSelect').addEventListener('change', function() {
         var label = document.getElementById('login-label');
         var input = document.getElementById('login-input');
-        var cedulaDiv = document.getElementById('cedula-juridica-div');
-        var passwordDiv = document.getElementById('password-div');
         if (this.value === 'Admin') {
             label.textContent = 'Nombre de usuario';
             input.placeholder = 'Nombre de usuario';
-            cedulaDiv.style.display = 'none';
-            passwordDiv.style.display = 'block';
-            document.getElementById('cedulaJuridica-input').value = '';
-        } else if (this.value === 'InstitucionBancaria') {
-            label.textContent = 'Correo electrónico';
-            input.placeholder = 'Correo electrónico';
-            cedulaDiv.style.display = 'block';
-            passwordDiv.style.display = 'none';
         } else {
             label.textContent = 'Correo electrónico';
             input.placeholder = 'Correo electrónico';
-            cedulaDiv.style.display = 'none';
-            passwordDiv.style.display = 'block';
-            document.getElementById('cedulaJuridica-input').value = '';
         }
     });
     document.addEventListener('DOMContentLoaded', function() {

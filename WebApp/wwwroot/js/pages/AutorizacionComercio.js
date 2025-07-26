@@ -74,10 +74,38 @@
             $('#txtEstadoSolicitud').val(comercioDTO.estadoSolicitud);
         })
     }
+    this.fillForm = function (cuentaComercioDTO) {
+        $('#txtIdCuenta').val(cuentaComercioDTO.id);
+        $('#txtNombreUsuario').val(cuentaComercioDTO.nombreUsuario);
+        $('#txtCedulaJuridica').val(cuentaComercioDTO.cedulaJuridica);
+        $('#txtTelefono').val(cuentaComercioDTO.telefono);
+        $('#txtCorreoElectronico').val(cuentaComercioDTO.correoElectronico);
+        $('#txtDireccion').val(cuentaComercioDTO.direccion);
+    }
+    this.Create = function () {
+        var comercioDTO = {};
+        //Atributos con valores default, que son coltrolados por el API
+        comercioDTO.id = $('#txtId').val(); 
+        comercioDTO.idCuenta = $('#txtIdCuenta').val();
+
+
+        //Valores capturados en pantalla
+        comercioDTO.nombre = $('#txtNombre').val();
+        comercioDTO.estadoSolicitud = $('#txtEstadoSolicitud').val();
+
+        //Enviar la data al API
+        var ca = new ControlActions();
+        var urlService = this.ApiEndPointName + "/Create";
+
+        ca.PutToAPI(urlService, comercioDTO, function () {
+            //Recargar la tabla
+            $('#tblcomercio').DataTable().ajax.reload();
+        })
+    }
     this.Update = function () {
         var comercioDTO = {};
         //Atributos con valores default, que son coltrolados por el API
-        comercioDTO.id = $('#txtId').val(); //ID del banco
+        comercioDTO.id = $('#txtId').val();
         comercioDTO.idCuenta = $('#txtIdCuenta').val();
 
 
@@ -88,6 +116,26 @@
         //Enviar la data al API
         var ca = new ControlActions();
         var urlService = this.ApiEndPointName + "/Update";
+
+        ca.PutToAPI(urlService, comercioDTO, function () {
+            //Recargar la tabla
+            $('#tblcomercio').DataTable().ajax.reload();
+        })
+    }
+    this.Delete = function () {
+        var comercioDTO = {};
+        //Atributos con valores default, que son coltrolados por el API
+        comercioDTO.id = $('#txtId').val();
+        comercioDTO.idCuenta = $('#txtIdCuenta').val();
+
+
+        //Valores capturados en pantalla
+        comercioDTO.nombre = $('#txtNombre').val();
+        comercioDTO.estadoSolicitud = $('#txtEstadoSolicitud').val();
+
+        //Enviar la data al API
+        var ca = new ControlActions();
+        var urlService = this.ApiEndPointName + "/Delete";
 
         ca.PutToAPI(urlService, comercioDTO, function () {
             //Recargar la tabla

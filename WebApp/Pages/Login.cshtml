@@ -1,8 +1,10 @@
 ﻿@page
+@using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.LoginModel
 @{
     ViewData["Title"] = "Iniciar sesión";
 }
+@attribute [AllowAnonymous]
 <h2>Iniciar sesión</h2>
 <form method="post" id="login-form">
     <div>

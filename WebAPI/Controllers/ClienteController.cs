@@ -118,8 +118,12 @@ namespace WebAPI.Controllers
             {
                 var cm = new ClienteManager();
                 var result = cm.RetrieveById(Id);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
 
-                return Ok(result);
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {
@@ -136,7 +140,12 @@ namespace WebAPI.Controllers
                 var cm = new ClienteManager();
                 var result = cm.RetrieveByEmail(correo);
 
-                return Ok(result);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
+
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {
@@ -153,7 +162,12 @@ namespace WebAPI.Controllers
                 var cm = new ClienteManager();
                 var result = cm.RetrieveByCedula(cedula);
 
-                return Ok(result);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
+
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {
@@ -170,7 +184,12 @@ namespace WebAPI.Controllers
                 var cm = new ClienteManager();
                 var result = cm.RetrieveByTelefono(telefono);
 
-                return Ok(result);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
+
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {

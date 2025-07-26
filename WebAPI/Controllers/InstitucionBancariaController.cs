@@ -51,8 +51,12 @@ namespace WebAPI.Controllers
             {
                 var im = new InstitucionBancariaManager();
                 var result = im.RetrieveById(Id);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
 
-                return Ok(result);
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {
@@ -69,7 +73,12 @@ namespace WebAPI.Controllers
                 var im = new InstitucionBancariaManager();
                 var result = im.RetrieveByCodigoIdentidad(codigoIdentidad);
 
-                return Ok(result);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
+
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {
@@ -86,7 +95,12 @@ namespace WebAPI.Controllers
                 var im = new InstitucionBancariaManager();
                 var result = im.RetrieveByIBAN(codigoIBAN);
 
-                return Ok(result);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
+
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {
@@ -103,7 +117,12 @@ namespace WebAPI.Controllers
                 var im = new InstitucionBancariaManager();
                 var result = im.RetrieveByTelefono(telefono);
 
-                return Ok(result);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
+
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {
@@ -120,7 +139,12 @@ namespace WebAPI.Controllers
                 var im = new InstitucionBancariaManager();
                 var result = im.RetrieveByEmail(correoElectronico);
 
-                return Ok(result);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
+
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {

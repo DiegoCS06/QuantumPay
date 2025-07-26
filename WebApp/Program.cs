@@ -24,6 +24,11 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizeFolder("/"); // Protege todo
+});
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {

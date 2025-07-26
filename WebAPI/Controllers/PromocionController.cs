@@ -50,7 +50,12 @@ namespace WebAPI.Controllers
             {
                 var pm = new PromocionManager();
                 var promocion = pm.RetrieveById(id);
-                return Ok(promocion);
+                if (promocion == null)
+                {
+                    return Ok(new List<object>());
+                }
+
+                return Ok(new List<object> { promocion });
             }
             catch (Exception ex)
             {

@@ -1,0 +1,78 @@
+﻿@page
+@model WebApp.Pages.BancoPages.BancoHomeModel
+@{
+}
+<h2 class="mb-4">Panel de Inicio - Institución Bancaria</h2>
+
+<!-- Sección: Promociones Activas -->
+<div class="mb-4">
+    <h4> Promociones Activas</h4>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card promo-card shadow">
+                <div class="card-body">
+                    <h5 class="card-title">0% interés por 6 meses</h5>
+                    <p class="card-text">En compras con tarjeta de crédito mayores a ₡100,000 hasta el 30 de agosto.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card promo-card shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Descuentos en supermercados</h5>
+                    <p class="card-text">10% de descuento todos los martes usando tu tarjeta débito.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card promo-card shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Viaja con puntos</h5>
+                    <p class="card-text">Acumula puntos por cada compra y canjéalos por tiquetes de avión.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sección: Últimas Transacciones -->
+<div class="mb-4">
+    <h4>💳 Últimas Transacciones con cuentas del banco</h4>
+    <table class="table table-bordered table-sm">
+        <thead class="table-light">
+            <tr>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Descripción</th>
+                <th>Monto</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>24/07/2025</td>
+                <td>María Fernández</td>
+                <td>Pago en restaurante</td>
+                <td>₡18,500</td>
+            </tr>
+            <tr>
+                <td>24/07/2025</td>
+                <td>Pedro Méndez</td>
+                <td>Transferencia recibida</td>
+                <td>₡50,000</td>
+            </tr>
+            <tr>
+                <td>23/07/2025</td>
+                <td>Laura Rodríguez</td>
+                <td>Compra en supermercado</td>
+                <td>₡27,900</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Enlaces -->
+<div class="footer-links">
+    <a href="/promociones/nueva" class="btn btn-outline-success me-2">➕ Crear Promoción</a>
+    <a href="/transacciones/banco" class="btn btn-outline-primary me-2">📄 Ver Todas las Transacciones</a>
+    <a href="/inicio" class="btn btn-outline-dark">⬅️ Volver</a>
+</div>

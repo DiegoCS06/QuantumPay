@@ -1,7 +1,9 @@
 ﻿@page
-@model WebApp.Pages.ClientesModel
+@using Microsoft.AspNetCore.Authorization
+@model WebApp.Pages.AdminPages.ClientesModel
 @{
 }
+@attribute [Authorize(Roles = "Admin")]
 <script src="~/js/pages/clientes.js"></script>
 <div class="    bs-docs-section">
     <div class="row">

@@ -1,9 +1,10 @@
 ﻿@page
-@model WebApp.Pages.AutorizacionBancoModel
+@using Microsoft.AspNetCore.Authorization
+@model WebApp.Pages.BancoPages.AdministrarBancosModel
 @{
 }
-<script src="~/js/pages/autorizacionbanco.js"></script>
-
+@attribute [Authorize(Roles = "InstitucionBancaria")]
+<script src="~/js/pages/bancos.js"></script>
 <div class="    bs-docs-section">
     <div class="row">
         <legend>Autorización de Bancos</legend>
@@ -18,7 +19,6 @@
                         <th>Cédula Jurídica</th>
                         <th>Dirección</th>
                         <th>telefono</th>
-                        <th>Estado Solicitud</th>
                         <th>Correo Electrónico</th>
                     </tr>
                 </thead>
@@ -38,48 +38,44 @@
 
                         <div class="form-group">
                             <label for="txtCodigoIdentidad" class="form-label mt-$">Código Identidad</label>
-                            <input id="txtCodigoIdentidad" readonly type="number" class="form-control" />
+                            <input id="txtCodigoIdentidad" type="number" class="form-control" />
                         </div>
 
                         <div class="form-group">
                             <label for="txtCodigoIBAN" class="form-label mt-$">Código IBAN</label>
-                            <input id="txtCodigoIBAN" readonly type="number" class="form-control" />
+                            <input id="txtCodigoIBAN" type="number" class="form-control" />
                         </div>
 
                         <div class="form-group">
                             <label for="txtCedulaJuridica" class="form-label mt-$">Cédula Jurídica</label>
-                            <input id="txtCedulaJuridica" readonly type="text" class="form-control" />
+                            <input id="txtCedulaJuridica" type="text" class="form-control" />
                         </div>
 
                         <div class="form-group">
                             <label for="txtDireccionSedePrincipal" class="form-label mt-$">Dirección Sede Principal</label>
-                            <input id="txtDireccionSedePrincipal" readonly type="text" class="form-control" />
+                            <input id="txtDireccionSedePrincipal" type="text" class="form-control" />
                         </div>
 
                         <div class="form-group">
                             <label for="txtTelefono" class="form-label mt-$">Teléfono</label>
-                            <input id="txtTelefono" readonly type="number" class="form-control" />
+                            <input id="txtTelefono" type="number" class="form-control" />
                         </div>
 
+                        <div class="form-group">
+                            <label for="txtEstadoSolicitud" class="form-label mt-$">Estado de Solicitud</label>
+                            <input id="txtEstadoSolicitud" readonly type="text" class="form-control" />
+                        </div>
                         <div class="form-group">
                             <label for="txtCorreoElectronico" class="form-label mt-$">Correo Electronico</label>
-                            <input id="txtCorreoElectronico" readonly type="text" class="form-control" />
+                            <input id="txtCorreoElectronico" type="text" class="form-control" />
                         </div>
 
-                        <div class="form-group">
-                            <select for="txtEstadoSolicitud" class="form-select mt-3" id="txtEstadoSolicitud">
-                                <option>PENDIENTE</option>
-                                <option>APROBADO</option>
-                                <option>RECHAZADO</option>
-                            </select>
-                        </div>
-                        
                     </fieldset>
                 </form>
                 <br />
-                
+                <button id="btnCreate" class="source-button btn btn-primary btn-xs" type="button">Save</button>
                 <button id="btnUpdate" class="source-button btn btn-info btn-xs" type="button">Update</button>
-                
+                <button id="btnDelete" class="source-button btn btn-danger btn-xs" type="button">Delete</button>
             </div>
         </div>
 

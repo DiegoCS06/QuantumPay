@@ -1,0 +1,42 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model WebApp.Pages.AdminPages.PromocionesModel
+@{
+}
+@attribute [Authorize(Roles = "Admin")]
+<legend>Promociones</legend>
+
+<div class="row">
+    <!-- Promociones de Bancos -->
+    <div class="col-lg-6">
+        <h4>Promociones Bancarias</h4>
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Banco</th>
+                    <th>Descripción</th>
+                    <th>Descuento</th>
+                    <th>Vigencia</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <!-- Promociones de Comercios -->
+    <div class="col-lg-6">
+        <h4>Promociones de Comercios</h4>
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Comercio</th>
+                    <th>Descripción</th>
+                    <th>Descuento</th>
+                    <th>Vigencia</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<a asp-page="/AdminPages/AdminHome" class="btn btn-outline-dark">⬅️ Volver</a>

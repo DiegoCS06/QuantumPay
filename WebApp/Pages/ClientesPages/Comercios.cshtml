@@ -1,7 +1,9 @@
 ﻿@page
-@model WebApp.Pages.CuentaComercioModel
+@using Microsoft.AspNetCore.Authorization
+@model WebApp.Pages.ClientesPages.ComerciosModel
 @{
 }
+@attribute [Authorize(Roles = "Cliente")]
 <script src="~/js/pages/cuentacomercio.js"></script>
 <div class="    bs-docs-section">
     <div class="row">
@@ -21,7 +23,6 @@
             </table>
         </div>
     </div>
-    <a asp-page="/AdministrarComercios" class="back-btn">Administrar Comercios</a>
-    <a asp-page="/AdminHome" class="back-btn">Volver al inicio</a>
+    <a asp-page="/ClientesPages/ClienteHome" class="back-btn">⬅️Volver</a>
 
 </div>

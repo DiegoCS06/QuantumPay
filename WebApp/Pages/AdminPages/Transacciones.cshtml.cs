@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace WebApp.Pages
+namespace WebApp.Pages.AdminPages
 {
-    public class CuentaComercioModel : PageModel
+    public class TransaccionesModel : PageModel
     {
         public void OnGet()
         {

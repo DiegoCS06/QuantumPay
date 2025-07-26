@@ -1,0 +1,46 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model WebApp.Pages.BancoPages.CrearPromocionModel
+@{
+}
+@attribute [Authorize(Roles = "InstitucionBancaria")]
+<legend>Formulario Promoción</legend>
+<div class="col-lg-6">
+    <form method="post">
+        <fieldset>
+            <div class="form-group">
+                <label for="txtId">ID Promoción</label>
+                <input id="txtId" name="Id" readonly type="number" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="txtBanco">Banco</label>
+                <select id="txtBanco" name="BancoId" class="form-control">
+                    <option value="">-- Seleccione un banco --</option>
+                    @* Puedes llenar esta lista desde el backend con Model.Bancos *@
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="txtDescripcion">Descripción</label>
+                <textarea id="txtDescripcion" name="Descripcion" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="txtDescuento">Descuento (%)</label>
+                <input id="txtDescuento" name="Descuento" type="number" step="0.01" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="txtVigencia">Vigencia</label>
+                <input id="txtVigencia" name="Vigencia" type="date" class="form-control" />
+            </div>
+        </fieldset>
+    </form>
+
+    <br />
+    <button id="btnCreatePromo" class="btn btn-primary btn-xs" type="submit">Crear</button>
+    <button id="btnUpdatePromo" class="btn btn-info btn-xs" type="button">Actualizar</button>
+    <button id="btnDeletePromo" class="btn btn-danger btn-xs" type="button">Eliminar</button>
+    <a asp-page="/BancoPages/BancoHome" class="btn btn-outline-dark">⬅️ Volver</a>
+</div>

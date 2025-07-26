@@ -1,7 +1,9 @@
 ﻿@page
-@model WebApp.Pages.AutorizacionComercioModel
+@using Microsoft.AspNetCore.Authorization
+@model WebApp.Pages.AdminPages.AutorizacionComercioModel
 @{
 }
+@attribute [Authorize(Roles = "Admin")]
 <script src="~/js/pages/autorizacioncomercio.js"></script>
 <div class="    bs-docs-section">
     <div class="row">
@@ -52,6 +54,7 @@
                 <button id="btnCreate" class="source-button btn btn-primary btn-xs" type="button">Save</button>
                 <button id="btnUpdate" class="source-button btn btn-info btn-xs" type="button">Update</button>
                 <button id="btnDelete" class="source-button btn btn-danger btn-xs" type="button">Delete</button>
+                <a asp-page="/AdminPages/AdminHome" class="btn btn-outline-dark">⬅️ Volver</a>
             </div>
         </div>
 

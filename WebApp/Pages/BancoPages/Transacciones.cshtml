@@ -1,0 +1,23 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model WebApp.Pages.BancoPages.TransaccionesModel
+@{
+}
+@attribute [Authorize(Roles = "InstitucionBancaria")]
+<h2>Listado de Transacciones</h2>
+
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Cuenta Bancaria</th>
+            <th>Cuenta Comercio</th>
+            <th>Monto</th>
+            <th>Comisión</th>
+            <th>Descuento Aplicado</th>
+            <th>Fecha</th>
+            <th>Método de Pago</th>
+        </tr>
+    </thead>
+</table>
+<a href="/BancoPages/BancoHome" class="btn btn-outline-dark">⬅️ Volver</a>

@@ -1,0 +1,26 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model WebApp.Pages.ClientesPages.TransaccionesClienteModel
+@{
+}
+@attribute [Authorize(Roles = "Cliente")]
+<legend>Historial de Transacciones</legend>
+<div class="col-lg-10">
+    <table class="table table-bordered table-striped table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID Transacción</th>
+                <th>Fecha</th>
+                <th>Monto</th>
+                <th>Tipo</th>
+                <th>Cuenta Origen</th>
+                <th>Cuenta Destino</th>
+                <th>Descripción</th>
+            </tr>
+        </thead>
+        <tbody id="tablaTransacciones">
+            <!-- Aquí se insertan las filas con JavaScript -->
+        </tbody>
+    </table>
+    <a href="/ClientesPages/ClienteHome" class="btn btn-outline-dark">⬅️ Volver</a>
+</div>

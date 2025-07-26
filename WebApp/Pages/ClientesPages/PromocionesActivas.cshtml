@@ -1,0 +1,48 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model WebApp.Pages.ClientesPages.PromocionesActivasModel
+@{
+}
+@attribute [Authorize(Roles = "Cliente")]
+<legend>Promociones Activas</legend>
+
+<div class="row">
+    <!-- Promociones de Bancos -->
+    <div class="col-lg-6">
+        <h4>Promociones Bancarias</h4>
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Banco</th>
+                    <th>Descripción</th>
+                    <th>Descuento</th>
+                    <th>Vigencia</th>
+                </tr>
+            </thead>
+            <tbody id="tablaPromocionesBancos">
+                <!-- Se insertan dinámicamente las promociones bancarias -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Promociones de Comercios -->
+    <div class="col-lg-6">
+        <h4>Promociones de Comercios</h4>
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Comercio</th>
+                    <th>Descripción</th>
+                    <th>Descuento</th>
+                    <th>Vigencia</th>
+                </tr>
+            </thead>
+            <tbody id="tablaPromocionesComercios">
+                <!-- Se insertan dinámicamente las promociones de comercios -->
+            </tbody>
+        </table>
+    </div>
+</div>
+<a asp-page="/ClientesPages/ClienteHome" class="back-btn">⬅️ Volver</a>

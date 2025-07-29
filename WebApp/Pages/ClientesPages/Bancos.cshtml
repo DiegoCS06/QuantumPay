@@ -4,18 +4,33 @@
 @{
 }
 @attribute [Authorize(Roles = "Cliente")]
-<script src="~/js/pages/bancos.js"></script>
+<script src="~/js/pages/Bancos.js"></script>
+<div class="text-end">
+    <a asp-page="/ClientesPages/ClienteHome" class="btn btn-outline-dark">⬅️Volver</a>
+</div>
 <h2>Bancos Registrados</h2>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                🏦 Instituciones Bancarias Registradas
+            </div>
+            <div class="card-body">
+                <table id="tblinstitucionBancaria" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Código Identidad</th>
+                            <th>Cédula Jurídica</th>
+                            <th>Dirección</th>
+                            <th>telefono</th>
+                            <th>Correo Electrónico</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-<table border="1" cellpadding="8" cellspacing="0">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>País</th>
-            <th>Código</th>
-        </tr>
-    </thead>
-</table>   
 
-<a asp-page="/ClientesPages/ClienteHome" class="back-btn">⬅️Volver</a>

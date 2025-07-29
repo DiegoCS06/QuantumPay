@@ -1,0 +1,23 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model WebApp.Pages.ComercioPages.TransaccionesModel
+@{
+}
+@attribute [Authorize(Roles = "CuentaComercio")]
+
+<div class="col-lg-12">
+    <h2 class="mb-4">Transacciones del Comercio</h2>
+    <table id="tblTransacciones" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>ID Transacción</th>
+                <th>Cliente</th>
+                <th>Monto</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+<a asp-page="/ComercioPages/ComercioHome" class="btn btn-outline-dark">⬅️ Volver</a>

@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace WebApp.Pages.AdminPages
+namespace WebApp.Pages.ComercioPages
 {
-    [Authorize(Roles = "Admin")]
-    public class TransaccionesModel : PageModel
+    [Authorize(Roles = "CuentaComercio")]
+    public class CrearPromocionModel : PageModel
     {
         public void OnGet()
         {

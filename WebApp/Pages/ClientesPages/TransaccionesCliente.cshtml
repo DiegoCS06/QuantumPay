@@ -4,23 +4,33 @@
 @{
 }
 @attribute [Authorize(Roles = "Cliente")]
+<script src="~/js/pages/Transacciones.js"></script>
+
+<div class="text-end">
+    <a asp-page="/ClientesPages/ClienteHome" class="btn btn-outline-dark">⬅️ Volver</a>
+</div>
 <legend>Historial de Transacciones</legend>
-<div class="col-lg-10">
-    <table class="table table-bordered table-striped table-hover">
-        <thead class="thead-dark">
-            <tr>
-                <th>ID Transacción</th>
-                <th>Fecha</th>
-                <th>Monto</th>
-                <th>Tipo</th>
-                <th>Cuenta Origen</th>
-                <th>Cuenta Destino</th>
-                <th>Descripción</th>
-            </tr>
-        </thead>
-        <tbody id="tablaTransacciones">
-            <!-- Aquí se insertan las filas con JavaScript -->
-        </tbody>
-    </table>
-    <a href="/ClientesPages/ClienteHome" class="btn btn-outline-dark">⬅️ Volver</a>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                🔔 Transacciones Realizadas
+            </div>
+            <div class="card-body" style="overflow-x: auto; width: 100%;">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>ID Transacción</th>
+                            <th>Fecha</th>
+                            <th>Monto</th>
+                            <th>Tipo</th>
+                            <th>Cuenta Origen</th>
+                            <th>Cuenta Destino</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>              
+                </table>
+            </div>
+        </div>
+    </div>    
 </div>

@@ -5,81 +5,82 @@
 }
 @attribute [Authorize(Roles = "InstitucionBancaria")]
 <script src="~/js/pages/bancos.js"></script>
+
+<div class="text-end">
+    <a asp-page="/BancoPages/BancoHome" class="btn btn-outline-dark">⬅️ Volver</a>
+</div>
 <div class="    bs-docs-section">
     <div class="row">
-        <legend>Autorización de Bancos</legend>
-        <div class="col-lg-12">
-
-            <table id="tblinstitucionBancaria" class="display" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Código Identidad</th>
-                        <th>Código IBAN</th>
-                        <th>Cédula Jurídica</th>
-                        <th>Dirección</th>
-                        <th>telefono</th>
-                        <th>Correo Electrónico</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-6">
-            <div class="ns-component">
-                <form>
-                    <fieldset>
-                        <legend>Banco</legend>
-                        <div class="form-group">
-                            <label for="txtId" class="form-label mt-$">ID Institucion Bancaria</label>
-                            <input id="txtId" readonly type="number" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="txtCodigoIdentidad" class="form-label mt-$">Código Identidad</label>
-                            <input id="txtCodigoIdentidad" type="number" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="txtCodigoIBAN" class="form-label mt-$">Código IBAN</label>
-                            <input id="txtCodigoIBAN" type="number" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="txtCedulaJuridica" class="form-label mt-$">Cédula Jurídica</label>
-                            <input id="txtCedulaJuridica" type="text" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="txtDireccionSedePrincipal" class="form-label mt-$">Dirección Sede Principal</label>
-                            <input id="txtDireccionSedePrincipal" type="text" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="txtTelefono" class="form-label mt-$">Teléfono</label>
-                            <input id="txtTelefono" type="number" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="txtEstadoSolicitud" class="form-label mt-$">Estado de Solicitud</label>
-                            <input id="txtEstadoSolicitud" readonly type="text" class="form-control" />
-                        </div>
-                        <div class="form-group">
-                            <label for="txtCorreoElectronico" class="form-label mt-$">Correo Electronico</label>
-                            <input id="txtCorreoElectronico" type="text" class="form-control" />
-                        </div>
-
-                    </fieldset>
-                </form>
-                <br />
-                <button id="btnCreate" class="source-button btn btn-primary btn-xs" type="button">Save</button>
-                <button id="btnUpdate" class="source-button btn btn-info btn-xs" type="button">Update</button>
-                <button id="btnDelete" class="source-button btn btn-danger btn-xs" type="button">Delete</button>
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    🏦 Instituciones Bancarias Registradas
+                </div>
+                <div class="card-body" style="overflow-x: auto; width: 100%;">
+                        <table id="tblinstitucionBancaria" class="display" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Código Identidad</th>
+                                    <th>Cédula Jurídica</th>
+                                    <th>Dirección</th>
+                                    <th>telefono</th>
+                                    <th>Correo Electrónico</th>
+                                </tr>
+                            </thead>
+                        </table>
+                 </div>
             </div>
-        </div>
-
+         </div>
     </div>
+</div>
+<div class="row">
+    <div class="col-lg-6">
+        <div class="ns-component">
+            <form>
+                <fieldset>
+                    <legend>Banco</legend>
+                    <div class="form-group">
+                        <label for="txtId" class="form-label mt-$">ID Institucion Bancaria</label>
+                        <input id="txtId" readonly type="number" class="form-control" />
+                    </div>
 
+                    <div class="form-group">
+                        <label for="txtCodigoIdentidad" class="form-label mt-$">Código Identidad</label>
+                        <input id="txtCodigoIdentidad" type="number" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txtCedulaJuridica" class="form-label mt-$">Cédula Jurídica</label>
+                        <input id="txtCedulaJuridica" type="text" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txtDireccionSedePrincipal" class="form-label mt-$">Dirección Sede Principal</label>
+                        <input id="txtDireccionSedePrincipal" type="text" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txtTelefono" class="form-label mt-$">Teléfono</label>
+                        <input id="txtTelefono" type="number" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txtEstadoSolicitud" class="form-label mt-$">Estado de Solicitud</label>
+                        <input id="txtEstadoSolicitud" readonly type="text" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="txtCorreoElectronico" class="form-label mt-$">Correo Electronico</label>
+                        <input id="txtCorreoElectronico" type="text" class="form-control" />
+                    </div>
+
+                </fieldset>
+            </form>
+            <br />
+            <button id="btnCreate" class="source-button btn btn-primary btn-xs" type="button">Save</button>
+            <button id="btnUpdate" class="source-button btn btn-info btn-xs" type="button">Update</button>
+            <button id="btnDelete" class="source-button btn btn-danger btn-xs" type="button">Delete</button>
+        </div>
+    </div>
 
 </div>

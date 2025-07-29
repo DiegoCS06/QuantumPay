@@ -4,8 +4,33 @@
 @{
 }
 @attribute [Authorize(Roles = "Cliente")]
-<legend>Formulario Cuenta Bancaria</legend>
+
+<div class="text-end">
+    <a asp-page="/ClientesPages/ClienteHome" class="btn btn-outline-dark">⬅️ Volver</a>
+</div>
+<div class="row">
+    <div class="col-sm-6" >
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                💳 Cuentas Registradas
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Banco</th>
+                            <th>Tipo de Cuenta</th>
+                            <th>Número IBAN</th>
+                            <th>Saldo</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="col-lg-6">
+    <legend>Formulario Cuenta Bancaria</legend>
     <form>
         <fieldset>
             <div class="form-group">
@@ -45,10 +70,12 @@
         </fieldset>
     </form>
 
-    <br />
-    <button id="btnCreateCuenta" class="btn btn-primary btn-xs" type="button">Crear</button>
-    <button id="btnUpdateCuenta" class="btn btn-info btn-xs" type="button">Actualizar</button>
-    <button id="btnDeleteCuenta" class="btn btn-danger btn-xs" type="button">Eliminar</button>
+    <div>
+        <button id="btnCreateCuenta" class="btn btn-primary btn-xs" type="button">Crear</button>
+        <button id="btnUpdateCuenta" class="btn btn-info btn-xs" type="button">Actualizar</button>
+        <button id="btnDeleteCuenta" class="btn btn-danger btn-xs" type="button">Eliminar</button>
+    </div>
+    
+    
 
-    <a asp-page="/ClientesPages/ClienteHome" class="btn btn-outline-dark">⬅️ Volver</a>
-</div>
+</div>  

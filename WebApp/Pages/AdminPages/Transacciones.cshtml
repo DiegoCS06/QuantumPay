@@ -1,21 +1,37 @@
 ﻿@page
+@using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.AdminPages.TransaccionesModel
 @{
 }
+@attribute [Authorize(Roles = "Admin")]
+<div class="text-end">
+    <a asp-page="/AdminPages/AdminHome" class="btn btn-outline-dark">⬅️ Volver</a>
+</div>
 <h2>Listado de Transacciones</h2>
-
-<table class="table table-striped table-bordered">
-    <thead class="thead-dark">
-        <tr>
-            <th>ID</th>
-            <th>Cuenta Bancaria</th>
-            <th>Cuenta Comercio</th>
-            <th>Monto</th>
-            <th>Comisión</th>
-            <th>Descuento Aplicado</th>
-            <th>Fecha</th>
-            <th>Método de Pago</th>
-        </tr>
-    </thead>
-</table>
-<a href="/AdminPages/AdminHome" class="btn btn-outline-dark">⬅️ Volver</a>
+<div class="    bs-docs-section">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                   🔔 Transacciones
+                </div>
+                <div class="card-body">
+                    <table id="" class="table table-striped table-bordered">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Cuenta Bancaria</th>
+                                <th>Cuenta Comercio</th>
+                                <th>Monto</th>
+                                <th>Comisión</th>
+                                <th>Descuento Aplicado</th>
+                                <th>Fecha</th>
+                                <th>Método de Pago</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,7 +1,9 @@
 ﻿@page
-@model WebApp.Pages.AdministrarComerciosModel
+@using Microsoft.AspNetCore.Authorization
+@model WebApp.Pages.ComercioPages.AdministrarComerciosModel
 @{
 }
+@attribute [Authorize(Roles = "CuentaComercio")]
 <script src="~/js/pages/cuentacomercio.js"></script>
 <div class="col-lg-12">
     <table id="tblcuentaComercio" class="display" style="width:100%">

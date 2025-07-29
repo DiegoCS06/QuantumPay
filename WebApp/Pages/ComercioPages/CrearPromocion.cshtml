@@ -1,35 +1,25 @@
 ﻿@page
 @using Microsoft.AspNetCore.Authorization
-@model WebApp.Pages.BancoPages.CrearPromocionModel
+@model WebApp.Pages.ComercioPages.CrearPromocionModel
 @{
 }
-@attribute [Authorize(Roles = "InstitucionBancaria")]
+@attribute [Authorize(Roles = "CuentaComercio")]
 
-<div class="text-end">
-    <a asp-page="/BancoPages/BancoHome" class="btn btn-outline-dark">⬅️ Volver</a>
+<div class="col-lg-6">
+    <h4>Promociones Bancarias</h4>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Banco</th>
+                <th>Descripción</th>
+                <th>Descuento</th>
+                <th>Vigencia</th>
+            </tr>
+        </thead>
+    </table>
 </div>
-<div class="    bs-docs-section">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-header bg-success text-white">
-                    🔖 Promociones Bancarias
-                </div>
-                <div class="card-body" style="overflow-x: auto; width: 100%;">
-                    <table id="" class="display" style="width:100%">
-                        <tr>
-                            <th>ID</th>
-                            <th>Banco</th>
-                            <th>Descripción</th>
-                            <th>Descuento</th>
-                            <th>Vigencia</th>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 <legend>Formulario Promoción</legend>
 <div class="col-lg-6">
     <form method="post">
@@ -40,9 +30,8 @@
             </div>
 
             <div class="form-group">
-                <label for="txtBanco">Banco</label>
-                <select id="txtBanco" name="BancoId" class="form-control">
-                    <option value="">-- Seleccione un banco --</option>
+                <label for="txtComercio">Comercio</label>
+                <select id="txtComercio" name="ComercioID" class="form-control">
                 </select>
             </div>
 
@@ -67,4 +56,5 @@
     <button id="btnCreatePromo" class="btn btn-primary btn-xs" type="submit">Crear</button>
     <button id="btnUpdatePromo" class="btn btn-info btn-xs" type="button">Actualizar</button>
     <button id="btnDeletePromo" class="btn btn-danger btn-xs" type="button">Eliminar</button>
+    <a asp-page="/ComercioPages/ComercioHome" class="btn btn-outline-dark">⬅️ Volver</a>
 </div>

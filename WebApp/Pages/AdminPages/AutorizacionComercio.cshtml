@@ -5,21 +5,30 @@
 }
 @attribute [Authorize(Roles = "Admin")]
 <script src="~/js/pages/autorizacioncomercio.js"></script>
+
+<div class="text-end">
+    <a asp-page="/AdminPages/AdminHome" class="btn btn-outline-dark">⬅️ Volver</a>
+</div>
 <div class="    bs-docs-section">
     <div class="row">
-        <legend>Autorización de Comercios</legend>
-        <div class="col-lg-12">
-
-            <table id="tblcomercio" class="display" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Cuenta</th>
-                        <th>Nombre</th>
-                        <th>Estado Solicitud</th>
-                    </tr>
-                </thead>
-            </table>
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    🛍️ Comercios Registrados
+                </div>
+                <div class="card-body">
+                    <table id="tblcomercio" class="table table-bordered table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cuenta</th>
+                                <th>Nombre</th>
+                                <th>Estado Solicitud</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -54,11 +63,8 @@
                 <button id="btnCreate" class="source-button btn btn-primary btn-xs" type="button">Save</button>
                 <button id="btnUpdate" class="source-button btn btn-info btn-xs" type="button">Update</button>
                 <button id="btnDelete" class="source-button btn btn-danger btn-xs" type="button">Delete</button>
-                <a asp-page="/AdminPages/AdminHome" class="btn btn-outline-dark">⬅️ Volver</a>
             </div>
         </div>
 
     </div>
-
-
 </div>

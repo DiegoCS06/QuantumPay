@@ -5,38 +5,131 @@
 }
 @attribute [Authorize(Roles = "Admin")]
 <legend>Promociones</legend>
-
+<div class="text-end">
+    <a asp-page="/AdminPages/AdminHome" class="btn btn-outline-dark">⬅️ Volver</a>
+</div>
 <div class="row">
     <!-- Promociones de Bancos -->
     <div class="col-lg-6">
-        <h4>Promociones Bancarias</h4>
-        <table class="table table-bordered table-hover">
-            <thead class="thead-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Banco</th>
-                    <th>Descripción</th>
-                    <th>Descuento</th>
-                    <th>Vigencia</th>
-                </tr>
-            </thead>
-        </table>
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                🔖 Promociones Bancarias
+                </div>
+                <div class="card-body">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Banco</th>
+                            <th>Descripción</th>
+                            <th>Descuento</th>
+                            <th>Vigencia</th>
+                        </tr>
+                    </thead>
+                </table>
+                </div>
+            </div>
     </div>
     <!-- Promociones de Comercios -->
     <div class="col-lg-6">
-        <h4>Promociones de Comercios</h4>
-        <table class="table table-bordered table-hover">
-            <thead class="thead-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Comercio</th>
-                    <th>Descripción</th>
-                    <th>Descuento</th>
-                    <th>Vigencia</th>
-                </tr>
-            </thead>
-        </table>
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                🔖 Promociones Comercios
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Comercio</th>
+                            <th>Descripción</th>
+                            <th>Descuento</th>
+                            <th>Vigencia</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6">
+        <legend>Formulario Promoción</legend>
+        <form method="post">
+            <fieldset>
+                <div class="form-group">
+                    <label for="txtId">ID Promoción</label>
+                    <input id="txtId" name="Id" readonly type="number" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="txtBanco">Banco</label>
+                    <select id="txtBanco" name="BancoId" class="form-control">
+                        <option value="">-- Seleccione un banco --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="txtDescripcion">Descripción</label>
+                    <textarea id="txtDescripcion" name="Descripcion" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="txtDescuento">Descuento (%)</label>
+                    <input id="txtDescuento" name="Descuento" type="number" step="0.01" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="txtVigencia">Vigencia</label>
+                    <input id="txtVigencia" name="Vigencia" type="date" class="form-control" />
+                </div>
+            </fieldset>
+        </form>
+
+        <br />
+        <button id="btnCreatePromo" class="btn btn-primary btn-xs" type="submit">Crear</button>
+        <button id="btnUpdatePromo" class="btn btn-info btn-xs" type="button">Actualizar</button>
+        <button id="btnDeletePromo" class="btn btn-danger btn-xs" type="button">Eliminar</button>
+    </div>
+    
+    <div class="col-lg-6">
+        <legend>Formulario Promoción</legend>
+        <form method="post">
+            <fieldset>
+                <div class="form-group">
+                    <label for="txtId">ID Promoción</label>
+                    <input id="txtId" name="Id" readonly type="number" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="txtBanco">Banco</label>
+                    <select id="txtBanco" name="BancoId" class="form-control">
+                        <option value="">-- Seleccione un banco --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="txtDescripcion">Descripción</label>
+                    <textarea id="txtDescripcion" name="Descripcion" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="txtDescuento">Descuento (%)</label>
+                    <input id="txtDescuento" name="Descuento" type="number" step="0.01" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="txtVigencia">Vigencia</label>
+                    <input id="txtVigencia" name="Vigencia" type="date" class="form-control" />
+                </div>
+            </fieldset>
+        </form>
+
+        <br />
+        <button id="btnCreatePromo" class="btn btn-primary btn-xs" type="submit">Crear</button>
+        <button id="btnUpdatePromo" class="btn btn-info btn-xs" type="button">Actualizar</button>
+        <button id="btnDeletePromo" class="btn btn-danger btn-xs" type="button">Eliminar</button>
     </div>
 </div>
 
-<a asp-page="/AdminPages/AdminHome" class="btn btn-outline-dark">⬅️ Volver</a>
+

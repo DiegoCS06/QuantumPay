@@ -6,7 +6,7 @@ namespace WebApp.Pages.Transacciones
     {
         public void OnGet()
         {
-            // No cargamos datos por servidor: todo lo hace AJAX en el cliente.
+
         }
     }
 }

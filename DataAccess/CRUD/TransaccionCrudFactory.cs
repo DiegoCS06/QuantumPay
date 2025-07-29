@@ -49,7 +49,7 @@ namespace DataAccess.CRUD
 
         public override List<T> RetrieveAll<T>()
         {
-            var op = new SQLOperation { ProcedureName = "SP_RET_ALL_TRANSACCION" }; // Usa tu SP para traer todas
+            var op = new SQLOperation { ProcedureName = "SP_RET_ALL_TRANSACCION" };
             var rows = _sqlDao.ExecuteQueryProcedure(op);
             var lst = new List<T>();
             foreach (var r in rows)
@@ -93,7 +93,7 @@ namespace DataAccess.CRUD
 
         public List<Transaccion> RetrieveByComercio(int idComercio)
         {
-            // Nuevo procedimiento solo para comercio
+
             var op = new SQLOperation { ProcedureName = "SP_RET_TRANS_POR_COMERCIO" };
             op.AddIntParam("P_IdCuentaComercio", idComercio);
             var rows = _sqlDao.ExecuteQueryProcedure(op);

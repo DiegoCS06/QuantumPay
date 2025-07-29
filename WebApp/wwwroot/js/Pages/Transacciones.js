@@ -1,18 +1,16 @@
-﻿// wwwroot/js/pages/Transacciones.js
+﻿
 function TransaccionesViewController() {
     const ca = new ControlActions();
     const self = this;
-
     this.Api = "Transaccion";
 
     this.initView = function () {
         this.bindFilterPlaceholder();
-        this.loadTable();      // Carga inicial: todas
+        this.loadTable();
         this.bindEvents();
         console.log("Transacciones init → OK");
     };
 
-    // Ajusta el placeholder y habilita/inhabilita el input según el dropdown
     this.bindFilterPlaceholder = function () {
         $('#transaccionFiltro').on('change', function () {
             const tipo = $(this).val();
@@ -27,12 +25,11 @@ function TransaccionesViewController() {
         }).trigger('change');
     };
 
-    // Carga la tabla según el filtro seleccionado
     this.loadTable = function () {
         const filtro = $('#transaccionFiltro').val();
         const valor = $('#filtroValor').val().trim();
-
         let endpoint = `${this.Api}/RetrieveAll`;
+
         if (filtro === 'banco' && valor) {
             endpoint = `${this.Api}/RetrieveByBanco?iban=${encodeURIComponent(valor)}`;
         } else if (filtro === 'comercio' && valor) {
@@ -44,7 +41,7 @@ function TransaccionesViewController() {
         if (!$.fn.dataTable.isDataTable('#tblTransacciones')) {
             $('#tblTransacciones').DataTable({
                 processing: true,
-                ajax: { url: url, dataSrc: '' },
+                ajax: { url, dataSrc: '' },
                 columns: [
                     { data: 'id' },
                     { data: 'idCuentaBancaria' },
@@ -61,20 +58,16 @@ function TransaccionesViewController() {
         }
     };
 
-    // Vincula eventos de botones y filas de la tabla
     this.bindEvents = function () {
-        // Botón Buscar
-        $('#btnBuscar').click(() => this.loadTable());
+        $('#btnBuscar').on('click', () => this.loadTable());
 
-        // Limpia el valor si vuelves a "Todas"
-        $('#transaccionFiltro').change(() => {
-            if ($('#transaccionFiltro').val() === 'all') {
+        $('#transaccionFiltro').on('change', function () {
+            if (this.value === 'all') {
                 $('#filtroValor').val('');
             }
         });
 
-        // Crear nueva transacción
-        $('#btnCreate').click(() => {
+        $('#btnCreate').on('click', () => {
             const dto = {
                 idCuentaBancaria: $('#txtIdCuentaBancaria').val(),
                 idCuentaComercio: parseInt($('#txtIdCuentaComercio').val(), 10),
@@ -87,11 +80,10 @@ function TransaccionesViewController() {
             ca.PostToAPI(`${this.Api}/Create`, dto, () => this.loadTable());
         });
 
-        // Actualizar transacción seleccionada
-        $('#btnUpdate').click(() => {
+        $('#btnUpdate').on('click', () => {
             const id = parseInt($('#txtId').val(), 10);
             const dto = {
-                id: id,
+                id,
                 idCuentaBancaria: $('#txtIdCuentaBancaria').val(),
                 idCuentaComercio: parseInt($('#txtIdCuentaComercio').val(), 10),
                 monto: parseFloat($('#txtMonto').val()),
@@ -103,7 +95,11 @@ function TransaccionesViewController() {
             ca.PutToAPI(`${this.Api}/${id}`, dto, () => this.loadTable());
         });
 
-        // Al hacer clic en una fila, carga sus datos en el formulario
+        $('#btnDelete').on('click', () => {
+            const id = parseInt($('#txtId').val(), 10);
+            ca.DeleteToAPI(`${this.Api}/Delete/${id}`, {}, () => this.loadTable());
+        });
+
         $('#tblTransacciones tbody').on('click', 'tr', function () {
             const data = $('#tblTransacciones').DataTable().row(this).data();
             $('#txtId').val(data.id);

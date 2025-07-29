@@ -36,11 +36,10 @@
         var columns = [];
         columns[0] = { 'data': 'id' }; //ID
         columns[1] = { 'data': 'codigoIdentidad' }
-        columns[2] = { 'data': 'codigoIBAN' }
-        columns[3] = { 'data': 'cedulaJuridica' }
-        columns[4] = { 'data': 'direccionSedePrincipal' }
-        columns[5] = { 'data': 'telefono' }
-        columns[6] = { 'data': 'correoElectronico' }
+        columns[2] = { 'data': 'cedulaJuridica' }
+        columns[3] = { 'data': 'direccionSedePrincipal' }
+        columns[4] = { 'data': 'telefono' }
+        columns[5] = { 'data': 'correoElectronico' }
 
         $('#tblinstitucionBancaria').dataTable({
             "ajax": {
@@ -63,7 +62,6 @@
             //Binding en el form
             $('#txtId').val(bancoDTO.id);
             $('#txtCodigoIdentidad').val(bancoDTO.codigoIdentidad);
-            $('#txtCodigoIBAN').val(bancoDTO.codigoIBAN);
             $('#txtCedulaJuridica').val(bancoDTO.cedulaJuridica);
             $('#txtDireccionSedePrincipal').val(bancoDTO.direccionSedePrincipal);
             $('#txtTelefono').val(bancoDTO.telefono);
@@ -73,7 +71,6 @@
     this.fillForm = function (bancoDTO) {
         $('#txtId').val(bancoDTO.id);
         $('#txtCodigoIdentidad').val(bancoDTO.codigoIdentidad);
-        $('#txtCodigoIBAN').val(bancoDTO.codigoIBAN);
         $('#txtCedulaJuridica').val(bancoDTO.cedulaJuridica);
         $('#txtDireccionSedePrincipal').val(bancoDTO.direccionSedePrincipal);
         $('#txtTelefono').val(bancoDTO.telefono);
@@ -82,21 +79,16 @@
     this.Create = function () {
 
         var bancoDTO = {};
-        //Atributos con valores default, que son coltrolados por el API
-        bancoDTO.id = $('#txtId').val(); //ID del banco
+        bancoDTO.id = $('#txtId').val();
         bancoDTO.codigoIdentidad = $('#txtCodigoIdentidad').val();
-        //Valores capturados en pantalla
-        bancoDTO.codigoIBAN = $('#txtCodigoIBAN').val();
         bancoDTO.cedulaJuridica = $('#txtCedulaJuridica').val();
         bancoDTO.direccionSedePrincipal = $('#txtDireccionSedePrincipal').val();
         bancoDTO.telefono = $('#txtTelefono').val();
-        bancoDTO.estadoSolicitud = $('#txtEstadoSolicitud').val(); //Este es un valor default, controlado por el API
+        bancoDTO.estadoSolicitud = $('#txtEstadoSolicitud').val();
         bancoDTO.correoElectronico = $('#txtCorreoElectronico').val();
-        //Enviar la data al API
         var ca = new ControlActions();
         var urlService = this.ApiEndPointName + "/Create";
         ca.PostToAPI(urlService, bancoDTO, function () {
-            //Recargar la tabla
             $('#tblinstitucionBancaria').DataTable().ajax.reload();
         })
     }
@@ -108,7 +100,6 @@
 
 
         //Valores capturados en pantalla
-        bancoDTO.codigoIBAN = $('#txtCodigoIBAN').val();
         bancoDTO.cedulaJuridica = $('#txtCedulaJuridica').val();
         bancoDTO.direccionSedePrincipal = $('#txtDireccionSedePrincipal').val();
         bancoDTO.telefono = $('#txtTelefono').val();
@@ -131,7 +122,6 @@
         bancoDTO.codigoIdentidad = $('#txtCodigoIdentidad').val();
 
         //Valores capturados en pantalla
-        bancoDTO.codigoIBAN = $('#txtCodigoIBAN').val();
         bancoDTO.cedulaJuridica = $('#txtCedulaJuridica').val();
         bancoDTO.direccionSedePrincipal = $('#txtDireccionSedePrincipal').val();
         bancoDTO.telefono = $('#txtTelefono').val();

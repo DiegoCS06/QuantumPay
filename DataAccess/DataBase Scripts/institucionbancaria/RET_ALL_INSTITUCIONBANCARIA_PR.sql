@@ -4,7 +4,6 @@ BEGIN
     SELECT 
         idInstBancaria,
         codigoIdentidad,
-        codigoIBAN,
         cedulaJuridica,
         direccionSedePrincipal,
         telefono,

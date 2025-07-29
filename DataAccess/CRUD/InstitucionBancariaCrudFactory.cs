@@ -25,7 +25,6 @@ namespace DataAccess.CRUD
             sqlOperation.ProcedureName = "CRE_INSTITUCIONBANCARIA_PR";
 
             sqlOperation.AddStringParameter("P_codigoIdentidad", institucionBancaria.codigoIdentidad);
-            sqlOperation.AddStringParameter("P_codigoIBAN", institucionBancaria.codigoIBAN);
             sqlOperation.AddStringParameter("P_cedulaJuridica", institucionBancaria.cedulaJuridica);
             sqlOperation.AddStringParameter("P_direccionSedePrincipal", institucionBancaria.direccionSedePrincipal);
             sqlOperation.AddIntParam("@P_telefono", institucionBancaria.telefono);
@@ -100,25 +99,6 @@ namespace DataAccess.CRUD
             return default(T);
         }
 
-        public T RetrieveByIBAN<T>(string codigoIBAN)
-        {
-            var sqlOperation = new SQLOperation() { ProcedureName = "RET_INSTITUCIONBANCARIA_BY_IBAN_PR" };
-
-            sqlOperation.AddStringParameter("P_codigoIBAN", codigoIBAN);
-
-            var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
-
-            if (lstResult.Count > 0)
-            {
-                var row = lstResult[0];
-                var institucionBancaria = BuildInstitucionBancaria(row);
-
-                return (T)Convert.ChangeType(institucionBancaria, typeof(T));
-            }
-
-            return default(T);
-        }
-
         public T RetrieveByTelefono<T>(int telefono)
         {
             var sqlOperation = new SQLOperation() { ProcedureName = "RET_INSTITUCIONBANCARIA_BY_TELEFONO_PR" };
@@ -162,7 +142,6 @@ namespace DataAccess.CRUD
 
             sqlOperation.AddIntParam("P_idInstBancaria", institucionBancaria.Id);
             sqlOperation.AddStringParameter("P_codigoIdentidad", institucionBancaria.codigoIdentidad);
-            sqlOperation.AddStringParameter("P_codigoIBAN", institucionBancaria.codigoIBAN);
             sqlOperation.AddStringParameter("P_cedulaJuridica", institucionBancaria.cedulaJuridica);
             sqlOperation.AddStringParameter("P_direccionSedePrincipal", institucionBancaria.direccionSedePrincipal);
             sqlOperation.AddIntParam("P_telefono", institucionBancaria.telefono);
@@ -188,7 +167,6 @@ namespace DataAccess.CRUD
             {
                 Id = (int)row["idInstBancaria"],
                 codigoIdentidad = row["codigoIdentidad"].ToString(),
-                codigoIBAN = row["codigoIBAN"].ToString(),
                 cedulaJuridica = row["cedulaJuridica"].ToString(),
                 direccionSedePrincipal = row["direccionSedePrincipal"].ToString(),
                 telefono = row["telefono"] == DBNull.Value ? 0 : Convert.ToInt32(row["telefono"]),

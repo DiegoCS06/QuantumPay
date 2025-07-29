@@ -1,6 +1,5 @@
 ﻿CREATE PROCEDURE CRE_INSTITUCIONBANCARIA_PR
     @P_codigoIdentidad NVARCHAR(30),
-    @P_codigoIBAN NVARCHAR(30),
     @P_cedulaJuridica NVARCHAR(30),
     @P_direccionSedePrincipal NVARCHAR(100),
     @P_telefono INT,
@@ -11,7 +10,6 @@ AS
 BEGIN
     INSERT INTO institucionBancaria (
         codigoIdentidad,
-        codigoIBAN,
         cedulaJuridica,
         direccionSedePrincipal,
         telefono,
@@ -21,7 +19,6 @@ BEGIN
     )
     VALUES (
         @P_codigoIdentidad,
-        @P_codigoIBAN,
         @P_cedulaJuridica,
         @P_direccionSedePrincipal,
         @P_telefono,

@@ -18,9 +18,9 @@ namespace WebAPI.Controllers
             _cm = new ComisionManager();
         }
 
-        // GET api/comision
         [HttpGet]
-        public ActionResult<IEnumerable<Comision>> Get()
+        [Route("RetrieveAll")]
+        public ActionResult<IEnumerable<Comision>> RetrieveAll()
         {
             try
             {
@@ -33,10 +33,9 @@ namespace WebAPI.Controllers
             }
         }
 
-        // GET api/comision/{id}
-        [HttpGet("{id}")]
-        public ActionResult<Comision> Get(int id)
-
+        [HttpGet]
+        [Route("RetrieveById/{id}")]
+        public ActionResult<Comision> RetrieveById(int id)
         {
             try
             {
@@ -50,15 +49,14 @@ namespace WebAPI.Controllers
             }
         }
 
-        // POST api/comision/Create
         [HttpPost]
-        public async Task<ActionResult<Comision>> Post([FromBody] Comision comision)
+        [Route("Create")]
+        public async Task<ActionResult<Comision>> Create([FromBody] Comision comision)
         {
             try
             {
                 await _cm.Create(comision);
-                // Devuelve 201 Created + Location header
-                return CreatedAtAction(nameof(Get), new { id = comision.Id }, comision);
+                return CreatedAtAction(nameof(RetrieveById), new { id = comision.Id }, comision);
             }
             catch (Exception ex)
             {
@@ -66,19 +64,16 @@ namespace WebAPI.Controllers
             }
         }
 
-        // PUT api/comision/Update
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Comision comision)
+        [HttpPut]
+        [Route("Update")]
+        public IActionResult Update([FromBody] Comision comision)
         {
             try
             {
-                // Opción: validar que comision.Id == id
-                var existing = _cm.Obtener(id);
-                if (existing == null)
-                    return NotFound();
-
+                var existing = _cm.Obtener(comision.Id);
+                if (existing == null) return NotFound();
                 _cm.Actualizar(comision);
-                return NoContent();      // 204 es más estándar en PUT RESTful
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -86,15 +81,14 @@ namespace WebAPI.Controllers
             }
         }
 
-        // DELETE api/Comision/Delete
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("Delete/{id}")]
         public ActionResult Delete(int id)
         {
             try
             {
                 var existing = _cm.Obtener(id);
                 if (existing == null) return NotFound();
-
                 _cm.Eliminar(existing);
                 return NoContent();
             }

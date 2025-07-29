@@ -1,7 +1,6 @@
 ﻿CREATE PROCEDURE UPD_INSTITUCIONBANCARIA_PR
     @P_idInstBancaria INT,
     @P_codigoIdentidad NVARCHAR(30),
-    @P_codigoIBAN  NVARCHAR(30),
     @P_cedulaJuridica NVARCHAR(30),
     @P_direccionSedePrincipal NVARCHAR(100),
     @P_telefono INT,
@@ -13,7 +12,6 @@ BEGIN
     UPDATE institucionBancaria
     SET 
         codigoIdentidad = @P_codigoIdentidad,
-        codigoIBAN = @P_codigoIBAN,
         cedulaJuridica = @P_cedulaJuridica,
         direccionSedePrincipal = @P_direccionSedePrincipal,
         telefono = @P_telefono,

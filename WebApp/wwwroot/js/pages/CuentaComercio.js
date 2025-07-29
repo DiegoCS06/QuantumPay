@@ -129,25 +129,19 @@
     };
     this.Create = function () {
         var cuentaComercioDTO = {};
-        //Atributos con valores default, que son coltrolados por el API
-
-        //Valores capturados en pantalla
-        cuentaComercioDTO.id = 0;
+        cuentaComercioDTO.id = $('#txtId').val();
         cuentaComercioDTO.nombreUsuario = $('#txtNombreUsuario').val();
-        cuentaComercioDTO.contrasena = $('#txtContrasena').val(); //Este campo no se muestra en la pantalla, pero es requerido por el API
+        cuentaComercioDTO.contrasena = $('#txtContrasena').val();
         cuentaComercioDTO.cedulaJuridica = $('#txtCedulaJuridica').val();
-        cuentaComercioDTO.telefono = $('#txtTelefono').val();
+        cuentaComercioDTO.telefono = parseInt($('#txtTelefono').val());
         cuentaComercioDTO.correoElectronico = $('#txtCorreoElectronico').val();
         cuentaComercioDTO.direccion = $('#txtDireccion').val();
 
-        //Enviar la data al API
         var ca = new ControlActions();
         var urlService = this.ApiEndPointName + "/Create";
         ca.PostToAPI(urlService, cuentaComercioDTO, function () {
-            //Recargar la tabla
             $('#tblcuentaComercio').DataTable().ajax.reload();
         })
-
     }
     this.Update = function () {
         var cuentaComercioDTO = {};
@@ -203,4 +197,3 @@ $(document).ready(function () {
     var vc = new CuentaComercioViewController();
     vc.InitView();
 })
-    

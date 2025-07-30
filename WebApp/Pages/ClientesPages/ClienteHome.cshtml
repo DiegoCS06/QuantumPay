@@ -8,10 +8,10 @@
 
 <!-- Sección: Cuentas del Usuario -->
 <div class="row">
-    <div class="col-sm-6"">
+    <div class="col-sm-6">
         <div class="card">
             <div class="card-header bg-success text-white">
-                Cuentas Asociadas
+                💳 Cuentas Asociadas
             </div>
             <div class="card-body">
                 <table class="table table-bordered table-sm">
@@ -24,6 +24,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <!--Implementar traer desde base de datos cuentas registradas por el usuario-->
                         <tr>
                             <td>BAC San José</td>
                             <td>Ahorros</td>
@@ -43,10 +44,11 @@
     </div>
 
     <!-- Sección: Últimas Transacciones -->
+    <!-- Implementar traer de base de datos por el id del cliente -->
     <div class="col-sm-6">
         <div class="card">
             <div class="card-header bg-success text-white">
-                Últimas Transacciones
+                🔔 Últimas Transacciones
             </div>
             <div class="card-body">
                 <table class="table table-bordered table-sm-6">
@@ -58,26 +60,6 @@
                             <th>Estado</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>24/07/2025</td>
-                            <td>Pago a Súper Salón</td>
-                            <td>₡12,000</td>
-                            <td><span class="badge bg-success">Completado</span></td>
-                        </tr>
-                        <tr>
-                            <td>23/07/2025</td>
-                            <td>Transferencia a Juan Pérez</td>
-                            <td>₡5,000</td>
-                            <td><span class="badge bg-success">Completado</span></td>
-                        </tr>
-                        <tr>
-                            <td>22/07/2025</td>
-                            <td>Recarga celular</td>
-                            <td>₡3,500</td>
-                            <td><span class="badge bg-danger">Fallido</span></td>
-                        </tr>
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -86,7 +68,11 @@
 
 <!-- Enlaces adicionales -->
 <div class="footer-links">
-    <a href="/cuentas/agregar" class="btn btn-outline-primary me-2">➕ Agregar Cuenta</a>
-    <a href="/transacciones/todas" class="btn btn-outline-secondary me-2">📄 Ver Todas las Transacciones</a>
-    <a href="/inicio" class="btn btn-outline-dark">⬅️ Volver</a>
+
+    <a asp-page="/Clientespages/AgregarCuenta" class="btn btn-outline-primary me-2">➕ Agregar Cuenta</a>
+    <a asp-page="/ClientesPages/TransaccionesCliente" class="btn btn-outline-secondary me-2">📄 Todas las Transacciones</a>
+    <a asp-page="/ClientesPages/Bancos" class="btn btn-outline-secondary me-2">🏦 Bancos Registrados</a>
+    <a asp-page="/Clientespages/PromocionesActivas" class="btn btn-outline-secondary me-2">🔖 Promociones Activas</a>
+    <a asp-page="/ClientesPages/Comercios" class="btn btn-outline-secondary me-2">🛍️ Comercios Registrados</a>
+
 </div>

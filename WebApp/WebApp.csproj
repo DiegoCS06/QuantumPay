@@ -10,7 +10,6 @@
     <Folder Include="wwwroot\js\pages\AdminPages\" />
     <Folder Include="wwwroot\js\pages\ComercioPages\" />
     <Folder Include="wwwroot\lib\NewFolder\" />
-    <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
   <ItemGroup>

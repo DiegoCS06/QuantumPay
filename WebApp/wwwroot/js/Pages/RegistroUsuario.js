@@ -10,22 +10,75 @@
         let data = {};
         let apiUrl = "";
 
+        // Solo para Cliente: realizar verificaciones previas
         if (userType === "Cliente") {
+            // 1. Obtener datos del formulario
+            const nombre = form.querySelector('[name="SignUpRequest.Nombre"]').value;
+            const apellido = form.querySelector('[name="SignUpRequest.Apellido"]').value;
+            const cedula = form.querySelector('[name="SignUpRequest.Cedula"]').value;
+            const telefono = form.querySelector('[name="SignUpRequest.Telefono"]').value;
+            const correo = form.querySelector('[name="SignUpRequest.Correo"]').value;
+            const contrasena = form.querySelector('[name="SignUpRequest.Password"]').value;
+            const confirmarContrasena = form.querySelector('[name="SignUpRequest.ConfirmPassword"]')?.value;
+            const fotoCedulaInput = form.querySelector('[name="SignUpRequest.FotoCedula"]');
+            const fotoPerfilInput = form.querySelector('[name="SignUpRequest.FotoPerfil"]');
+            const fotoCedula = fotoCedulaInput?.files?.[0];
+            const fotoPerfil = fotoPerfilInput?.files?.[0];
+
+            // Validar contraseñas
+            if (confirmarContrasena && contrasena !== confirmarContrasena) {
+                alert('Las contraseñas no coinciden.');
+                return;
+            }
+
+            // 2. Enviar OTPs
+            try {
+                await Promise.all([
+                    fetch(`/api/Cliente/SendEmailVerification?email=${encodeURIComponent(correo)}`),
+                    fetch(`/api/Cliente/SendSmsVerification?telefono=${encodeURIComponent(telefono)}`)
+                ]);
+            } catch (err) {
+                alert('Error al enviar códigos OTP.');
+                return;
+            }
+
+            // 3. Pedir códigos al usuario
+            const emailCode = prompt('Ingrese el código recibido por correo:');
+            if (!emailCode) return;
+            const smsCode = prompt('Ingrese el código recibido por SMS:');
+            if (!smsCode) return;
+
+            // 4. Convertir imágenes a base64 (si existen)
+            async function fileToBase64(file) {
+                return new Promise((resolve, reject) => {
+                    if (!file) return resolve("");
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result.split(',')[1]);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+            const fotoCedulaBase64 = await fileToBase64(fotoCedula);
+            const fotoPerfilBase64 = await fileToBase64(fotoPerfil);
+
+            // 5. Preparar datos y endpoint
             data = {
-                nombre: form.querySelector('[name="SignUpRequest.Nombre"]').value,
-                apellido: form.querySelector('[name="SignUpRequest.Apellido"]').value,
-                cedula: form.querySelector('[name="SignUpRequest.Cedula"]').value,
-                telefono: parseInt(form.querySelector('[name="SignUpRequest.Telefono"]').value),
-                correo: form.querySelector('[name="SignUpRequest.Correo"]').value,
+                nombre,
+                apellido,
+                cedula,
+                telefono,
+                correo,
                 direccion: form.querySelector('[name="SignUpRequest.Direccion"]').value,
-                contrasena: form.querySelector('[name="SignUpRequest.Password"]').value,
+                contrasena,
                 IBAN: form.querySelector('[name="SignUpRequest.IBAN"]').value,
-                fotoCedula: "",
-                fotoPerfil: "",
+                fotoCedula: fotoCedulaBase64,
+                fotoPerfil: fotoPerfilBase64,
                 fechaNacimiento: form.querySelector('[name="SignUpRequest.FechaNacimiento"]').value
             };
-            apiUrl = "https://localhost:5001/api/Cliente/Create";
-        } else if (userType === "Admin") {
+            apiUrl = `https://localhost:5001/api/Cliente/Create?emailCode=${encodeURIComponent(emailCode)}&smsCode=${encodeURIComponent(smsCode)}`;
+        }
+        // Otros tipos de usuario (sin verificaciones)
+        else if (userType === "Admin") {
             data = {
                 nombreUsuario: form.querySelector('[name="SignUpRequest.NombreUsuario"]').value,
                 contrasena: form.querySelector('[name="SignUpRequest.Password"]').value

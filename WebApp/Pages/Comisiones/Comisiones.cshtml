@@ -1,31 +1,36 @@
 ﻿@page
+@using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.Comisiones.ComisionesModel
 
 @{
 }
+@attribute [Authorize(Roles = "Admin")]
+<script src="~/js/pages/Comisiones.js" asp-append-version="true"></script>
 
-
-
-<h1>Comisiones</h1>
-
+<div class="text-end">
+    <a asp-page="/AdminPages/AdminHome" class="btn btn-outline-dark">⬅️ Volver</a>
+</div>
 <div class="bs-docs-section">
     <div class="row">
-        <legend>Lista de Comisiones</legend>
-        <div class="col-lg-12">
-            <table id="tblComisiones"
-                   class="display"
-                   style="width:100%"
-                   ColumnsDataName="id,idInstitucionBancaria,idCuentaComercio,porcentaje,montoMaximo">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Banco</th>
-                        <th>Comercio</th>
-                        <th>%</th>
-                        <th>Tope</th>
-                    </tr>
-                </thead>
-            </table>
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    Comisiones
+                </div>
+                <div class="card-body" style="overflow-x: auto; width: 100%;">
+                    <table id="tblComisiones" class="table table-bordered table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Banco</th>
+                                <th>Comercio</th>
+                                <th>%</th>
+                                <th>Tope</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -65,6 +70,3 @@
     </div>
 </div>
 
-@section Scripts {
-    <script src="~/js/pages/Comisiones.js" asp-append-version="true"></script>
-}

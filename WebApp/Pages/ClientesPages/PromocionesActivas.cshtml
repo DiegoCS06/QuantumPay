@@ -1,0 +1,53 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model WebApp.Pages.ClientesPages.PromocionesActivasModel
+@{
+}
+@attribute [Authorize(Roles = "Cliente")]
+
+<div class ="text-end">
+    <a asp-page="/ClientesPages/ClienteHome" class="btn btn-outline-dark">⬅️ Volver</a>
+</div>
+<legend>Promociones Activas</legend>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                🔖 Promociones Bancarias
+            </div>
+            <div class="card-body" style="overflow-x: auto; width: 100%;">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Banco</th>
+                            <th>Descripción</th>
+                            <th>Descuento</th>
+                            <th>Vigencia</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    🔖 Promociones de Comercios
+                </div>
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Comercio</th>
+                            <th>Descripción</th>
+                            <th>Descuento</th>
+                            <th>Vigencia</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+     </div>
+  </div>

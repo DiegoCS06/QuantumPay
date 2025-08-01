@@ -11,8 +11,7 @@ namespace WebAPI.Controllers
     {
         [HttpPost]
         [Route("Create")]
-
-        public async Task<ActionResult> Create(InstitucionBancaria institucionBancaria)
+        public async Task<ActionResult> Create([FromBody] InstitucionBancaria institucionBancaria)
         {
             try
             {
@@ -72,28 +71,6 @@ namespace WebAPI.Controllers
             {
                 var im = new InstitucionBancariaManager();
                 var result = im.RetrieveByCodigoIdentidad(codigoIdentidad);
-
-                if (result == null)
-                {
-                    return Ok(new List<object>());
-                }
-
-                return Ok(new List<object> { result });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        [HttpGet]
-        [Route("RetrieveByIBAN")]
-        public ActionResult RetrieveByIBAN(string codigoIBAN)
-        {
-            try
-            {
-                var im = new InstitucionBancariaManager();
-                var result = im.RetrieveByIBAN(codigoIBAN);
 
                 if (result == null)
                 {

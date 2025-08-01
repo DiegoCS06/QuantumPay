@@ -9,7 +9,6 @@ namespace DTOs
     public class InstitucionBancaria : BaseDTO
     {
         public string codigoIdentidad { get; set; }
-        public string codigoIBAN { get; set; }
         public string cedulaJuridica { get; set; }
         public string direccionSedePrincipal { get; set; }
         public int telefono { get; set; }

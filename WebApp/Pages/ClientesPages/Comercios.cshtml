@@ -1,0 +1,36 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model WebApp.Pages.ClientesPages.ComerciosModel
+@{
+}
+@attribute [Authorize(Roles = "Cliente")]
+<script src="~/js/pages/cuentacomercio.js"></script>
+
+<div class="text-end">
+    <a asp-page="/ClientesPages/ClienteHome" class="btn btn-outline-dark">⬅️Volver</a>
+</div>
+<div class="    bs-docs-section">
+    <div class="row">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card" style="overflow-x: auto; width: 100%;">
+                    <div class="card-header bg-success text-white">
+                        🛍️ Comercios Registrados
+                    </div>
+                    <table id="tblcuentaComercio" class="table table-bordered table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID Cuenta</th>
+                                <th>Nombre Usuario</th>
+                                <th>Cédula Jurídica</th>
+                                <th>Teléfono</th>
+                                <th>Correo Electrónico</th>
+                                <th>Dirección</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

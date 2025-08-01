@@ -3,6 +3,9 @@
 @{
     ViewData["Title"] = "Gestión de Transacciones";
 }
+
+
+<a asp-page="/ComercioPages/ComercioHome" class="btn btn-outline-dark">⬅️ Volver</a>
 <div class="container mt-4">
     <h2>@ViewData["Title"]</h2>
 
@@ -21,21 +24,31 @@
 
         <button id="btnBuscar" class="btn btn-primary">Buscar</button>
     </div>
-
-    <table id="tblTransacciones" class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Cuenta Bancaria</th>
-                <th>Cuenta Comercio</th>
-                <th>Monto</th>
-                <th>Comisión</th>
-                <th>Descuento</th>
-                <th>Fecha</th>
-                <th>Método Pago</th>
-            </tr>
-        </thead>
-    </table>
+    <div class="col-lg-12">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    Transacciones
+                </div>
+                <div class="card-body">
+                    <table id="tblTransacciones" class="table table-striped table-bordered" style="min-width: 600px; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Cuenta Bancaria</th>
+                                <th>Cuenta Comercio</th>
+                                <th>Monto</th>
+                                <th>Comisión</th>
+                                <th>Descuento</th>
+                                <th>Fecha</th>
+                                <th>Método Pago</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
     <!-- Formulario de CRUD -->
@@ -94,6 +107,7 @@
     </div>
 </div>
 
+<script src="~/js/ControlActions.js"></script>
 @section Scripts {
     <!-- JS específico para Transacciones CRUD -->
     <script src="~/js/pages/Transacciones.js" asp-append-version="true"></script>

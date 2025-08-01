@@ -11,7 +11,6 @@ namespace BaseManager
 
         public void Registrar(Transaccion t) => crud.Create(t);
 
-        // Aquí ya NO usas int, solo string para IBAN
         public List<Transaccion> ObtenerPorBanco(string iban) => crud.RetrieveByBanco(iban);
 
         public List<Transaccion> ObtenerPorComercio(int idComercio)

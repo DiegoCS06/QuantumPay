@@ -2,19 +2,16 @@
 using CoreApp;
 using DTOs;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class TransaccionController : ControllerBase
     {
-        [HttpPost]
-        [Route("Create")]
-
-        public async Task<ActionResult> Create(Transaccion transaccion)
+        [HttpPost("Create")]
+        public async Task<ActionResult<Transaccion>> Create([FromBody] Transaccion transaccion)
         {
             try
             {
@@ -24,12 +21,13 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
-        [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] Transaccion transaccion)
+        // Aquí eliminamos la ambigüedad: solo un atributo HTTP con ruta clara
+        [HttpPut("Update/{id}")]
+        public ActionResult<Transaccion> Update(int id, [FromBody] Transaccion transaccion)
         {
             try
             {
@@ -40,14 +38,12 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
-
-        [HttpGet]
-        [Route("RetrieveAll")]
-        public ActionResult RetrieveAll()
+        [HttpGet("RetrieveAll")]
+        public ActionResult<IEnumerable<Transaccion>> RetrieveAll()
         {
             try
             {
@@ -57,51 +53,37 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
-        [HttpGet]
-        [Route("RetrieveByBanco")]
-        public ActionResult RetrieveByBanco(string iban)
+        [HttpGet("RetrieveByBanco")]
+        public ActionResult<List<Transaccion>> RetrieveByBanco([FromQuery] string iban)
         {
             try
             {
                 var tm = new TransaccionManager();
-                var lstResults = tm.ObtenerPorBanco(iban);
-                if (lstResults == null)
-                {
-                    return Ok(new List<object>());
-                }
-
-                return Ok(new List<object> { lstResults });
+                var lstResults = tm.ObtenerPorBanco(iban) ?? new List<Transaccion>();
+                return Ok(lstResults);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
-
-        [HttpGet]
-        [Route("RetrieveByComercio")]
-        public ActionResult RetrieveByComercio(int idComercio)
+        [HttpGet("RetrieveByComercio")]
+        public ActionResult<List<Transaccion>> RetrieveByComercio([FromQuery] int idComercio)
         {
             try
             {
                 var tm = new TransaccionManager();
-                var result = tm.ObtenerPorComercio(idComercio);
-
-                if (result == null)
-                {
-                    return Ok(new List<object>());
-                }
-
-                return Ok(new List<object> { result });
+                var lstResults = tm.ObtenerPorComercio(idComercio) ?? new List<Transaccion>();
+                return Ok(lstResults);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
     }

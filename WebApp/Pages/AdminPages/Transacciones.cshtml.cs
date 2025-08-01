@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace WebApp.Pages.Comisiones
+namespace WebApp.Pages.AdminPages
 {
     [Authorize(Roles = "Admin")]
-    public class ComisionesModel : PageModel
+    public class TransaccionesModel : PageModel
     {
-        public void OnGet() { }
+        public void OnGet()
+        {
+        }
     }
 }

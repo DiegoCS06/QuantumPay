@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace WebApp.Pages
+namespace WebApp.Pages.ComercioPages
 {
+    [Authorize(Roles = "CuentaComercio")]
     public class AdministrarComerciosModel : PageModel
     {
         public void OnGet()

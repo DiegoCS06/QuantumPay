@@ -5,10 +5,8 @@
     form.addEventListener("submit", async function (e) {
         e.preventDefault();
 
-        // Obtén el tipo de usuario
         const userType = userTypeSelect.value;
 
-        // Construye el objeto de datos según el tipo de usuario
         let data = {};
         let apiUrl = "";
 
@@ -17,17 +15,25 @@
                 nombre: form.querySelector('[name="SignUpRequest.Nombre"]').value,
                 apellido: form.querySelector('[name="SignUpRequest.Apellido"]').value,
                 cedula: form.querySelector('[name="SignUpRequest.Cedula"]').value,
-                telefono: parseInt(form.querySelector('[name="SignUpRequest.Telefono"]').value),
+                telefono: form.querySelector('[name="SignUpRequest.Telefono"]').value,
                 correo: form.querySelector('[name="SignUpRequest.Correo"]').value,
                 direccion: form.querySelector('[name="SignUpRequest.Direccion"]').value,
                 contrasena: form.querySelector('[name="SignUpRequest.Password"]').value,
                 IBAN: form.querySelector('[name="SignUpRequest.IBAN"]').value,
-                // Si quieres enviar imágenes como base64:
-                fotoCedula: "", // Puedes agregar lógica para convertir el archivo a base64
+                fotoCedula: "",
                 fotoPerfil: "",
                 fechaNacimiento: form.querySelector('[name="SignUpRequest.FechaNacimiento"]').value
             };
-            apiUrl = "https://localhost:5001/api/Cliente/Create";
+            // Step 1: Send verification codes
+            await fetch("https://localhost:5001/api/Cliente/SendSmsVerification?telefono=" + encodeURIComponent(data.telefono));
+            await fetch("https://localhost:5001/api/Cliente/SendEmailVerification?email=" + encodeURIComponent(data.correo));
+
+            // Step 2: Prompt user for codes
+            const smsCode = prompt("Ingrese el código de verificación recibido por SMS:");
+            const emailCode = prompt("Ingrese el código de verificación recibido por Email:");
+
+            // Step 3: Add codes as query parameters
+            apiUrl = `https://localhost:5001/api/Cliente/Create?emailCode=${encodeURIComponent(emailCode)}&smsCode=${encodeURIComponent(smsCode)}`;
         } else if (userType === "Admin") {
             data = {
                 nombreUsuario: form.querySelector('[name="SignUpRequest.NombreUsuario"]').value,
@@ -36,22 +42,23 @@
             apiUrl = "https://localhost:5001/api/Admin/Create";
         } else if (userType === "CuentaComercio") {
             data = {
-                nombreUsuario: form.querySelector('[name="SignUpRequest.NombreUsuario"]').value,
+                nombreUsuario: document.getElementById("SignUpRequest_NombreUsuario_CuentaComercio").value,
                 contrasena: form.querySelector('[name="SignUpRequest.Password"]').value,
-                cedulaJuridica: form.querySelector('[name="SignUpRequest.CedulaJuridica"]').value,
-                telefono: parseInt(form.querySelector('[name="SignUpRequest.Telefono"]').value),
-                correoElectronico: form.querySelector('[name="SignUpRequest.CorreoElectronico"]').value,
-                direccion: form.querySelector('[name="SignUpRequest.Direccion"]').value
+                cedulaJuridica: document.getElementById("SignUpRequest_CedulaJuridica_CuentaComercio").value,
+                telefono: parseInt(document.getElementById("SignUpRequest_Telefono_CuentaComercio").value) || 0,
+                correoElectronico: document.getElementById("SignUpRequest_CorreoElectronico_CuentaComercio").value,
+                direccion: document.getElementById("SignUpRequest_Direccion_CuentaComercio").value
             };
             apiUrl = "https://localhost:5001/api/CuentaComercio/Create";
         } else if (userType === "InstitucionBancaria") {
             data = {
-                codigoIdentidad: form.querySelector('[name="SignUpRequest.CodigoIdentidad"]').value,
-                codigoIBAN: form.querySelector('[name="SignUpRequest.CodigoIBAN"]').value,
-                cedulaJuridica: form.querySelector('[name="SignUpRequest.CedulaJuridica"]').value,
-                direccionSedePrincipal: form.querySelector('[name="SignUpRequest.DireccionSedePrincipal"]').value,
-                telefono: parseInt(form.querySelector('[name="SignUpRequest.Telefono"]').value),
-                correoElectronico: form.querySelector('[name="SignUpRequest.CorreoElectronico"]').value
+                codigoIdentidad: document.getElementById("SignUpRequest_CodigoIdentidad").value,
+                cedulaJuridica: document.getElementById("SignUpRequest_CedulaJuridica_InstitucionBancaria").value,
+                direccionSedePrincipal: document.getElementById("SignUpRequest_DireccionSedePrincipal").value,
+                telefono: parseInt(document.getElementById("SignUpRequest_Telefono_InstitucionBancaria").value, 10),
+                correoElectronico: document.getElementById("SignUpRequest_CorreoElectronico_InstitucionBancaria").value,
+                contrasena: form.querySelector('[name="SignUpRequest.Password"]').value,
+                estadoSolicitud: "Pendiente"
             };
             apiUrl = "https://localhost:5001/api/InstitucionBancaria/Create";
         } else {
@@ -59,7 +66,6 @@
             return;
         }
 
-        // Enviar datos al API
         try {
             const response = await fetch(apiUrl, {
                 method: "POST",
@@ -68,6 +74,22 @@
             });
 
             if (response.ok) {
+                if (userType === "Cliente") {
+                    // Send verification code to phone
+                    await fetch("https://localhost:5001/api/Cliente/SendPhoneVerificationCode", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ telefono: data.telefono })
+                    });
+
+                    // Send verification code to email
+                    await fetch("https://localhost:5001/api/Cliente/SendEmailVerificationCode", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ correo: data.correo })
+                    });
+                }
+
                 alert("Registro exitoso. Ahora puede iniciar sesión.");
                 window.location.href = "/Login";
             } else {
@@ -93,6 +115,5 @@
         showFieldsForType(this.value);
     });
 
-    // Mostrar campos correctos si hay valor preseleccionado (por ejemplo, en validación fallida)
     showFieldsForType(userTypeSelect.value);
 });

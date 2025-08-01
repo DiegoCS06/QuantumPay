@@ -1,5 +1,4 @@
-﻿
-function BancoViewController() {
+﻿function BancoViewController() {
     this.ViewName = "InstitucionBancaria";
     this.ApiEndPointName = "InstitucionBancaria";
 
@@ -57,12 +56,11 @@ function BancoViewController() {
         var columns = [];
         columns[0] = { 'data': 'id' }; //ID
         columns[1] = { 'data': 'codigoIdentidad' }
-        columns[2] = { 'data': 'codigoIBAN' }
-        columns[3] = { 'data': 'cedulaJuridica' }
-        columns[4] = { 'data': 'direccionSedePrincipal' }
-        columns[5] = { 'data': 'telefono' }
-        columns[6] = { 'data': 'correoElectronico' }
-        columns[7] = { 'data': 'estadoSolicitud' }
+        columns[2] = { 'data': 'cedulaJuridica' }
+        columns[3] = { 'data': 'direccionSedePrincipal' }
+        columns[4] = { 'data': 'telefono' }
+        columns[5] = { 'data': 'correoElectronico' }
+        columns[6] = { 'data': 'estadoSolicitud' }
 
         $('#tblinstitucionBancaria').dataTable({
             "ajax": {
@@ -85,7 +83,6 @@ function BancoViewController() {
             //Binding en el form
             $('#txtId').val(bancoDTO.id);
             $('#txtCodigoIdentidad').val(bancoDTO.codigoIdentidad);
-            $('#txtCodigoIBAN').val(bancoDTO.codigoIBAN);
             $('#txtCedulaJuridica').val(bancoDTO.cedulaJuridica);
             $('#txtDireccionSedePrincipal').val(bancoDTO.direccionSedePrincipal);
             $('#txtTelefono').val(bancoDTO.telefono);
@@ -102,7 +99,6 @@ function BancoViewController() {
 
 
         //Valores capturados en pantalla
-        bancoDTO.codigoIBAN = $('#txtCodigoIBAN').val();
         bancoDTO.cedulaJuridica = $('#txtCedulaJuridica').val();
         bancoDTO.direccionSedePrincipal = $('#txtDireccionSedePrincipal').val();
         bancoDTO.telefono = $('#txtTelefono').val();
@@ -125,7 +121,6 @@ function BancoViewController() {
         
 
         //Valores capturados en pantalla
-        bancoDTO.codigoIBAN = $('#txtCodigoIBAN').val();
         bancoDTO.cedulaJuridica = $('#txtCedulaJuridica').val();
         bancoDTO.direccionSedePrincipal = $('#txtDireccionSedePrincipal').val();
         bancoDTO.telefono = $('#txtTelefono').val();
@@ -148,7 +143,6 @@ function BancoViewController() {
 
 
         //Valores capturados en pantalla
-        bancoDTO.codigoIBAN = $('#txtCodigoIBAN').val();
         bancoDTO.cedulaJuridica = $('#txtCedulaJuridica').val();
         bancoDTO.direccionSedePrincipal = $('#txtDireccionSedePrincipal').val();
         bancoDTO.telefono = $('#txtTelefono').val();

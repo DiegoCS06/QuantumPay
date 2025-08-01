@@ -20,7 +20,6 @@
         <select asp-for="SignUpRequest.UserType" id="UserType" name="SignUpRequest.UserType" required>
             <option value="">Seleccione...</option>
             <option value="Cliente">Cliente</option>
-            <option value="Admin">Administrador</option>
             <option value="CuentaComercio">Comercio</option>
             <option value="InstitucionBancaria">Institución Bancaria</option>
         </select>
@@ -48,41 +47,32 @@
             <label>IBAN</label>
             <input asp-for="SignUpRequest.IBAN" />
         </div>
-
-        <!-- Campos Admin -->
-        <div class="user-fields user-admin" style="display:none;">
-            <label>Nombre de usuario</label>
-            <input asp-for="SignUpRequest.NombreUsuario" />
-        </div>
-
         <!-- Campos CuentaComercio -->
         <div class="user-fields user-cuentacomercio" style="display:none;">
-            <label>Nombre de usuario</label>
-            <input asp-for="SignUpRequest.NombreUsuario" />
+            <label>Nombre de Usuario</label>
+            <input asp-for="SignUpRequest.NombreUsuario" id="SignUpRequest_NombreUsuario_CuentaComercio" name="SignUpRequest.NombreUsuario" />
             <label>Cédula Jurídica</label>
-            <input asp-for="SignUpRequest.CedulaJuridica" />
+            <input asp-for="SignUpRequest.CedulaJuridica" id="SignUpRequest_CedulaJuridica_CuentaComercio" name="SignUpRequest.CedulaJuridica" />
             <label>Teléfono</label>
-            <input asp-for="SignUpRequest.Telefono" />
+            <input asp-for="SignUpRequest.Telefono" id="SignUpRequest_Telefono_CuentaComercio" name="SignUpRequest.Telefono" />
             <label>Correo electrónico</label>
-            <input asp-for="SignUpRequest.CorreoElectronico" />
+            <input asp-for="SignUpRequest.CorreoElectronico" id="SignUpRequest_CorreoElectronico_CuentaComercio" name="SignUpRequest.CorreoElectronico" />
             <label>Dirección</label>
-            <input asp-for="SignUpRequest.Direccion" />
+            <input asp-for="SignUpRequest.Direccion" id="SignUpRequest_Direccion_CuentaComercio" name="SignUpRequest.Direccion" />
         </div>
 
         <!-- Campos InstitucionBancaria -->
         <div class="user-fields user-institucionbancaria" style="display:none;">
             <label>Código Identidad</label>
-            <input asp-for="SignUpRequest.CodigoIdentidad" />
-            <label>Código IBAN</label>
-            <input asp-for="SignUpRequest.CodigoIBAN" />
+            <input asp-for="SignUpRequest.CodigoIdentidad" id="SignUpRequest_CodigoIdentidad" />
             <label>Cédula Jurídica</label>
-            <input asp-for="SignUpRequest.CedulaJuridica" />
+            <input asp-for="SignUpRequest.CedulaJuridica" id="SignUpRequest_CedulaJuridica_InstitucionBancaria" name="SignUpRequest.CedulaJuridica" />
             <label>Dirección Sede Principal</label>
-            <input asp-for="SignUpRequest.DireccionSedePrincipal" />
+            <input asp-for="SignUpRequest.DireccionSedePrincipal" id="SignUpRequest_DireccionSedePrincipal" />
             <label>Teléfono</label>
-            <input asp-for="SignUpRequest.Telefono" />
+            <input asp-for="SignUpRequest.Telefono" id="SignUpRequest_Telefono_InstitucionBancaria" name="SignUpRequest.Telefono" />
             <label>Correo electrónico</label>
-            <input asp-for="SignUpRequest.CorreoElectronico" />
+            <input asp-for="SignUpRequest.CorreoElectronico" id="SignUpRequest_CorreoElectronico_InstitucionBancaria" name="SignUpRequest.CorreoElectronico" />
         </div>
 
         <!-- Campo común -->

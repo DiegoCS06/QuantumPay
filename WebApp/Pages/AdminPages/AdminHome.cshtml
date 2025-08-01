@@ -22,36 +22,38 @@
             <h2>Panel de Administración</h2>
 
             <div class="dashboard-grid">
-                <a asp-page="/Clientes" class="dashboard-card">
+                <a asp-page="/AdminPages/Clientes" class="dashboard-card">
                     <img src="../img/users.png" alt="Usuarios" />
                     <h3>Usuarios</h3>
-                    <p>Buscar y administrar usuarios registrados.</p>
+                    <p>Buscar Usuarios Registrados.</p>
                 </a>
-                <a href="../Transactions/transactions.html" class="dashboard-card">
+                <a asp-page="/AdminPages/Transacciones" class="dashboard-card">
                     <img src="../img/transaction.png" alt="Transacciones" />
                     <h3>Transacciones</h3>
-                    <p>Buscar y administrar transacciones.</p>
+                    <p>Ver Transacciones.</p>
                 </a>
-                <a asp-page="/AutorizacionComercio" class="dashboard-card">
-                    <img src="../img/business.png" alt="Negocios" />
-                    <h3>Negocios</h3>
-                    <p>Administrar negocios asociados.</p>
+                <a asp-page="/AdminPages/AutorizacionComercio" class="dashboard-card">
+                    <img src="../img/business.png" alt="Comercios" />
+                    <h3>Comercios</h3>
+                    <p>Administrar Comercios.</p>
                 </a>
-                <a asp-page="/AutorizacionBanco" class="dashboard-card">
+                <a asp-page="/AdminPages/AutorizacionBanco" class="dashboard-card">
                     <img src="../img/bank.png" alt="Bancos" />
                     <h3>Instituciones Bancarias</h3>
                     <p>Administrar instituciones bancarias.</p>
                 </a>
-                <a href="../promotions/promotions.html" class="dashboard-card">
+                <a asp-page="/AdminPages/Promociones" class="dashboard-card">
                     <img src="../img/promotion.png" alt="Promociones" />
                     <h3>Promociones</h3>
-                    <p>Administrar promociones activas.</p>
+                    <p>Ver Promociones</p>
+                </a>
+                <a asp-page="/Comisiones/Comisiones" class="dashboard-card">
+                    <img src="../img/percentage.png" alt="Comisiones" />
+                    <h3>Comisiones</h3>
+                    <p>Ver Comisiones</p>
                 </a>
             </div>
-             <a class="nav-link text-dark" asp-area="" asp-page="/ClientesPages/ClienteHome">Clientes</a>
-            <a class="nav-link text-dark" asp-area="" asp-page="/ComercioPages/ComercioHome">Comercios</a>
-            <a class="nav-link text-dark" asp-area="" asp-page="/BancoPages/BancoHome">Bancos</a>
-               
+             
         </section>
     </main>
 </body>

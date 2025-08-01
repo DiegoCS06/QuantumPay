@@ -28,6 +28,23 @@ namespace BaseManager
 
         public void SendVerificationCode(string telefono)
         {
+            telefono = telefono.Trim();
+
+            // If already in E.164 format, use as is
+            if (!telefono.StartsWith("+"))
+            {
+                if (telefono.StartsWith("506"))
+                {
+                    telefono = "+" + telefono;
+                }
+                else
+                {
+                    // Remove any leading zeros or non-digit characters
+                    telefono = telefono.TrimStart('0');
+                    telefono = "+506" + telefono;
+                }
+            }
+
             var verification = VerificationResource.Create(
                 to: telefono,
                 channel: "sms",
@@ -39,6 +56,21 @@ namespace BaseManager
 
         public bool VerifyCode(string telefono, string code)
         {
+            telefono = telefono.Trim();
+
+            if (!telefono.StartsWith("+"))
+            {
+                if (telefono.StartsWith("506"))
+                {
+                    telefono = "+" + telefono;
+                }
+                else
+                {
+                    telefono = telefono.TrimStart('0');
+                    telefono = "+506" + telefono;
+                }
+            }
+
             var verificationCheck = VerificationCheckResource.Create(
                 to: telefono,
                 code: code,

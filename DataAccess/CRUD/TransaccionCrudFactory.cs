@@ -150,6 +150,26 @@ namespace DataAccess.CRUD
             _sqlDao.ExecuteProcedure(sqlOperation);
         }
 
+        public  List<Transaccion> RetrieveAllById(int clienteId)
+        {
+            var lstTransacciones = new List<Transaccion>();
+
+            var sqlOperation = new SQLOperation() { ProcedureName = "RET_ALL_TRANSACCION_PR" };
+
+            var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
+
+            if (lstResult.Count > 0)
+            {
+                foreach (var row in lstResult)
+                {
+                    var cliente = BuildTransaccion(row);
+                    lstTransacciones.Add((Transaccion)(object)cliente);
+                }
+            }
+
+            return lstTransacciones.Where(t => t.IdCuentaCliente == clienteId).ToList();
+        }
+
         private Transaccion BuildTransaccion(Dictionary<string, object> r)
         {
             return new Transaccion()

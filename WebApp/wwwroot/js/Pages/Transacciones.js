@@ -33,6 +33,9 @@
                     error: function (xhr, status, error) {
                         console.error("Error AJAX DataTable:", status, error);
                         console.log("Response text:", xhr.responseText);
+                    },
+                    headers: {
+                        'Authorization': 'Bearer ' + userToken // Assuming userToken is defined into the view scope
                     }
                 },
                 columns: [

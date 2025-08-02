@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using DataAccess.CRUD;
+﻿using DataAccess.CRUD;
 using DTOs;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace CoreApp
 {
@@ -38,10 +39,22 @@ namespace CoreApp
             tCrud.Create(transaccion);
         }
 
-        public List<Transaccion> RetrieveAll()
+        public List<Transaccion> RetrieveAll(int clientId, string clientRole)
         {
             var cCrud = new TransaccionCrudFactory();
-            return cCrud.RetrieveAll<Transaccion>();
+
+            var transacciones = new List<Transaccion>();
+
+            if (new string[] { "Admin", "InstitucionBancaria" }.Contains(clientRole))
+            {
+                transacciones = cCrud.RetrieveAll<Transaccion>();
+            }
+            else
+            {
+                transacciones = cCrud.RetrieveAllById(clientId);
+            }
+
+            return transacciones;
         }
 
         public Transaccion OrdenarPorId(int id)

@@ -133,11 +133,11 @@ namespace WebAPI.Controllers
         {
             try
             {
-                Console.WriteLine($"[ADMIN LOGIN] UserName recibido: {request.UserName}");
+                Console.WriteLine($"[ADMIN LOGIN] UserName recibido: {request.LoginName}");
                 Console.WriteLine($"[ADMIN LOGIN] Password recibido: {request.Password}");
 
                 var am = new AdminManager();
-                var admin = am.RetrieveByUserName(request.UserName);
+                var admin = am.RetrieveByUserName(request.LoginName);
 
                 if (admin == null)
                 {

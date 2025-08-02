@@ -7,6 +7,8 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using Twilio.TwiML.Voice;
+using static System.Net.WebRequestMethods;
 
 namespace WebApp.Pages
 {
@@ -39,29 +41,19 @@ namespace WebApp.Pages
                 }
             }
 
-            string apiUrl = LoginRequest.UserType switch
-            {
-                "Cliente" => "https://localhost:5001/api/Cliente/Login",
-                "Admin" => "https://localhost:5001/api/Admin/Login",
-                "CuentaComercio" => "https://localhost:5001/api/CuentaComercio/Login",
-                "InstitucionBancaria" => "https://localhost:5001/api/InstitucionBancaria/Login",
-                _ => throw new Exception("Tipo de usuario no soportado")
-            };
+            string apiUrl = "https://localhost:5001/api/login";
 
             using var httpClient = new HttpClient();
 
-            object loginPayload = LoginRequest.UserType switch
-            {
-                "Admin" => new { UserName = LoginRequest.Email, Password = LoginRequest.Password },
-                "CuentaComercio" => new { Email = LoginRequest.Email, Password = LoginRequest.Password },
-                "InstitucionBancaria" => new { Email = LoginRequest.Email, Password = LoginRequest.Password },
-                _ => new { Email = LoginRequest.Email, Password = LoginRequest.Password }
-            };
+            object loginPayload = new { LoginName = LoginRequest.Email, LoginRequest.Password, LoginRequest.UserType };
 
             var json = JsonSerializer.Serialize(loginPayload);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await httpClient.PostAsync(apiUrl, content);
+            var apiResponse = await response.Content.ReadAsStringAsync();
+            using var jsonDoc = JsonDocument.Parse(apiResponse);
+            var root = jsonDoc.Deserialize<TokenResponse>(new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             if (!response.IsSuccessStatusCode)
             {
@@ -74,6 +66,14 @@ namespace WebApp.Pages
             new Claim(ClaimTypes.Name, LoginRequest.Email),
             new Claim(ClaimTypes.Role, LoginRequest.UserType) // Agrega el rol aquí
             };
+
+            Response.Cookies.Append("jwt_token", root.Token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true, 
+                Expires = DateTimeOffset.UtcNow.AddMinutes(60),
+                SameSite = SameSiteMode.Strict 
+            });
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -101,5 +101,9 @@ namespace WebApp.Pages
         public string UserType { get; set; }
         public string Email { get; set; }
         public string? Password { get; set; }
+    }
+    public class TokenResponse
+    {
+        public string Token { get; set; }
     }
 }

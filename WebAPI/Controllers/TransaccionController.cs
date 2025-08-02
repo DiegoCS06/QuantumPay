@@ -1,15 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using BaseManager;
-using DTOs;
-using System;
-using System.Threading.Tasks;
+﻿using BaseManager;
 using CoreApp;
+using DTOs;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Data.SqlClient;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class TransaccionController : ControllerBase
     {
         private readonly TransaccionManager _manager = new();
@@ -40,19 +42,24 @@ namespace WebAPI.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Cliente")]
         [HttpGet]
         [Route("RetrieveAll")]
-        public ActionResult RetrieveAll()
+        public ActionResult<IEnumerable<Transaccion>> RetrieveAll()
         {
             try
             {
-                var cm = new TransaccionManager();
-                var lstResults = cm.RetrieveAll();
+                var user = HttpContext.User;
+                var userId = user.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+                var userRole = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+                var tm = new TransaccionManager();
+                var lstResults = tm.RetrieveAll(int.Parse(userId), userRole);
                 return Ok(lstResults);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 

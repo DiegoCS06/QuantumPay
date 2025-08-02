@@ -35,7 +35,7 @@
                         console.log("Response text:", xhr.responseText);
                     },
                     headers: {
-                        'Authorization': 'Bearer ' + userToken // Assuming userToken is defined into the view scope
+                        'Authorization': 'Bearer ' + userToken 
                     }
                 },
                 columns: [

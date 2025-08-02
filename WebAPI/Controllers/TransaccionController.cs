@@ -1,15 +1,13 @@
-﻿using BaseManager;
-using CoreApp;
+﻿using CoreApp;
 using DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Data.SqlClient;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class TransaccionController : ControllerBase
@@ -41,8 +39,7 @@ namespace WebAPI.Controllers
                 return BadRequest(new { error = ex.Message });
             }
         }
-
-        [Authorize(Roles = "Admin,Cliente")]
+        
         [HttpGet]
         [Route("RetrieveAll")]
         public ActionResult<IEnumerable<Transaccion>> RetrieveAll()
@@ -69,8 +66,12 @@ namespace WebAPI.Controllers
         {
             try
             {
-                var cm = new TransaccionManager();
-                var result = cm.OrdenarPorId(id);
+                var user = HttpContext.User;
+                var userId = user.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+                var userRole = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+                var tm = new TransaccionManager();
+                var result = tm.OrdenarPorId(id);
                 if (result == null)
                 {
                     return Ok(new List<object>());
@@ -90,6 +91,9 @@ namespace WebAPI.Controllers
         {
             try
             {
+                var user = HttpContext.User;
+                var userId = user.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+                var userRole = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 var cm = new TransaccionManager();
                 var result = cm.OrdenarPorBanco(idCuentaBancaria);
                 if (result == null)
@@ -111,6 +115,9 @@ namespace WebAPI.Controllers
         {
             try
             {
+                var user = HttpContext.User;
+                var userId = user.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+                var userRole = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 var cm = new TransaccionManager();
                 var result = cm.OrdenarPorComercio(idComercio);
                 if (result == null)
@@ -132,6 +139,9 @@ namespace WebAPI.Controllers
         {
             try
             {
+                var user = HttpContext.User;
+                var userId = user.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+                var userRole = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 var cm = new TransaccionManager();
                 var result = cm.OrdenarPorCliente(idCliente);
                 if (result == null)

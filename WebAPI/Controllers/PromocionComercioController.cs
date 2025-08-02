@@ -1,5 +1,6 @@
 ﻿using CoreApp;
 using DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using System.Transactions;
 
 namespace WebAPI.Controllers
 {
+    [Authorize(Roles = "Admin,Cliente,InstitucionBancaria,CuentaComercio")]
     [Route("api/[controller]")]
     [ApiController]
     public class PromocionComercioController : ControllerBase

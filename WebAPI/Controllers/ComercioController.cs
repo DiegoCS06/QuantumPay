@@ -1,10 +1,12 @@
 ﻿using CoreApp;
 using DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
+    [Authorize(Roles = "Admin,Cliente,CuentaComercio")]
     [Route("api/[controller]")]
     [ApiController]
     public class ComercioController : ControllerBase

@@ -52,8 +52,11 @@
         $('#tblcomercio').dataTable({
             "ajax": {
                 url: urlService,
-                "dataSrc": ""
-            },
+                "dataSrc": "",
+                headers: {
+                    'Authorization': 'Bearer ' + userToken // Assuming userToken is defined into the view scope
+                }
+            },            
             columns: columns
         });
         //asignar eventos de carga de datos o bindin segun la tabla

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Amazon.Rekognition.Model;
+using DataAccess.DAOs;
+using DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DataAccess.DAOs;
-using DTOs;
 
 namespace DataAccess.CRUD
 {
@@ -150,7 +151,7 @@ namespace DataAccess.CRUD
             _sqlDao.ExecuteProcedure(sqlOperation);
         }
 
-        public  List<Transaccion> RetrieveAllById(int clienteId)
+        public  List<Transaccion> RetrieveAllById(int userId, string userRole)
         {
             var lstTransacciones = new List<Transaccion>();
 
@@ -167,7 +168,7 @@ namespace DataAccess.CRUD
                 }
             }
 
-            return lstTransacciones.Where(t => t.IdCuentaCliente == clienteId).ToList();
+            return lstTransacciones.Where(t => t.IdCuentaCliente == t.Id).ToList();
         }
 
         private Transaccion BuildTransaccion(Dictionary<string, object> r)

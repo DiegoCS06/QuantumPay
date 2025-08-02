@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
 
                     if (admin == null)
                     {
-                        Console.WriteLine("[ADMIN LOGIN] Usuario no encontrado.");
+                        Console.WriteLine(" Usuario no encontrado.");
                         return Unauthorized("Usuario o contraseña incorrectos.");
                     }
                     userName = admin.nombreUsuario;
@@ -45,23 +45,53 @@ namespace WebAPI.Controllers
 
                     if (cliente == null)
                     {
-                        Console.WriteLine("[ADMIN LOGIN] Usuario no encontrado.");
+                        Console.WriteLine("Usuario no encontrado.");
                         return Unauthorized("Usuario o contraseña incorrectos.");
                     }
-                    userName = cliente.nombre + " " + cliente;
+                    userName = cliente.nombre + " " + cliente.apellido;
                     userId = cliente.Id;
                     userPassword = cliente.contrasena;
                 }
 
+                if (request.UserType == "InstitucionBancaria")
+                {
+                    var cm = new InstitucionBancariaManager();
+                    var institucionBancaria = cm.RetrieveByEmail(request.LoginName);
+
+                    if (institucionBancaria == null)
+                    {
+                        Console.WriteLine(" Usuario no encontrado.");
+                        return Unauthorized("Usuario o contraseña incorrectos.");
+                    }
+                    userName = institucionBancaria.codigoIdentidad;
+                    userId = institucionBancaria.Id;
+                    userPassword = institucionBancaria.contrasena;
+                }
+
+                if (request.UserType == "CuentaComercio")
+                {
+                    var cm = new CuentaComercioManager();
+                    var cuentaComercioManager = cm.RetrieveByEmail(request.LoginName);
+
+                    if (cuentaComercioManager == null)
+                    {
+                        Console.WriteLine(" Usuario no encontrado.");
+                        return Unauthorized("Usuario o contraseña incorrectos.");
+                    }
+                    userName = cuentaComercioManager.NombreUsuario;
+                    userId = cuentaComercioManager.Id;
+                    userPassword = cuentaComercioManager.Contrasena;
+                }
+
                 if (string.IsNullOrEmpty(userPassword))
                 {
-                    Console.WriteLine("[ADMIN LOGIN] Hash de contraseña vacío o nulo.");
+                    Console.WriteLine(" Hash de contraseña vacío o nulo.");
                     return Unauthorized("Usuario o contraseña incorrectos.");
                 }
 
                 if (!BCrypt.Net.BCrypt.Verify(request.Password, userPassword))
                 {
-                    Console.WriteLine("[ADMIN LOGIN] Contraseña incorrecta.");
+                    Console.WriteLine(" Contraseña incorrecta.");
                     return Unauthorized("Usuario o contraseña incorrectos.");
                 }
 
@@ -70,7 +100,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[ADMIN LOGIN] Excepción: {ex.Message}");
+                Console.WriteLine($" Excepción: {ex.Message}");
                 return Unauthorized("Usuario o contraseña incorrectos.");
             }
 

@@ -3,12 +3,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Net.Http.Headers;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
-using Twilio.TwiML.Voice;
-using static System.Net.WebRequestMethods;
 
 namespace WebApp.Pages
 {
@@ -51,21 +49,29 @@ namespace WebApp.Pages
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await httpClient.PostAsync(apiUrl, content);
-            var apiResponse = await response.Content.ReadAsStringAsync();
-            using var jsonDoc = JsonDocument.Parse(apiResponse);
-            var root = jsonDoc.Deserialize<TokenResponse>(new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
+          
             if (!response.IsSuccessStatusCode)
             {
                 ErrorMessage = "Usuario o credenciales incorrectos.";
                 return Page();
             }
 
-            var claims = new List<Claim>
-            {
-            new Claim(ClaimTypes.Name, LoginRequest.Email),
-            new Claim(ClaimTypes.Role, LoginRequest.UserType) // Agrega el rol aquí
-            };
+            var apiResponse = await response.Content.ReadAsStringAsync();
+            using var jsonDoc = JsonDocument.Parse(apiResponse);
+            var root = jsonDoc.Deserialize<TokenResponse>(new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(root.Token);
+
+            var claims = new List<Claim>(jwtToken.Claims);
+            //foreach (var claim in jwtToken.Claims)
+            //{
+                
+            //    if (!claims.Any(c => c.Type == claim.Type && c.Value == claim.Value))
+            //    {
+            //        claims.Add(claim);
+            //    }
+            //}            
 
             Response.Cookies.Append("jwt_token", root.Token, new CookieOptions
             {

@@ -1,7 +1,11 @@
 ﻿@page
 @using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.AdminPages.PromocionesModel
-@{
+@section Scripts{
+    <script>
+        var userToken = '@HttpContext.Request.Cookies["jwt_token"]';
+    </script>
+
 }
 @attribute [Authorize(Roles = "Admin")]
 <legend>Promociones</legend>

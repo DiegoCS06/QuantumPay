@@ -1,5 +1,6 @@
 ﻿using BaseManager;
 using DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
 {
+    [Authorize(Roles = "Admin,InstitucionBancaria,CuentaComercio")]
     [ApiController]
     [Route("api/[controller]")]
     public class ComisionController : ControllerBase

@@ -70,11 +70,17 @@ namespace WebAPI.Controllers
                 var userId = user.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
                 var userRole = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
 
+                if (userId == null || userRole == null)
+                {
+                    return Unauthorized("No se puede verificar elmid del Usuario");
+                }
+                var currentId = int.Parse(userId);
+
                 var tm = new TransaccionManager();
                 var result = tm.OrdenarPorId(id);
                 if (result == null)
                 {
-                    return Ok(new List<object>());
+                    return NotFound("Datos no encontrados");
                 }
 
                 return Ok(new List<object> { result });

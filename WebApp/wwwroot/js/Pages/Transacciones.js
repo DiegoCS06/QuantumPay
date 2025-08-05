@@ -54,6 +54,33 @@
         }
     };
 
+    this.loadTableId = function(){
+
+        var ca = new ControlActions();
+        var service = this.Api + "/RetrieveById";
+        var urlService = ca.GetUrlApiService(service);
+
+        columns: [
+            { data: 'id' },
+            { data: 'IdCuentaCliente'},
+            { data: 'idCuentaBancaria' },
+            { data: 'idCuentaComercio' },
+            { data: 'monto' },
+            { data: 'descuentoAplicado' },
+            { data: 'fecha' },
+            { data: 'metodoPago' }
+        ]
+        $('#tblTransacciones').DataTable({
+            "ajax": {
+                url: urlService,
+                dataSrc: "",
+                headers: {
+                    'Authorization': 'Bearer ' + userToken
+                }
+            }
+        });
+
+    }
 
     this.bindEvents = function () {
         $('#btnBuscar').click(() => this.loadTable());

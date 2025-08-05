@@ -1,12 +1,17 @@
+// WebApp/Pages/Login.cshtml.cs
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http;
+using System.Security.Claims;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Text.Json;
 
 namespace WebApp.Pages
 {
@@ -24,92 +29,117 @@ namespace WebApp.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            // Validación manual según el tipo de usuario
-            if (string.IsNullOrWhiteSpace(LoginRequest.UserType) || string.IsNullOrWhiteSpace(LoginRequest.Email))
+            // 1) Validaciones básicas
+            if (string.IsNullOrWhiteSpace(LoginRequest.UserType) ||
+                string.IsNullOrWhiteSpace(LoginRequest.Email) ||
+                string.IsNullOrWhiteSpace(LoginRequest.Password))
             {
-                ErrorMessage = "Debe ingresar el tipo de usuario y el correo.";
+                ErrorMessage = "Por favor ingrese tipo de usuario, correo y contraseña.";
                 return Page();
             }
-            else
+
+            // 2) Elegir la URL del API según UserType
+            string apiUrl = LoginRequest.UserType switch
             {
-                if (string.IsNullOrWhiteSpace(LoginRequest.Password))
-                {
-                    ErrorMessage = "Debe ingresar la contraseña.";
-                    return Page();
-                }
-            }
+                "Admin" => "https://localhost:5001/api/Admin/Login",
+                "Cliente" => "https://localhost:5001/api/Cliente/Login",
+                "CuentaComercio" => "https://localhost:5001/api/CuentaComercio/Login",
+                "InstitucionBancaria" => "https://localhost:5001/api/InstitucionBancaria/Login",
+                _ => throw new ArgumentException("Tipo de usuario no soportado")
+            };
 
-            string apiUrl = "https://localhost:5001/api/login";
+            // 3) Construir el payload según API
+            object payload = LoginRequest.UserType switch
+            {
+                "Admin" => new { UserName = LoginRequest.Email, Password = LoginRequest.Password },
+                _ => new { Email = LoginRequest.Email, Password = LoginRequest.Password }
+            };
 
+            var jsonPayload = JsonSerializer.Serialize(payload);
             using var httpClient = new HttpClient();
+            var response = await httpClient.PostAsync(
+                apiUrl,
+                new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
 
-            object loginPayload = new { LoginName = LoginRequest.Email, LoginRequest.Password, LoginRequest.UserType };
-
-            var json = JsonSerializer.Serialize(loginPayload);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await httpClient.PostAsync(apiUrl, content);
-          
             if (!response.IsSuccessStatusCode)
             {
                 ErrorMessage = "Usuario o credenciales incorrectos.";
                 return Page();
             }
 
-            var apiResponse = await response.Content.ReadAsStringAsync();
-            using var jsonDoc = JsonDocument.Parse(apiResponse);
-            var root = jsonDoc.Deserialize<TokenResponse>(new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            // 4) Leer la respuesta y extraer token y/o userId
+            var body = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(body);
+            var root = doc.RootElement;
 
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadJwtToken(root.Token);
+            string? token = null;
+            if (root.TryGetProperty("token", out var tok))
+                token = tok.GetString();
 
-            var claims = new List<Claim>(jwtToken.Claims);
-            //foreach (var claim in jwtToken.Claims)
-            //{
-                
-            //    if (!claims.Any(c => c.Type == claim.Type && c.Value == claim.Value))
-            //    {
-            //        claims.Add(claim);
-            //    }
-            //}            
-
-            Response.Cookies.Append("jwt_token", root.Token, new CookieOptions
+            int userId = 0;
+            if (root.TryGetProperty("userId", out var idProp) ||
+                root.TryGetProperty("UserId", out idProp))
             {
-                HttpOnly = true,
-                Secure = true, 
-                Expires = DateTimeOffset.UtcNow.AddMinutes(60),
-                SameSite = SameSiteMode.Strict 
-            });
+                userId = idProp.GetInt32();
+            }
 
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            // 5) Guardar JWT en cookie (para llamadas API)
+            if (!string.IsNullOrEmpty(token))
+            {
+                Response.Cookies.Append("jwt_token", token, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    Expires = DateTimeOffset.UtcNow.AddHours(1),
+                    SameSite = SameSiteMode.Strict
+                });
+            }
 
+            // 6) Construir Claims
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name,            LoginRequest.Email),
+                new Claim(ClaimTypes.Role,            LoginRequest.UserType)
+            };
+            if (userId > 0)
+                claims.Add(new Claim(ClaimTypes.NameIdentifier, userId.ToString()));
+
+            // 7) Agregar claims extra del JWT, si existe
+            if (!string.IsNullOrEmpty(token))
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+                foreach (var c in jwtToken.Claims)
+                {
+                    if (!claims.Exists(x => x.Type == c.Type && x.Value == c.Value))
+                        claims.Add(c);
+                }
+            }
+
+            // 8) Sign in con CookieAuthentication
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                new AuthenticationProperties
-                {
-                    IsPersistent = true
-                });
+                new ClaimsPrincipal(identity),
+                new AuthenticationProperties { IsPersistent = true }
+            );
 
+            // 9) Redirigir según rol
             return LoginRequest.UserType switch
             {
                 "Admin" => RedirectToPage("/AdminPages/AdminHome"),
                 "Cliente" => RedirectToPage("/ClientesPages/ClienteHome"),
                 "CuentaComercio" => RedirectToPage("/ComercioPages/ComercioHome"),
                 "InstitucionBancaria" => RedirectToPage("/BancoPages/BancoHome"),
-                _ => RedirectToPage("/") // en caso de tipo inesperado
+                _ => RedirectToPage("/")
             };
         }
     }
 
     public class LoginRequestModel
     {
-        public string UserType { get; set; }
-        public string Email { get; set; }
-        public string? Password { get; set; }
-    }
-    public class TokenResponse
-    {
-        public string Token { get; set; }
+        public string UserType { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string Password { get; set; } = "";
     }
 }

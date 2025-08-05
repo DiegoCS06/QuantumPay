@@ -1,347 +1,161 @@
-﻿using BaseManager;
+﻿// WebAPI/Controllers/ClienteController.cs
+using System;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Amazon;
+using BaseManager;
 using CoreApp;
 using DTOs;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Services;
 
 namespace WebAPI.Controllers
 {
-    [Authorize(Roles = "Admin,Cliente")]
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
+    [Authorize(Roles = "Admin,Cliente")]
     public class ClienteController : ControllerBase
     {
-        [HttpPost]
-        [Route("Create")]
+        // ====================================
+        // Acciones públicas (no requieren cookie)
+        // ====================================
 
-        public async Task<ActionResult> Create(Cliente cliente, [FromQuery] string emailCode, [FromQuery] string smsCode)
+        [AllowAnonymous]
+        [HttpPost("Create")]
+        public async Task<ActionResult<Cliente>> Create(
+            [FromBody] Cliente cliente,
+            [FromQuery] string emailCode,
+            [FromQuery] string smsCode)
         {
             try
             {
-                Console.WriteLine($"[CREATE] Registro de cliente: correo={cliente.correo}, contrasena={cliente.contrasena}");
-                //VERIFICADORES
+                Console.WriteLine($"[CREATE] Registro de cliente: correo={cliente.correo}");
 
-                var emailVerifier = new EmailVerificationManager(); //instancia del verificador de email
-                var smsVerifier = new SmsVerificationManager(); // instancia del verificador de SMS
-
-                // Verificar código OTP email 1
-                bool emailVerified = emailVerifier.VerifyCode(cliente.correo, emailCode);
-                if (!emailVerified)
+                // 1) Verificar código OTP por email
+                var emailVerifier = new EmailVerificationManager();
+                if (!emailVerifier.VerifyCode(cliente.correo, emailCode))
                     return BadRequest("Código de verificación de email inválido.");
 
-                // Verificar código OTP de SMS
+                // 2) Verificar código OTP por SMS
                 if (string.IsNullOrWhiteSpace(smsCode))
-                {
-                    Console.WriteLine("[CREATE] smsCode vacío o nulo.");
                     return BadRequest("El código de verificación SMS es requerido.");
-                }
-                bool smsVerified = smsVerifier.VerifyCode(cliente.telefono, smsCode);
-                if (!smsVerified)
+
+                var smsVerifier = new SmsVerificationManager();
+                if (!smsVerifier.VerifyCode(cliente.telefono, smsCode))
                     return BadRequest("Código de verificación SMS inválido.");
 
-                // Leer variables de entorno dentro de sistema (HAY QUE CONFIGURARLAS EN EL SERVIDOR)
-                var awsAccessKeyId = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID")
-                    ?? throw new Exception("AWS_ACCESS_KEY_ID no configurada.");
-                var awsSecretKey = Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY")
-                    ?? throw new Exception("AWS_SECRET_ACCESS_KEY no configurada.");
-                var awsRegionName = Environment.GetEnvironmentVariable("AWS_REGION") ?? "us-east-1";
-                var region = Amazon.RegionEndpoint.GetBySystemName(awsRegionName);
+                // 3) Configurar AWS para reconocimiento facial
+                var awsKey = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID")
+                                ?? throw new Exception("AWS_ACCESS_KEY_ID no configurada.");
+                var awsSecret = Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY")
+                                ?? throw new Exception("AWS_SECRET_ACCESS_KEY no configurada.");
+                var regionName = Environment.GetEnvironmentVariable("AWS_REGION") ?? "us-east-1";
+                var region = RegionEndpoint.GetBySystemName(regionName);
+                var faceVerifier = new FaceRecognitionManager(awsKey, awsSecret, region);
 
-                var faceVerifier = new FaceRecognitionManager(awsAccessKeyId, awsSecretKey, region);
-
-                if (cliente == null)
+                // 4) Validar imágenes en base64
+                if (string.IsNullOrWhiteSpace(cliente.fotoCedula) ||
+                    string.IsNullOrWhiteSpace(cliente.fotoPerfil))
                 {
-                    Console.WriteLine("[CREATE] Cliente is null.");
-                    return BadRequest("Cliente data is missing.");
+                    return BadRequest("Las imágenes de cédula y perfil son requeridas.");
                 }
-                if (string.IsNullOrWhiteSpace(cliente.fotoCedula) || string.IsNullOrWhiteSpace(cliente.fotoPerfil))
+                if (!IsBase64String(cliente.fotoCedula) ||
+                    !IsBase64String(cliente.fotoPerfil))
                 {
-                    Console.WriteLine("[CREATE] fotoCedula or fotoPerfil is null or empty.");
-                    return BadRequest("Las imágenes son requeridas.");
-                }
-                if (!IsBase64String(cliente.fotoCedula) || !IsBase64String(cliente.fotoPerfil))
-                {
-                    Console.WriteLine("[CREATE] Invalid base64 for images.");
                     return BadRequest("Las imágenes deben estar en formato base64 válido.");
                 }
 
-                byte[] cedulaBytes = Convert.FromBase64String(cliente.fotoCedula);
-                byte[] selfieBytes = Convert.FromBase64String(cliente.fotoPerfil);
+                var cedulaBytes = Convert.FromBase64String(cliente.fotoCedula);
+                var selfieBytes = Convert.FromBase64String(cliente.fotoPerfil);
 
-                // Verificar selfie vs cédula
-                bool faceMatch = await faceVerifier.VerifyFaceAsync(selfieBytes, cedulaBytes);
-                if (!faceMatch)
+                // 5) Comparar rostro con cédula
+                if (!await faceVerifier.VerifyFaceAsync(selfieBytes, cedulaBytes))
                     return BadRequest("La selfie no coincide con la imagen de la cédula.");
 
-                //SI PASA LAS VERIFICACIONES, CREAR EL CLIENTE
-
+                // 6) Hashear la contraseña y crear el cliente
                 cliente.contrasena = BCrypt.Net.BCrypt.HashPassword(cliente.contrasena);
-
                 var cm = new ClienteManager();
                 await cm.Create(cliente);
+
                 Console.WriteLine("[CREATE] Cliente creado exitosamente.");
                 return Ok(cliente);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[CREATE] Excepción: {ex.Message}");
-                return StatusCode(500, ex.Message);
-            }
-        }
-        [HttpGet]
-        [Route("RetrieveAll")]
-        public ActionResult RetrieveAll()
-        {
-            try
-            {
-                var cm = new ClienteManager();
-                var lstResults = cm.RetrieveAll();
-                return Ok(lstResults);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
+                Console.WriteLine($"[CREATE] Error: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
-        [HttpGet]
-        [Route("RetrieveById")]
-        public ActionResult RetrieveById(int Id)
+        [AllowAnonymous]
+        [HttpGet("SendEmailVerification")]
+        public ActionResult SendEmailVerification([FromQuery] string email)
         {
             try
             {
-                var cm = new ClienteManager();
-                var result = cm.RetrieveById(Id);
-                if (result == null)
-                {
-                    return Ok(new List<object>());
-                }
-
-                return Ok(new List<object> { result });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        [HttpGet]
-        [Route("RetrieveByEmail")]
-        public ActionResult RetrieveByEmail(string correo)
-        {
-            try
-            {
-                var cm = new ClienteManager();
-                var result = cm.RetrieveByEmail(correo);
-
-                if (result == null)
-                {
-                    return Ok(new List<object>());
-                }
-
-                return Ok(new List<object> { result });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { error = ex.Message });
-            }
-        }
-
-        [HttpGet]
-        [Route("RetrieveByCedula")]
-        public ActionResult Retrieve(string cedula)
-        {
-            try
-            {
-                var cm = new ClienteManager();
-                var result = cm.RetrieveByCedula(cedula);
-
-                if (result == null)
-                {
-                    return Ok(new List<object>());
-                }
-
-                return Ok(new List<object> { result });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { error = ex.Message });
-            }
-        }
-
-        [HttpGet]
-        [Route("RetrieveByTelefono")]
-        public ActionResult RetrieveByTelefono(string telefono)
-        {
-            try
-            {
-                var cm = new ClienteManager();
-                var result = cm.RetrieveByTelefono(telefono);
-
-                if (result == null)
-                {
-                    return Ok(new List<object>());
-                }
-
-                return Ok(new List<object> { result });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { error = ex.Message });
-            }
-        }
-
-        [HttpPut]
-        [Route("Update")]
-        public ActionResult Update(Cliente cliente)
-        {
-            try
-            {
-                if (!string.IsNullOrWhiteSpace(cliente.contrasena))
-                {
-                    cliente.contrasena = BCrypt.Net.BCrypt.HashPassword(cliente.contrasena);
-                }
-
-                var cm = new ClienteManager();
-                var updatedCliente = cm.Update(cliente);
-                return Ok(updatedCliente);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        [HttpDelete]
-        [Route("Delete/{id}")]
-        public ActionResult Delete(int id)
-        {
-            try
-            {
-                var cm = new ClienteManager();
-                var existing = cm.RetrieveById(id);
-                cm.Delete(id);
-                return Ok(new { Message = $"Usuario con ID {id} eliminado correctamente." });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        [HttpGet]
-        [Route("SendEmailVerification")]
-        public ActionResult SendEmailVerification(string email)
-        {
-            try
-            {
-                var emailVerifier = new EmailVerificationManager();
-                emailVerifier.SendVerificationCode(email);
+                var ev = new EmailVerificationManager();
+                ev.SendVerificationCode(email);
                 return Ok("Código de verificación enviado por email.");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
-        [HttpGet]
-        [Route("SendSmsVerification")]
-        public ActionResult SendSmsVerification(string telefono)
+        [AllowAnonymous]
+        [HttpGet("SendSmsVerification")]
+        public ActionResult SendSmsVerification([FromQuery] string telefono)
         {
             try
             {
-                var smsVerifier = new SmsVerificationManager();
-                smsVerifier.SendVerificationCode(telefono);
+                var sv = new SmsVerificationManager();
+                sv.SendVerificationCode(telefono);
                 return Ok("Código de verificación enviado por SMS.");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
-        [HttpPost]
-        [Route("Login")]
-        public ActionResult Login([FromBody] DTOs.LoginRequest request)
-        {
-            try
-            {
-                Console.WriteLine($"[LOGIN] Email recibido: {request.Email}");
-                Console.WriteLine($"[LOGIN] Password recibido: {request.Password}");
-
-                var cm = new ClienteManager();
-                var user = cm.RetrieveByEmail(request.Email);
-
-                if (user == null)
-                {
-                    Console.WriteLine("[LOGIN] Usuario no encontrado en la base de datos.");
-                    return Unauthorized("Usuario o contraseña incorrectos.");
-                }
-
-                Console.WriteLine($"[LOGIN] Hash almacenado en BD: {user.contrasena}");
-
-                if (!BCrypt.Net.BCrypt.Verify(request.Password, user.contrasena))
-                {
-                    Console.WriteLine("[LOGIN] Contraseña incorrecta.");
-                    return Unauthorized("Usuario o contraseña incorrectos.");
-                }
-
-                Console.WriteLine("[LOGIN] Login exitoso.");
-                return Ok(new { Message = "Login exitoso", UserId = user.Id });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[LOGIN] Excepción: {ex.Message}");
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        [HttpPost]
-        [Route("Logout")]
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return Ok(new { Message = "Sesión cerrada correctamente." });
-        }
-
-        [HttpPost]
-        [Route("SendPasswordResetCode")]
+        [AllowAnonymous]
+        [HttpPost("SendPasswordResetCode")]
         public ActionResult SendPasswordResetCode([FromBody] string email)
         {
             try
             {
                 var user = new ClienteManager().RetrieveByEmail(email);
-                if (user == null)
-                    return NotFound("Usuario no encontrado.");
+                if (user == null) return NotFound("Usuario no encontrado.");
 
-                var emailVerifier = new EmailVerificationManager();
-                emailVerifier.SendVerificationCode(email);
+                var ev = new EmailVerificationManager();
+                ev.SendVerificationCode(email);
                 return Ok("Código de recuperación enviado por email.");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
-        [HttpPost]
-        [Route("ResetPassword")]
-        public ActionResult ResetPassword([FromBody] DTOs.PasswordResetRequest request)
+        [AllowAnonymous]
+        [HttpPost("ResetPassword")]
+        public ActionResult ResetPassword([FromBody] PasswordResetRequest request)
         {
             try
             {
-                var emailVerifier = new EmailVerificationManager();
-                bool verified = emailVerifier.VerifyCode(request.email, request.Code);
-                if (!verified)
+                var ev = new EmailVerificationManager();
+                if (!ev.VerifyCode(request.email, request.Code))
                     return BadRequest("Código de verificación inválido.");
 
                 var cm = new ClienteManager();
                 var user = cm.RetrieveByEmail(request.email);
-                if (user == null)
-                    return NotFound("Usuario no encontrado.");
+                if (user == null) return NotFound("Usuario no encontrado.");
 
                 user.contrasena = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
                 cm.Update(user);
@@ -349,9 +163,125 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [AllowAnonymous]
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        {
+            try
+            {
+                var cm = new ClienteManager();
+                var user = cm.RetrieveByEmail(request.Email);
+                if (user == null ||
+                    !BCrypt.Net.BCrypt.Verify(request.Password, user.contrasena))
+                {
+                    return Unauthorized("Usuario o contraseña incorrectos.");
+                }
+
+                // Construir claims y firmar cookie
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name,           user.correo),
+                    new Claim(ClaimTypes.Role,           "Cliente")
+                };
+                var identity = new ClaimsIdentity(
+                    claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
+
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    principal,
+                    new AuthenticationProperties
+                    {
+                        IsPersistent = true,
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1)
+                    });
+
+                return Ok(new { Message = "Login exitoso", UserId = user.Id });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme);
+            return Ok(new { Message = "Sesión cerrada correctamente." });
+        }
+
+        // ====================================
+        // Acciones protegidas (requieren cookie)
+        // ====================================
+
+        [HttpGet("RetrieveAll")]
+        public ActionResult<List<Cliente>> RetrieveAll()
+        {
+            var cm = new ClienteManager();
+            return Ok(cm.RetrieveAll());
+        }
+
+        [HttpGet("RetrieveById/{id}")]
+        public ActionResult<Cliente> RetrieveById(int id)
+        {
+            var cm = new ClienteManager();
+            var c = cm.RetrieveById(id);
+            return c == null ? NotFound() : Ok(c);
+        }
+
+        [HttpGet("RetrieveByEmail")]
+        public ActionResult<Cliente> RetrieveByEmail([FromQuery] string correo)
+        {
+            var cm = new ClienteManager();
+            var c = cm.RetrieveByEmail(correo);
+            return c == null ? NotFound() : Ok(c);
+        }
+
+        [HttpGet("RetrieveByCedula")]
+        public ActionResult<Cliente> RetrieveByCedula([FromQuery] string cedula)
+        {
+            var cm = new ClienteManager();
+            var c = cm.RetrieveByCedula(cedula);
+            return c == null ? NotFound() : Ok(c);
+        }
+
+        [HttpGet("RetrieveByTelefono")]
+        public ActionResult<Cliente> RetrieveByTelefono([FromQuery] string telefono)
+        {
+            var cm = new ClienteManager();
+            var c = cm.RetrieveByTelefono(telefono);
+            return c == null ? NotFound() : Ok(c);
+        }
+
+        [HttpPut("Update")]
+        public ActionResult<Cliente> Update([FromBody] Cliente cliente)
+        {
+            if (!string.IsNullOrWhiteSpace(cliente.contrasena))
+                cliente.contrasena = BCrypt.Net.BCrypt.HashPassword(cliente.contrasena);
+
+            var cm = new ClienteManager();
+            var updated = cm.Update(cliente);
+            return Ok(updated);
+        }
+
+        [HttpDelete("Delete/{id}")]
+        public ActionResult Delete(int id)
+        {
+            var cm = new ClienteManager();
+            cm.Delete(id);
+            return Ok(new { Message = $"Usuario con ID {id} eliminado correctamente." });
+        }
+
+        // ==================
+        // Métodos auxiliares
+        // ==================
 
         private bool IsBase64String(string base64)
         {

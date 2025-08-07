@@ -1,10 +1,13 @@
 ﻿@page
 @using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.ComercioPages.AdministrarComerciosModel
-@{
+@section Scripts {
+    <script>
+        var userToken = '@HttpContext.Request.Cookies["jwt_token"]';
+    </script>
+    <script src="~/js/pages/cuentacomercio.js"></script>
 }
 @attribute [Authorize(Roles = "CuentaComercio")]
-<script src="~/js/pages/cuentacomercio.js"></script>
 
 <div class="text-end">
     <a asp-page="/ComercioPages/ComercioHome" class="btn btn-outline-dark">⬅️ Volver</a>

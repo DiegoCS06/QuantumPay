@@ -1,18 +1,14 @@
-﻿using CoreApp;
+﻿using BaseManager;
+using CoreApp;
 using DTOs;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using BaseManager;
-using BaseManager;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
+    [Authorize(Roles = "Admin,Cliente")]
     [Route("api/[controller]")]
     [ApiController]
     public class ClienteController : ControllerBase

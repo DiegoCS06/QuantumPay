@@ -14,7 +14,12 @@
         if (!$.fn.dataTable.isDataTable("#tblComisiones")) {
             $("#tblComisiones").DataTable({
                 processing: true,
-                ajax: { url: url, dataSrc: "" },
+                ajax: {
+                    url: url, dataSrc: "",
+                    headers: {
+                        'Authorization': 'Bearer ' + userToken
+                    }
+                },                
                 columns: [
                     { data: "id" },
                     { data: "idInstitucionBancaria" },

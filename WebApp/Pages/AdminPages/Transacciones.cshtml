@@ -4,6 +4,9 @@
 @attribute [Authorize(Roles = "Admin")]
 
 @section Scripts {
+    <script>
+        var userToken = '@HttpContext.Request.Cookies["jwt_token"]';
+    </script>
     <script src="~/js/pages/transacciones.js"></script>
 }
 

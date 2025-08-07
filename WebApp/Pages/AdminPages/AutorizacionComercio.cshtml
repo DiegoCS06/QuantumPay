@@ -1,10 +1,13 @@
 ﻿@page
 @using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.AdminPages.AutorizacionComercioModel
-@{
+@section Scripts{
+    <script>
+        var userToken = '@HttpContext.Request.Cookies["jwt_token"]';
+    </script>
+    <script src="~/js/pages/autorizacioncomercio.js"></script>
 }
 @attribute [Authorize(Roles = "Admin")]
-<script src="~/js/pages/autorizacioncomercio.js"></script>
 
 <div class="text-end">
     <a asp-page="/AdminPages/AdminHome" class="btn btn-outline-dark">⬅️ Volver</a>

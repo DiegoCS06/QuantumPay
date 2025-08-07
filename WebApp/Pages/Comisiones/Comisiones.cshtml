@@ -2,7 +2,10 @@
 @using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.Comisiones.ComisionesModel
 
-@{
+@section Scripts {
+    <script>
+        var userToken = '@HttpContext.Request.Cookies["jwt_token"]';
+    </script>
 }
 @attribute [Authorize(Roles = "Admin")]
 <script src="~/js/pages/Comisiones.js" asp-append-version="true"></script>

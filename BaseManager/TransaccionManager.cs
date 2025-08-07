@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using DataAccess.CRUD;
+﻿using DataAccess.CRUD;
 using DTOs;
 
 namespace CoreApp
@@ -38,7 +35,7 @@ namespace CoreApp
             tCrud.Create(transaccion);
         }
 
-        public List<Transaccion> RetrieveAll()
+        public List<Transaccion> RetrieveAll(int clientId, string clientRole)
         {
             var cCrud = new TransaccionCrudFactory();
             return cCrud.RetrieveAll<Transaccion>();

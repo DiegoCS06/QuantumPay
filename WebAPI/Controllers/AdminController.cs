@@ -1,13 +1,15 @@
-﻿using CoreApp;
+﻿using BaseManager;
+using CoreApp;
 using DTOs;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using BaseManager;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -133,11 +135,11 @@ namespace WebAPI.Controllers
         {
             try
             {
-                Console.WriteLine($"[ADMIN LOGIN] UserName recibido: {request.UserName}");
+                Console.WriteLine($"[ADMIN LOGIN] UserName recibido: {request.LoginName}");
                 Console.WriteLine($"[ADMIN LOGIN] Password recibido: {request.Password}");
 
                 var am = new AdminManager();
-                var admin = am.RetrieveByUserName(request.UserName);
+                var admin = am.RetrieveByUserName(request.LoginName);
 
                 if (admin == null)
                 {

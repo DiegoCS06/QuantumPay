@@ -95,8 +95,11 @@
         $('#tblcuentaComercio').dataTable({
             "ajax": {
                 url: urlService,
-                "dataSrc": ""
-            },
+                "dataSrc": "",
+                headers: {
+                    'Authorization': 'Bearer ' + userToken
+                }
+            },            
             columns: columns
         });
         //asignar eventos de carga de datos o bindin segun la tabla

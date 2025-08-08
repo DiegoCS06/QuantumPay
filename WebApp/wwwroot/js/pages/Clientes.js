@@ -31,7 +31,10 @@
         $('#tblcliente').dataTable({
             "ajax": {
                 url: urlService,
-                "dataSrc": ""
+                "dataSrc": "",
+                headers: {
+                    'Authorization': 'Bearer ' + userToken // Assuming userToken is defined into the view scope
+                }
             },
             columns: columns
         });

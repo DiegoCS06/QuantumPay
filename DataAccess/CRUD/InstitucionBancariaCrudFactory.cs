@@ -43,16 +43,22 @@ namespace DataAccess.CRUD
 
         public override List<T> RetrieveAll<T>()
         {
-            var sqlOperation = new SQLOperation() { ProcedureName = "RET_ALL_INSTITUCIONBANCARIA_PR" };
-            var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
-            var list = new List<T>();
+            var lstInstitucionesBancarias = new List<T>();
 
-            foreach (var r in lstResult)
+            var sqlOperation = new SQLOperation() { ProcedureName = "RET_ALL_INSTITUCIONBANCARIA_PR" };
+
+            var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
+
+            if (lstResult.Count > 0)
             {
-                var t = BuildInstitucionBancaria(r);
-                list.Add((T)(object)t);
+                foreach (var row in lstResult)
+                {
+                    var institucionBancaria = BuildInstitucionBancaria(row);
+                    lstInstitucionesBancarias.Add((T)(object)institucionBancaria);
+                }
             }
-            return list;
+
+            return lstInstitucionesBancarias;
         }
 
 

@@ -165,14 +165,8 @@
 			})
 	};
 
-	this.GetToApi = function (service, callBackFunction, userToken) {
-		$.ajaxSetup({
-			headers: {
-				'Authorization': "Bearer " + userToken
-			}
-		});
-
-		$.get(this.GetUrlApiService(service), function (response) {
+	this.GetToApi = function (service, callBackFunction) {
+		var jqxhr = $.get(this.GetUrlApiService(service), function (response) {
 			console.log("Response " + response);
 			if (callBackFunction) {
 				callBackFunction(response);

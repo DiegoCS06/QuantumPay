@@ -7,10 +7,10 @@ using System.Security.Claims;
 
 namespace WebAPI.Controllers
 {
-    [Authorize(Roles = "Admin,Cliente,InstitucionBancaria")]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class InstitucionBancariaController : ControllerBase 
+    public class InstitucionBancariaController : ControllerBase
     {
         [HttpPost]
         [Route("Create")]
@@ -31,14 +31,13 @@ namespace WebAPI.Controllers
         }
         [HttpGet]
         [Route("RetrieveAll")]
-        public ActionResult<IEnumerable<InstitucionBancaria>> RetrieveAll()
+        public ActionResult RetrieveAll()
         {
             try
             {
-                var tm = new InstitucionBancariaManager();
-                
-                var all = tm.RetrieveAll();
-                return Ok(all);
+                var im = new InstitucionBancariaManager();
+                var lstResults = im.RetrieveAll();
+                return Ok(lstResults);
             }
             catch (Exception ex)
             {

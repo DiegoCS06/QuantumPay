@@ -10,7 +10,7 @@ namespace CoreApp
 {
     public class ComercioManager : BaseManager
     {
-        private readonly ComercioCrudFactory _crud = new();
+
         public async Task Create(Comercio comercio)
         {
             try
@@ -35,7 +35,12 @@ namespace CoreApp
             }
         }
 
-        public List<Comercio> RetrieveAll() => _crud.RetrieveAll<Comercio>();
+        public List<Comercio> RetrieveAll()
+        {
+            var uCrud = new ComercioCrudFactory();
+            return uCrud.RetrieveAll<Comercio>();
+
+        }
 
         public Comercio RetrieveById(int Id)
         {

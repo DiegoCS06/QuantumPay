@@ -34,7 +34,7 @@ namespace WebAPI.Controllers
         }
         [HttpGet]
         [Route("RetrieveAll")]
-        public ActionResult<IEnumerable<Comercio>> RetrieveAll()
+        public ActionResult RetrieveAll()
         {
             try
             {

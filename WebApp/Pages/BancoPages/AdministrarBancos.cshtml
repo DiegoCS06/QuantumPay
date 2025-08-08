@@ -1,21 +1,18 @@
 ﻿@page
 @using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.BancoPages.AdministrarBancosModel
-@attribute [Authorize(Roles = "InstitucionBancaria")]
-
-@section Scripts {
+@section Scripts{
     <script>
-        // Captura el token JWT desde la cookie
         var userToken = '@HttpContext.Request.Cookies["jwt_token"]';
     </script>
     <script src="~/js/pages/bancos.js"></script>
 }
+@attribute [Authorize(Roles = "InstitucionBancaria")]
 
-<div class="text-end mb-3">
+<div class="text-end">
     <a asp-page="/BancoPages/BancoHome" class="btn btn-outline-dark">⬅️ Volver</a>
 </div>
-
-<div class="bs-docs-section mb-4">
+<div class="    bs-docs-section">
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
@@ -23,64 +20,70 @@
                     🏦 Instituciones Bancarias Registradas
                 </div>
                 <div class="card-body" style="overflow-x: auto; width: 100%;">
-                    <table id="tblinstitucionBancaria" class="display" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Código Identidad</th>
-                                <th>Cédula Jurídica</th>
-                                <th>Dirección</th>
-                                <th>Teléfono</th>
-                                <th>Correo Electrónico</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
+                        <table id="tblinstitucionBancaria" class="display" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Código Identidad</th>
+                                    <th>Cédula Jurídica</th>
+                                    <th>Dirección</th>
+                                    <th>telefono</th>
+                                    <th>Correo Electrónico</th>
+                                </tr>
+                            </thead>
+                        </table>
+                 </div>
             </div>
-        </div>
+         </div>
     </div>
 </div>
-
 <div class="row">
     <div class="col-lg-6">
-        <fieldset class="border p-3">
-            <legend class="w-auto">Banco</legend>
+        <div class="ns-component">
             <form>
-                <div class="form-group mb-2">
-                    <label for="txtId" class="form-label">ID Institución Bancaria</label>
-                    <input id="txtId" readonly type="number" class="form-control" />
-                </div>
-                <div class="form-group mb-2">
-                    <label for="txtCodigoIdentidad" class="form-label">Código Identidad</label>
-                    <input id="txtCodigoIdentidad" type="number" class="form-control" />
-                </div>
-                <div class="form-group mb-2">
-                    <label for="txtCedulaJuridica" class="form-label">Cédula Jurídica</label>
-                    <input id="txtCedulaJuridica" type="text" class="form-control" />
-                </div>
-                <div class="form-group mb-2">
-                    <label for="txtDireccionSedePrincipal" class="form-label">Dirección Sede Principal</label>
-                    <input id="txtDireccionSedePrincipal" type="text" class="form-control" />
-                </div>
-                <div class="form-group mb-2">
-                    <label for="txtTelefono" class="form-label">Teléfono</label>
-                    <input id="txtTelefono" type="number" class="form-control" />
-                </div>
-                <div class="form-group mb-2">
-                    <label for="txtEstadoSolicitud" class="form-label">Estado de Solicitud</label>
-                    <input id="txtEstadoSolicitud" readonly type="text" class="form-control" />
-                </div>
-                <div class="form-group mb-2">
-                    <label for="txtCorreoElectronico" class="form-label">Correo Electrónico</label>
-                    <input id="txtCorreoElectronico" type="text" class="form-control" />
-                </div>
+                <fieldset>
+                    <legend>Banco</legend>
+                    <div class="form-group">
+                        <label for="txtId" class="form-label mt-$">ID Institucion Bancaria</label>
+                        <input id="txtId" readonly type="number" class="form-control" />
+                    </div>
 
-                <div class="mt-3">
-                    <button id="btnCreate" class="btn btn-primary btn-xs me-2" type="button">Save</button>
-                    <button id="btnUpdate" class="btn btn-info btn-xs me-2" type="button">Update</button>
-                    <button id="btnDelete" class="btn btn-danger btn-xs" type="button">Delete</button>
-                </div>
+                    <div class="form-group">
+                        <label for="txtCodigoIdentidad" class="form-label mt-$">Código Identidad</label>
+                        <input id="txtCodigoIdentidad" type="number" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txtCedulaJuridica" class="form-label mt-$">Cédula Jurídica</label>
+                        <input id="txtCedulaJuridica" type="text" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txtDireccionSedePrincipal" class="form-label mt-$">Dirección Sede Principal</label>
+                        <input id="txtDireccionSedePrincipal" type="text" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txtTelefono" class="form-label mt-$">Teléfono</label>
+                        <input id="txtTelefono" type="number" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txtEstadoSolicitud" class="form-label mt-$">Estado de Solicitud</label>
+                        <input id="txtEstadoSolicitud" readonly type="text" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="txtCorreoElectronico" class="form-label mt-$">Correo Electronico</label>
+                        <input id="txtCorreoElectronico" type="text" class="form-control" />
+                    </div>
+
+                </fieldset>
             </form>
-        </fieldset>
+            <br />
+            <button id="btnCreate" class="source-button btn btn-primary btn-xs" type="button">Save</button>
+            <button id="btnUpdate" class="source-button btn btn-info btn-xs" type="button">Update</button>
+            <button id="btnDelete" class="source-button btn btn-danger btn-xs" type="button">Delete</button>
+        </div>
     </div>
+
 </div>

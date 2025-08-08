@@ -1,82 +1,117 @@
-﻿// WebAPI/Controllers/TransaccionController.cs
-using BaseManager;
-using CoreApp;
+﻿using CoreApp;
 using DTOs;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using WebAPI.Services;
 
 namespace WebAPI.Controllers
 {
-    [Authorize(Roles = "Admin,Cliente")]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class TransaccionController : ControllerBase
     {
-        private readonly IEmailSender _emailSender;
+        private readonly TransaccionManager _manager = new();
 
-        public TransaccionController(IEmailSender emailSender)
-            => _emailSender = emailSender;
+        [HttpPost]
+        [Route("Create")]
+        public async Task<IActionResult> Crear([FromBody] Transaccion transaccion)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-        [HttpPost("Create")]
-        public async Task<ActionResult<Transaccion>> Create(
-            [FromBody] Transaccion t,
-            [FromQuery] string email)
+            try
+            {
+                await _manager.Create(transaccion);
+                return Ok(new { message = "Transacción creada exitosamente." });
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Message.Contains("FOREIGN KEY constraint"))
+                {
+                    return BadRequest(new { error = "Alguna de las entidades relacionadas (cliente, comercio o banco) no existe o es inválida." });
+                }
+                return BadRequest(new { error = "Error de base de datos: " + ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+        
+        [HttpGet]
+        [Route("RetrieveAll")]
+        public ActionResult<IEnumerable<Transaccion>> RetrieveAll()
         {
             try
             {
-                // 1) Crear la transacción
-                var mgr = new TransaccionManager();
-                mgr.Create(t);
+                var user = HttpContext.User;
+                var userId = user.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+                var userRole = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
 
-                // 2) Enviar correo si recibimos email
-                if (!string.IsNullOrWhiteSpace(email))
+                var tm = new TransaccionManager();
+                var lstResults = tm.RetrieveAll(int.Parse(userId), userRole);
+                return Ok(lstResults);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("RetrieveById")]
+        public ActionResult RetrieveById(int id)
+        {
+            try
+            {
+                var user = HttpContext.User;
+                var userId = user.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+                var userRole = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+                var tm = new TransaccionManager();
+                var result = tm.OrdenarPorId(id);
+                if (result == null)
                 {
-                    await _emailSender.SendEmailAsync(
-                        toEmail: email,
-                        subject: "Confirmación de compra",
-                        message: $"Compra por {t.Monto:C} procesada."
-                    );
+                    return Ok(new List<object>());
                 }
 
-                return Ok(t);
+                return Ok(new List<object> { result });
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError,
-                    ex.Message
-                );
+                return StatusCode(500, ex.Message);
             }
         }
 
-        [HttpPut("Update/{id}")]
-        public ActionResult<Transaccion> Update(
-            int id,
-            [FromBody] Transaccion t)
+        [HttpGet]
+        [Route("RetrieveByBanco")]
+        public ActionResult RetrieveByBanco(int idCuentaBancaria)
         {
             try
             {
-                t.Id = id;
-                var mgr = new TransaccionManager();
-                var updated = mgr.Update(t);
-                return Ok(updated);
+                var user = HttpContext.User;
+                var userId = user.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+                var userRole = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                var cm = new TransaccionManager();
+                var result = cm.OrdenarPorBanco(idCuentaBancaria);
+                if (result == null)
+                {
+                    return Ok(new List<object>());
+                }
+
+                return Ok(new List<object> { result });
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError,
-                    ex.Message
-                );
+                return StatusCode(500, ex.Message);
             }
         }
 
-        [HttpDelete("Delete/{id}")]
-        public IActionResult Delete(int id)
+        [HttpGet]
+        [Route("RetrieveByComercio")]
+        public ActionResult RetrieveByComercio(int idComercio)
         {
             try
             {
@@ -91,64 +126,66 @@ namespace WebAPI.Controllers
                 }
                 return Ok(result); // <-- Devuelve la lista directamente
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError,
-                    ex.Message
-                );
+                return StatusCode(500, ex.Message);
             }
         }
 
-        [HttpGet("RetrieveAll")]
-        public ActionResult<IEnumerable<Transaccion>> RetrieveAll()
+        [HttpGet]
+        [Route("RetrieveByCliente")]
+        public ActionResult RetrieveByCliente(int idCliente)
         {
             try
             {
                 var user = HttpContext.User;
-
                 var userId = user.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
                 var userRole = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-
-                if (userId == null || userRole == null)
-                    return Unauthorized("No se pudo verificar la identidad del usuario.");
-
-                int Id = int.Parse(userId);
-
-                var tm = new TransaccionManager();
-
-                if (userRole == "Admin")
+                var cm = new TransaccionManager();
+                var result = cm.OrdenarPorCliente(idCliente);
+                if (result == null)
                 {
-                    // Admin ve todas las transacciones
-                    var all = tm.RetrieveAll();
-                    return Ok(all);
+                    return Ok(new List<object>());
                 }
-                else
-                {
-                    // Otros roles ven solo sus transacciones
-                    var userTransactions = tm.RetrieveByCliente(Id);
-                    return Ok(userTransactions);
-                }
+
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpGet("RetrieveByBanco")]
-        public ActionResult<IEnumerable<Transaccion>> RetrieveByBanco(
-            [FromQuery] int cuentaId)
-            => Ok(new TransaccionManager().RetrieveByCuenta(cuentaId));
 
-        [HttpGet("RetrieveByComercio")]
-        public ActionResult<IEnumerable<Transaccion>> RetrieveByComercio(
-            [FromQuery] int idComercio)
-            => Ok(new TransaccionManager().RetrieveByComercio(idComercio));
+        [HttpPut]
+        [Route("Update")]
+        public IActionResult Update([FromBody] Transaccion transaccion)
+        {
+            try
+            {
+                _manager.Update(transaccion);
+                return Ok(new { message = "Transacción actualizada exitosamente." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
 
-        [HttpGet("RetrieveByCliente")]
-        public ActionResult<IEnumerable<Transaccion>> RetrieveByCliente(
-            [FromQuery] int clienteId)
-            => Ok(new TransaccionManager().RetrieveByCliente(clienteId));
+        [HttpDelete]
+        [Route("Delete/{id}")]
+        public ActionResult Delete(int id)
+        {
+            try
+            {
+                var cm = new TransaccionManager();
+                var existing = cm.OrdenarPorId(id);
+                cm.Delete(id);
+                return Ok(new { Message = $"Transaccion con ID {id} eliminado correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }
-

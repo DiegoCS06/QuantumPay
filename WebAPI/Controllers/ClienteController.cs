@@ -1,8 +1,4 @@
 ﻿// WebAPI/Controllers/ClienteController.cs
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using Amazon;
 using BaseManager;
 using CoreApp;
@@ -10,9 +6,8 @@ using DTOs;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI.Services;
+using System.Security.Claims;
 
 namespace WebAPI.Controllers
 {

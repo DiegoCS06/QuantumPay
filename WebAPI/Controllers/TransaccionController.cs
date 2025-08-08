@@ -2,14 +2,17 @@
 using BaseManager;
 using CoreApp;
 using DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using WebAPI.Services;
 
 namespace WebAPI.Controllers
 {
+    [Authorize(Roles = "Admin,Cliente")]
     [ApiController]
     [Route("api/[controller]")]
     public class TransaccionController : ControllerBase
@@ -40,32 +43,6 @@ namespace WebAPI.Controllers
                     );
                 }
 
-        [HttpGet]
-        [Route("RetrieveById")]
-        public ActionResult RetrieveById(int id)
-        {
-            try
-            {
-                var user = HttpContext.User;
-                var userId = user.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
-                var userRole = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-
-                if (userId == null || userRole == null)
-                {
-                    return Unauthorized("No se puede verificar elmid del Usuario");
-                }
-                var currentId = int.Parse(userId);
-
-                var tm = new TransaccionManager();
-                var result = tm.OrdenarPorId(id);
-                if (result == null)
-                {
-                    return NotFound("Datos no encontrados");
-                }
-
-                return Ok(new List<object> { result });
-            }
-            catch (Exception ex)
                 return Ok(t);
             }
             catch (System.Exception ex)
@@ -117,8 +94,39 @@ namespace WebAPI.Controllers
 
         [HttpGet("RetrieveAll")]
         public ActionResult<IEnumerable<Transaccion>> RetrieveAll()
-            => Ok(new TransaccionManager().RetrieveAll());
+        {
+            try
+            {
+                var user = HttpContext.User;
 
+                var userId = user.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+                var userRole = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+                if (userId == null || userRole == null)
+                    return Unauthorized("No se pudo verificar la identidad del usuario.");
+
+                int Id = int.Parse(userId);
+
+                var tm = new TransaccionManager();
+
+                if (userRole == "Admin")
+                {
+                    // Admin ve todas las transacciones
+                    var all = tm.RetrieveAll();
+                    return Ok(all);
+                }
+                else
+                {
+                    // Otros roles ven solo sus transacciones
+                    var userTransactions = tm.RetrieveByCliente(Id);
+                    return Ok(userTransactions);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
         [HttpGet("RetrieveByBanco")]
         public ActionResult<IEnumerable<Transaccion>> RetrieveByBanco(
             [FromQuery] int cuentaId)
@@ -135,3 +143,4 @@ namespace WebAPI.Controllers
             => Ok(new TransaccionManager().RetrieveByCliente(clienteId));
     }
 }
+

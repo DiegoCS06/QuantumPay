@@ -44,7 +44,10 @@
         $('#tblinstitucionBancaria').dataTable({
             "ajax": {
                 url: urlService,
-                "dataSrc": ""
+                "dataSrc": "",
+                headers: {
+                    'Authorization': 'Bearer ' + userToken
+                },
             },
             columns: columns
         });

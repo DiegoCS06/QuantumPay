@@ -59,7 +59,7 @@ namespace DataAccess.CRUD
 
         public override List<T> RetrieveAll<T>()
         {
-            var op = new SQLOperation { ProcedureName = "SP_SEL_ALL_TRANSACCIONES" };
+            var op = new SQLOperation { ProcedureName = "RET_ALL_TRANSACCION_PR" };
             var rows = _sqlDao.ExecuteQueryProcedure(op);
             var list = new List<T>();
 

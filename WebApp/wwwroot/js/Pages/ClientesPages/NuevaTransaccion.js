@@ -6,18 +6,19 @@ function NuevaTransaccionController() {
     this.apiCuenta = "CuentaCliente";
     this.apiComercio = "Comercio";
 
+    this.userToken = userToken;
     this.clienteId = parseInt($("#hdnClienteId").val() || "0", 10);
-    this.email = $("#hdnEmail").val() || "";
-
+    this.userName = $("#hdnEmail").val() || "";
+    
     this.init = () => {
         this.loadDropdowns();
         this.bindEvents();
     };
 
     this.loadDropdowns = () => {
-        // Carga cuentas bancarias, evitando duplicados
+        // Cuentas
         ca.GetToApi(
-            `${this.apiCuenta}/RetrieveAll?clienteId=${this.clienteId}`,
+            `${this.apiCuenta}/RetrieveAll`,
             data => {
                 const ddl = $("#ddlCuentas").empty();
                 const seen = new Set();
@@ -33,10 +34,11 @@ function NuevaTransaccionController() {
                         );
                     }
                 });
-            }
+            },
+            this.userToken 
         );
 
-        // Carga comercios
+        // Comercios
         ca.GetToApi(
             `${this.apiComercio}/RetrieveAll`,
             data => {
@@ -44,7 +46,8 @@ function NuevaTransaccionController() {
                 data.forEach(c => {
                     ddl.append(new Option(c.nombre, c.id));
                 });
-            }
+            },
+            this.userToken 
         );
     };
 
@@ -63,11 +66,12 @@ function NuevaTransaccionController() {
             };
 
             ca.PostToAPI(
-                `${this.api}/Create?email=${encodeURIComponent(this.email)}`,
+                `${this.api}/Create?email=${encodeURIComponent(this.userName)}`,
                 dto,
                 () => {
                     window.location.href = "/ClientesPages/ClienteHome";
-                }
+                },
+                { Authorization: "Bearer " + this.userToken }
             );
         });
     };

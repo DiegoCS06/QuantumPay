@@ -40,10 +40,10 @@ function TransaccionesViewController() {
             ajax: {
                 url: url,
                 dataSrc: "",
-                headers: { 'Authorization': 'Bearer ' + userToken },
                 error: function (xhr, status, err) {
                     console.error("DataTable AJAX error:", status, err);
-                }
+                },
+                headers: { 'Authorization': 'Bearer ' + userToken },
             },
             columns: [
                 { data: "id" },

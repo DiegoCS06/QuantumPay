@@ -15,12 +15,22 @@
     };
 
     this.loadTable = function () {
-        const url = ca.GetUrlApiService(`${this.Api}/RetrieveAll?clienteId=${this.getClienteId()}`);
+        const url = ca.GetUrlApiService(`${this.Api}/RetrieveAll`);
         $('#tblCuentaCliente').DataTable({
             destroy: true,
-            ajax: { url: url, dataSrc: '' },
-            headers: {
-                'Authorization': 'Bearer ' + userToken
+            ajax: {
+                url: url,
+                dataSrc: function (json) {
+                    console.log("Respuesta API →", json);
+                    return json;
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error AJAX DataTable:", status, error);
+                    console.log("Response text:", xhr.responseText);
+                },  
+                headers: {
+                    'Authorization': 'Bearer ' + userToken
+                },
             },
             columns: [
                 { data: 'banco' },

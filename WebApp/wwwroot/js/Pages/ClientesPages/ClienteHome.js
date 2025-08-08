@@ -23,7 +23,20 @@ function ClienteHomePage() {
         const url = ca.GetUrlApiService(`${this.apiCuenta}/RetrieveAll?clienteId=${this.getClienteId()}`);
         $('#tblCuentasHome').DataTable({
             destroy: true,
-            ajax: { url: url, dataSrc: '' },
+            ajax: {
+                url: url,
+                dataSrc: function (json) {
+                    console.log("Respuesta API →", json);
+                    return json;
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error AJAX DataTable:", status, error);
+                    console.log("Response text:", xhr.responseText);
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + userToken
+                }
+            },
             columns: [
                 { data: 'banco' },
                 { data: 'tipoCuenta' },
@@ -34,10 +47,13 @@ function ClienteHomePage() {
     };
 
     this.loadTransacciones = function () {
-        const url = ca.GetUrlApiService(`${this.apiTrans}/RetrieveByCliente?clienteId=${this.getClienteId()}`);
+        const url = ca.GetUrlApiService(`${this.apiTrans}/RetrieveAll`);
         $('#tblUltimasTransacciones').DataTable({
             destroy: true,
-            ajax: { url: url, dataSrc: '' },
+            ajax: {
+                url: url, dataSrc: '',
+                headers: { 'Authorization': 'Bearer ' + userToken }
+            },
             columns: [
                 { data: 'fecha' },
                 { data: 'metodoPago' },

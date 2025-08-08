@@ -41,6 +41,11 @@ namespace CoreApp
         }
 
         public List<Transaccion> RetrieveAll() => _crud.RetrieveAll<Transaccion>();
+        public List<Transaccion> RetrieveAllByUserId(int userId)
+        {
+            var allTransactions = new TransaccionCrudFactory().RetrieveAll<Transaccion>();
+            return allTransactions.Where(t => t.IdCuentaCliente == userId).ToList();
+        }
         public Transaccion RetrieveById(int id) => _crud.RetrieveById<Transaccion>(id);
         public List<Transaccion> RetrieveByCuenta(int cId) => _crud.RetrieveByBanco(cId);
         public List<Transaccion> RetrieveByComercio(int coId) => _crud.RetrieveByComercio(coId);

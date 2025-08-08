@@ -7,24 +7,29 @@ using System.Security.Claims;
 namespace WebAPI.Controllers
 {
 
-    [Authorize]
-
-
-
+    [Authorize(Roles = "Admin,Cliente")]
     [ApiController]
     [Route("api/[controller]")]
     public class CuentaClienteController : ControllerBase
     {
         [HttpGet("RetrieveAll")]
-        public ActionResult RetrieveAll([FromQuery] int clienteId)
+        public ActionResult RetrieveAll()
         {
             try
             {
                 var user = HttpContext.User;
+
                 var userId = user.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
                 var userRole = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+                if (userId == null || userRole == null)
+                    return Unauthorized("No se pudo verificar la identidad del usuario.");
+
+                int Id = int.Parse(userId);
+
                 var m = new CuentaClienteManager();
-                var list = m.Listar(clienteId);
+                var list = m.Listar(int.Parse(userId));
+
                 return Ok(list);
             }
             catch (Exception ex)

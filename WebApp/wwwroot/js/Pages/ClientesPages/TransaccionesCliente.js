@@ -11,10 +11,13 @@ function TransaccionesClienteController() {
     };
 
     this.loadTable = function () {
-        const url = ca.GetUrlApiService(`${this.api}/RetrieveByCliente?clienteId=${this.getClienteId()}`);
+        const url = ca.GetUrlApiService(`${this.api}/RetrieveAll`);
         $('#tblTransaccionesCliente').DataTable({
             destroy: true,
-            ajax: { url: url, dataSrc: '' },
+            ajax: {
+                url: url, dataSrc: '',
+                headers: { 'Authorization': 'Bearer ' + userToken }
+            },
             columns: [
                 { data: 'id' },
                 { data: 'fecha' },

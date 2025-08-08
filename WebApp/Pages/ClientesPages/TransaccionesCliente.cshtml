@@ -2,9 +2,16 @@
 @using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.ClientesPages.TransaccionesClienteModel
 @attribute [Authorize(Roles = "Cliente")]
-
+@section Scripts {
+    <script>
+        // Captura el JWT desde la cookie
+        var userToken = '@HttpContext.Request.Cookies["jwt_token"]';
+    </script>
+    <script src="~/js/ControlActions.js"></script>
+    <script src="~/js/Pages/ClientesPages/TransaccionesCliente.js" asp-append-version="true"></script>
+}
 <!-- Hidden field con el ID del cliente -->
-<input type="hidden" id="hdnClienteId" value="@Model.ClienteId" />
+<input type="hidden" id="hdnClienteId" value="ClienteId" />
 
 <div class="text-end mb-3">
     <a asp-page="/ClientesPages/ClienteHome" class="btn btn-outline-dark">⬅️ Volver</a>
@@ -41,11 +48,4 @@
     </div>
 </div>
 
-@section Scripts {
-    <script>
-        // Captura el JWT desde la cookie
-        var userToken = '@HttpContext.Request.Cookies["jwt_token"]';
-    </script>
-    <script src="~/js/ControlActions.js"></script>
-    <script src="~/js/Pages/ClientesPages/TransaccionesCliente.js" asp-append-version="true"></script>
-}
+

@@ -1,11 +1,15 @@
 @page
+@using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.ClientesPages.NuevaTransaccionModel
-@{
-    ViewData["Title"] = "Nueva Transacción";
+@attribute [Authorize(Roles = "Cliente")]
+@section Scripts{
+    <script>
+        // Captura el JWT desde la cookie
+        var userToken = '@HttpContext.Request.Cookies["jwt_token"]';
+    </script>
+    <script src="~/js/Pages/ClientesPages/NuevaTransaccion.js" asp-append-version="true"></script>
+    <script src="~/js/ControlActions.js"></script>
 }
-<input type="hidden" id="hdnClienteId" value="@Model.ClienteId" />
-<input type="hidden" id="hdnEmail" value="@Model.Email" />
-
 <div class="container mt-4">
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
@@ -32,14 +36,3 @@
         </div>
     </div>
 </div>
-
-
-
-
-<script src="~/js/ControlActions.js"></script>
-
-
-
-@section Scripts {
-    <script src="~/js/Pages/ClientesPages/NuevaTransaccion.js" asp-append-version="true"></script>
-}

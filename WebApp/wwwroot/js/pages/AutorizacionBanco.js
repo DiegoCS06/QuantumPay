@@ -65,11 +65,8 @@
         $('#tblinstitucionBancaria').dataTable({
             "ajax": {
                 url: urlService,
-                "dataSrc": "",
-                headers: {
-                    'Authorization': 'Bearer ' + userToken 
-                }
-            },            
+                "dataSrc": ""
+            },
             columns: columns
         });
         //asignar eventos de carga de datos o bindin segun la tabla

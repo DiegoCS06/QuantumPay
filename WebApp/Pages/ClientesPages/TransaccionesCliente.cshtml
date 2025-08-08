@@ -1,18 +1,24 @@
 ﻿@page
 @using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.ClientesPages.TransaccionesClienteModel
+@attribute [Authorize(Roles = "Cliente")]
 @section Scripts {
     <script>
+        // Captura el JWT desde la cookie
         var userToken = '@HttpContext.Request.Cookies["jwt_token"]';
     </script>
-    <script src="~/js/pages/Transacciones.js"></script>
+    <script src="~/js/ControlActions.js"></script>
+    <script src="~/js/Pages/ClientesPages/TransaccionesCliente.js" asp-append-version="true"></script>
 }
-@attribute [Authorize(Roles = "Cliente")]
+<!-- Hidden field con el ID del cliente -->
+<input type="hidden" id="hdnClienteId" value="ClienteId" />
 
-<div class="text-end">
+<div class="text-end mb-3">
     <a asp-page="/ClientesPages/ClienteHome" class="btn btn-outline-dark">⬅️ Volver</a>
 </div>
+
 <legend>Historial de Transacciones</legend>
+
 <div class="row">
     <div class="col-sm-12">
         <div class="card">
@@ -20,20 +26,26 @@
                 🔔 Transacciones Realizadas
             </div>
             <div class="card-body" style="overflow-x: auto; width: 100%;">
-                <table class="table table-bordered table-striped table-hover">
+                <table id="tblTransaccionesCliente"
+                       class="table table-bordered table-striped table-hover"
+                       style="width:100%;">
                     <thead class="thead-dark">
                         <tr>
                             <th>ID Transacción</th>
-                            <th>Fecha</th>
+                            <th>Id Cliente</th>
+                            <th>Cuenta Bancaria</th>
+                            <th>Comercio</th>
                             <th>Monto</th>
-                            <th>Tipo</th>
-                            <th>Cuenta Origen</th>
-                            <th>Cuenta Destino</th>
-                            <th>Descripción</th>
+                            <th>Descuento</th>
+                            <th>Fecha</th>
+                            <th>Método de Pago</th>
                         </tr>
-                    </thead>              
+                    </thead>
+                    <tbody></tbody>
                 </table>
             </div>
         </div>
-    </div>    
+    </div>
 </div>
+
+

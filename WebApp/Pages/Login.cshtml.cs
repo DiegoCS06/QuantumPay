@@ -24,13 +24,19 @@ namespace WebApp.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            // 1) Validaciones básicas
-            if (string.IsNullOrWhiteSpace(LoginRequest.UserType) ||
-                string.IsNullOrWhiteSpace(LoginRequest.Email) ||
-                string.IsNullOrWhiteSpace(LoginRequest.Password))
+            // Validación manual según el tipo de usuario
+            if (string.IsNullOrWhiteSpace(LoginRequest.UserType) || string.IsNullOrWhiteSpace(LoginRequest.Email))
             {
-                ErrorMessage = "Por favor ingrese tipo de usuario, correo y contraseña.";
+                ErrorMessage = "Debe ingresar el tipo de usuario y el correo.";
                 return Page();
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(LoginRequest.Password))
+                {
+                    ErrorMessage = "Debe ingresar la contraseña.";
+                    return Page();
+                }
             }
 
             string apiUrl = "https://localhost:5001/api/login";
@@ -43,7 +49,7 @@ namespace WebApp.Pages
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await httpClient.PostAsync(apiUrl, content);
-
+          
             if (!response.IsSuccessStatusCode)
             {
                 ErrorMessage = "Usuario o credenciales incorrectos.";
@@ -57,14 +63,22 @@ namespace WebApp.Pages
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadJwtToken(root.Token);
 
-            var claims = new List<Claim>(jwtToken.Claims);          
+            var claims = new List<Claim>(jwtToken.Claims);
+            //foreach (var claim in jwtToken.Claims)
+            //{
+                
+            //    if (!claims.Any(c => c.Type == claim.Type && c.Value == claim.Value))
+            //    {
+            //        claims.Add(claim);
+            //    }
+            //}            
 
             Response.Cookies.Append("jwt_token", root.Token, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
-                Expires = DateTimeOffset.UtcNow.AddHours(1),
-                SameSite = SameSiteMode.Strict
+                Secure = true, 
+                Expires = DateTimeOffset.UtcNow.AddMinutes(60),
+                SameSite = SameSiteMode.Strict 
             });
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

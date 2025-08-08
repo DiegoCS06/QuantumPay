@@ -67,7 +67,23 @@
 
         var cuentaComercioDTO = {};
         cuentaComercioDTO.idcuenta = $('#txtIdCuenta').val(); //ID de la cuenta comercio a consultar
-    
+        /*
+    {
+    "id": 1,
+    "nombreUsuario": "sanrafaelherediaVind",
+    "contrasena": "vindi12",
+    "cedulaJuridica": "402950881",
+    "telefono": 12312313,
+    "correoElectronico": "sanrafael@comerciosvindi.com",
+    "direccion": "san rafael"
+  }
+     <th>ID Cuenta</th>
+                        <th>Nombre Usuario</th>
+                        <th>Cédula Jurídica</th>
+                        <th>Teléfono</th>
+                        <th>Correo Electrónico</th>
+                        <th>Dirección</th>
+    */
         var columns = [];
         columns[0] = { 'data': 'id' }
         columns[1] = { 'data': 'nombreUsuario' }
@@ -80,8 +96,10 @@
             "ajax": {
                 url: urlService,
                 "dataSrc": "",
-                headers: { 'Authorization': 'Bearer ' + userToken }
-            },
+                headers: {
+                    'Authorization': 'Bearer ' + userToken
+                }
+            },            
             columns: columns
         });
         //asignar eventos de carga de datos o bindin segun la tabla

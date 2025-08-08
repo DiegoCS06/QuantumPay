@@ -52,5 +52,10 @@ namespace DataAccess.DAOs
             };
             Parameters.Add(param);
         }
+
+        public void AddParam(string paramName, object value)
+        {
+            Parameters.Add(new SqlParameter(paramName, value ?? DBNull.Value));
+        }
     }
 }

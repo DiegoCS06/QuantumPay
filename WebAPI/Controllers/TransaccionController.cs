@@ -120,12 +120,11 @@ namespace WebAPI.Controllers
                 var userRole = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 var cm = new TransaccionManager();
                 var result = cm.OrdenarPorComercio(idComercio);
-                if (result == null)
+                if (result == null || !result.Any())
                 {
-                    return Ok(new List<object>());
+                    return Ok(new List<Transaccion>());
                 }
-
-                return Ok(new List<object> { result });
+                return Ok(result); // <-- Devuelve la lista directamente
             }
             catch (Exception ex)
             {

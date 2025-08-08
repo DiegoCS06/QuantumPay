@@ -2,7 +2,12 @@
     @P_IdCuentaComercio INT
 AS
 BEGIN
-    SELECT *
-    FROM transaccion
-    WHERE IdCuentaComercio = @P_IdCuentaComercio;
+    SELECT 
+        t.*,
+        c.Nombre AS NombreCliente,
+        ib.codigoIdentidad AS CodigoIdentidadInstitucionBancaria
+    FROM transaccion t
+    INNER JOIN Cliente c ON t.IdCuentaCliente = c.IdCliente
+    INNER JOIN InstitucionBancaria ib ON t.IdCuentaBancaria = ib.idInstBancaria
+    WHERE t.IdCuentaComercio = @P_IdCuentaComercio;
 END

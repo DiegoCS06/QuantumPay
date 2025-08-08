@@ -54,10 +54,10 @@ namespace CoreApp
         }
 
 
-        public Transaccion OrdenarPorComercio(int idComercio)
+        public List<Transaccion> OrdenarPorComercio(int idComercio)
         {
             var cCrud = new TransaccionCrudFactory();
-            return cCrud.RetrieveByComercio<Transaccion>(idComercio);
+            return cCrud.RetrieveByComercio<List<Transaccion>>(idComercio);
         }
 
         public Transaccion OrdenarPorCliente(int idCliente)

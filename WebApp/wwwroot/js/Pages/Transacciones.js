@@ -40,6 +40,8 @@
                 },
                 columns: [
                     { data: 'id' },
+                    { data: 'nombreCliente' }, // Nuevo
+                    { data: 'codigoIdentidadInstitucionBancaria' }, // Nuevo
                     { data: 'idCuentaBancaria' },
                     { data: 'idCuentaComercio' },
                     { data: 'monto' },

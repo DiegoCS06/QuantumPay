@@ -2,72 +2,163 @@
 @using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.ComercioPages.ComercioHomeModel
 @{
+    var comercio = Model.Comercio;
+    ViewData["Title"] = "Inicio Comercio";
 }
 @attribute [Authorize(Roles = "CuentaComercio")]
+
 <h2 class="mb-4">Panel del Comercio</h2>
 
-<div class="row">
-    <!-- Sección Últimos Pagos -->
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                Últimos Pagos Realizados
+@if (comercio != null && comercio.estadoSolicitud.ToLower().StartsWith("aprobad"))
+{
+    <h3>Transacciones del Comercio</h3>
+    <div>Cantidad de transacciones: @Model.Transacciones?.Count</div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Código Banco</th>
+                <th>Monto</th>
+                <th>Fecha</th>
+                <th>Método de Pago</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Transacciones != null && Model.Transacciones.Any())
+            {
+                foreach (var t in Model.Transacciones)
+                {
+                    <tr>
+                        <td>@t.Id</td>
+                        <td>@t.NombreCliente</td>
+                        <td>@t.CodigoIdentidadInstitucionBancaria</td>
+                        <td>@t.Monto</td>
+                        <td>@t.Fecha.ToShortDateString()</td>
+                        <td>@t.MetodoPago</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center">No hay transacciones registradas.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3>Agregar Administrador</h3>
+    <button id="btnMostrarAdminForm" type="button" class="btn btn-primary mb-3">
+        Agregar administrador para comercio
+    </button>
+
+    <div id="adminFormContainer" style="display:none;">
+        <form method="post" asp-page-handler="AgregarAdmin">
+            @Html.AntiForgeryToken()
+            <div class="mb-3">
+                <label asp-for="NuevoAdmin.NombreUsuario"></label>
+                <input asp-for="NuevoAdmin.NombreUsuario" class="form-control" />
+                <span asp-validation-for="NuevoAdmin.NombreUsuario" class="text-danger"></span>
             </div>
-            <div class="card-body">
-                <table class="table table-bordered table-hover">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Cliente</th>
-                            <th>Monto</th>
-                            <th>Fecha</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Juan Pérez</td>
-                            <td>₡12,000</td>
-                            <td>24/07/2025</td>
-                            <td><span class="badge bg-success">Completado</span></td>
-                        </tr>
-                        <tr>
-                            <td>Ana Gómez</td>
-                            <td>₡5,500</td>
-                            <td>23/07/2025</td>
-                            <td><span class="badge bg-success">Completado</span></td>
-                        </tr>
-                        <tr>
-                            <td>Carlos Ruiz</td>
-                            <td>₡9,800</td>
-                            <td>22/07/2025</td>
-                            <td><span class="badge bg-danger">Fallido</span></td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="mb-3">
+                <label asp-for="NuevoAdmin.CorreoElectronico"></label>
+                <input asp-for="NuevoAdmin.CorreoElectronico" class="form-control" />
+                <span asp-validation-for="NuevoAdmin.CorreoElectronico" class="text-danger"></span>
             </div>
-        </div>
+            <div class="mb-3">
+                <label asp-for="NuevoAdmin.CedulaJuridica"></label>
+                <input asp-for="NuevoAdmin.CedulaJuridica" class="form-control" />
+                <span asp-validation-for="NuevoAdmin.CedulaJuridica" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="NuevoAdmin.Direccion"></label>
+                <input asp-for="NuevoAdmin.Direccion" class="form-control" />
+                <span asp-validation-for="NuevoAdmin.Direccion" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="NuevoAdmin.Telefono"></label>
+                <input asp-for="NuevoAdmin.Telefono" class="form-control" type="number" />
+                <span asp-validation-for="NuevoAdmin.Telefono" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="NuevoAdmin.Contrasena"></label>
+                <input asp-for="NuevoAdmin.Contrasena" class="form-control" type="password" />
+                <span asp-validation-for="NuevoAdmin.Contrasena" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Agregar Administrador</button>
+        </form>
+        @if (ViewData["AdminCreado"] != null)
+        {
+            <div class="alert alert-success mt-3">@ViewData["AdminCreado"]</div>
+        }
+        @if (ViewData["AdminError"] != null)
+        {
+            <div class="alert alert-danger mt-3">@ViewData["AdminError"]</div>
+        }
     </div>
 
-    <!-- Sección Solicitar Pago con QR -->
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                Solicitar Pago
-            </div>
-            <div class="card-body qr-container">
-                <p>Solicite un pago escaneando el siguiente código QR:</p>
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://tupago.com/solicitar/123456" alt="Código QR">
-                <br>
-                <button class="btn btn-outline-primary mt-3">Generar Nuevo QR</button>
-            </div>
+    <div class="mt-4">
+        <a asp-page="/ComercioPages/Promociones" class="btn btn-secondary">Administrar Promociones</a>
+    </div>
+}
+
+@if (Model.Comercio == null)
+{
+    <div class="alert alert-warning">No se encontró un comercio asociado a esta cuenta.</div>
+
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            Crear un nuevo comercio
+        </div>
+        <div class="card-body">
+            <form method="post">
+                <div class="mb-3">
+                    <label asp-for="NuevoComercio.Nombre" class="form-label">Nombre del Comercio</label>
+                    <input asp-for="NuevoComercio.Nombre" class="form-control" maxlength="100" required />
+                    <span asp-validation-for="NuevoComercio.Nombre" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-success">Crear Comercio</button>
+            </form>
+            @if (ViewData["ComercioCreado"] != null)
+            {
+                <div class="alert alert-success mt-3">@ViewData["ComercioCreado"]</div>
+            }
+            @if (ViewData["ComercioError"] != null)
+            {
+                <div class="alert alert-danger mt-3">@ViewData["ComercioError"]</div>
+            }
         </div>
     </div>
+}
+else if (comercio.estadoSolicitud == "rechazada")
+{
+    <div class="alert alert-danger">
+        Su comercio fue rechazado. Por favor contacte al soporte.
+    </div>
+}
+else if (comercio.estadoSolicitud == "pendiente")
+{
+    <div class="alert alert-info">
+        Su comercio está pendiente de aprobación. Espere la validación del administrador.
+    </div>
+}
 
-</div>
-
-
-<div class="footer-links">
-    <a asp-page="/ComercioPages/AdministrarComercios" class="btn btn-outline-primary me-2">➕ Agregar Administrador</a>
-    <a asp-page="/ComercioPages/CrearPromocion" class="btn btn-outline-secondary me-2">🔖 Administrar Promociones</a>
-    <a asp-page="/ComercioPages/Transacciones" class="btn btn-outline-secondary me-2">📄 Ver Todas las Transacciones</a>
-</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var btn = document.getElementById('btnMostrarAdminForm');
+            if (btn) {
+                btn.addEventListener('click', function () {
+                    var container = document.getElementById('adminFormContainer');
+                    if (container.style.display === 'none' || container.style.display === '') {
+                        container.style.display = 'block';
+                    } else {
+                        container.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
+}

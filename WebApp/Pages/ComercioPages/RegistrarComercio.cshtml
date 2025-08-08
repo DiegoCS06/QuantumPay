@@ -1,0 +1,16 @@
+﻿@page
+@model WebApp.Pages.ComercioPages.RegistrarComercioModel
+@{
+    ViewData["Title"] = "Registre su comercio acá";
+}
+
+<h2>Registre su comercio acá</h2>
+
+<form method="post">
+    <div>
+        <label asp-for="Comercio.Nombre"></label>
+        <input asp-for="Comercio.Nombre" class="form-control" required />
+    </div>
+    <div>
+    <button type="submit" class="btn btn-primary">Registrar</button>
+</form>

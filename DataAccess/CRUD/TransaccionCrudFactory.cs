@@ -111,18 +111,19 @@ namespace DataAccess.CRUD
 
         public T RetrieveByComercio<T>(int idComercio)
         {
-
             var op = new SQLOperation { ProcedureName = "RET_TRANSACCION_BY_COMERCIO_PR" };
             op.AddIntParam("P_IdCuentaComercio", idComercio);
             var lstResult = _sqlDao.ExecuteQueryProcedure(op);
-            if (lstResult.Count > 0)
+
+            if (typeof(T) == typeof(List<Transaccion>))
             {
-                var row = lstResult[0];
-                var cliente = BuildTransaccion(row);
-
-                return (T)Convert.ChangeType(cliente, typeof(T));
+                var transacciones = new List<Transaccion>();
+                foreach (var row in lstResult)
+                {
+                    transacciones.Add(BuildTransaccion(row));
+                }
+                return (T)(object)transacciones;
             }
-
             return default(T);
         }
 
@@ -183,7 +184,9 @@ namespace DataAccess.CRUD
                 Comision = Convert.ToDecimal(r["Comision"]),
                 DescuentoAplicado = Convert.ToDecimal(r["DescuentoAplicado"]),
                 Fecha = (DateTime)r["Fecha"],
-                MetodoPago = (string)r["MetodoPago"]
+                MetodoPago = (string)r["MetodoPago"],
+                NombreCliente = r.ContainsKey("NombreCliente") ? r["NombreCliente"]?.ToString() : "",
+                CodigoIdentidadInstitucionBancaria = r.ContainsKey("CodigoIdentidadInstitucionBancaria") ? r["CodigoIdentidadInstitucionBancaria"]?.ToString() : ""
             };
         }
 

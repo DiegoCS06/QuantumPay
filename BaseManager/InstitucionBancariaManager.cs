@@ -10,7 +10,7 @@ namespace CoreApp
 {
     public class InstitucionBancariaManager : BaseManager
     {
-
+        private readonly InstitucionBancaria _crud = new();
         public async Task Create(InstitucionBancaria institucionBancaria)
         {
             try
@@ -49,8 +49,16 @@ namespace CoreApp
 
         public List<InstitucionBancaria> RetrieveAll()
         {
-            var iCrud = new InstitucionBancariaCrudFactory();
-            return iCrud.RetrieveAll<InstitucionBancaria>();
+            try
+            {
+                var iCrud = new InstitucionBancariaCrudFactory();
+                return iCrud.RetrieveAll<InstitucionBancaria>();
+            }
+            catch (Exception ex)
+            {
+                ManageException(ex);
+                return new List<InstitucionBancaria>();
+            }
         }
 
         public InstitucionBancaria RetrieveById(int Id)

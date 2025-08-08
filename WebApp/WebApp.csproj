@@ -13,7 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.Rekognition" Version="4.0.1.9" />
+    <PackageReference Include="AWSSDK.Rekognition" Version="4.0.1.12" />
+    <PackageReference Include="CloudinaryDotNet" Version="1.27.6" />
+    <PackageReference Include="dotenv.net" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>

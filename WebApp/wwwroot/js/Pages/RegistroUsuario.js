@@ -10,7 +10,42 @@
         let data = {};
         let apiUrl = "";
 
+        //para tipo de usuario Cliente, se requiere subir fotos de cédula y perfil
         if (userType === "Cliente") {
+
+            // subir fotos de cédula y perfil
+            const fotoCedulaFile = document.getElementById("FotoCedula").files[0];
+            const fotoPerfilFile = document.getElementById("FotoPerfil").files[0];
+            // Validar que ambas fotos estén seleccionadas
+            if (!fotoCedulaFile || !fotoPerfilFile) {
+
+                alert("Por favor, suba ambas fotos (Cédula y Perfil).");
+                return;
+
+            }
+            // Función para convertir archivo a base64
+            function toBase64(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => {
+                        const base64String = reader.result.split(",")[1];
+                        resolve(base64String);
+                    };
+                    reader.onerror = error => reject(error);
+                });
+            }
+
+            // Convertir ambas imágenes a base64 para enviar a Rekognition
+            console.log("Convirtiendo foto de cédula a base64...");
+            const fotoCedulaBase64 = await toBase64(fotoCedulaFile);
+            console.log("Foto de cédula convertida.");
+
+            console.log("Convirtiendo foto de perfil a base64...");
+            const fotoPerfilBase64 = await toBase64(fotoPerfilFile);
+            console.log("Foto de perfil convertida.");
+
+
             data = {
                 nombre: form.querySelector('[name="SignUpRequest.Nombre"]').value,
                 apellido: form.querySelector('[name="SignUpRequest.Apellido"]').value,
@@ -20,8 +55,8 @@
                 direccion: form.querySelector('[name="SignUpRequest.Direccion"]').value,
                 contrasena: form.querySelector('[name="SignUpRequest.Password"]').value,
                 IBAN: form.querySelector('[name="SignUpRequest.IBAN"]').value,
-                fotoCedula: "",
-                fotoPerfil: "",
+                fotoCedula: fotoCedulaBase64,
+                fotoPerfil: fotoPerfilBase64,
                 fechaNacimiento: form.querySelector('[name="SignUpRequest.FechaNacimiento"]').value
             };
             // Step 1: Send verification codes
@@ -34,13 +69,13 @@
 
             // Step 3: Add codes as query parameters
             apiUrl = `https://localhost:5001/api/Cliente/Create?emailCode=${encodeURIComponent(emailCode)}&smsCode=${encodeURIComponent(smsCode)}`;
-        } else if (userType === "Admin") {
+        } else if (userType === "Admin") { //para tipo de usuario Admin, no se requiere subir fotos
             data = {
                 nombreUsuario: form.querySelector('[name="SignUpRequest.NombreUsuario"]').value,
                 contrasena: form.querySelector('[name="SignUpRequest.Password"]').value
             };
             apiUrl = "https://localhost:5001/api/Admin/Create";
-        } else if (userType === "CuentaComercio") {
+        } else if (userType === "CuentaComercio") { //para tipo de usuario CuentaComercio, no se requiere subir fotos
             data = {
                 nombreUsuario: document.getElementById("SignUpRequest_NombreUsuario_CuentaComercio").value,
                 contrasena: form.querySelector('[name="SignUpRequest.Password"]').value,
@@ -50,7 +85,7 @@
                 direccion: document.getElementById("SignUpRequest_Direccion_CuentaComercio").value
             };
             apiUrl = "https://localhost:5001/api/CuentaComercio/Create";
-        } else if (userType === "InstitucionBancaria") {
+        } else if (userType === "InstitucionBancaria") { //para tipo de usuario InstitucionBancaria, no se requiere subir fotos
             data = {
                 codigoIdentidad: document.getElementById("SignUpRequest_CodigoIdentidad").value,
                 cedulaJuridica: document.getElementById("SignUpRequest_CedulaJuridica_InstitucionBancaria").value,

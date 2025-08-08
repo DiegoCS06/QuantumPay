@@ -37,6 +37,7 @@ namespace DataAccess.DAOs
         {
             Parameters.Add(new SqlParameter(paramName, paramValue));
         }
+
         public void AddDateTimeParam(string paramName, DateTime paramValue)
         {
             Parameters.Add(new SqlParameter(paramName, paramValue));
@@ -56,6 +57,20 @@ namespace DataAccess.DAOs
         public void AddParam(string paramName, object value)
         {
             Parameters.Add(new SqlParameter(paramName, value ?? DBNull.Value));
+        }
+      
+        internal void AddVarcharParam(string paramName, string value, int size)
+        {
+            var param = new SqlParameter(paramName, System.Data.SqlDbType.NVarChar, size)
+            {
+                Value = value ?? (object)DBNull.Value
+            };
+            Parameters.Add(param); // Usa tu lista interna de parámetros, igual que con otros métodos
+        }
+
+        internal void AddStringParameter(string v, int idCuentaBancaria)
+        {
+            throw new NotImplementedException();
         }
     }
 }

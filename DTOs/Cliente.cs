@@ -20,6 +20,7 @@ namespace DTOs
         public string fotoPerfil { get; set; }
         public string contrasena { get; set; }
         public string IBAN { get; set; }
+        public int IdCliente { get; set; }
 
         public void Registrarse()
         {

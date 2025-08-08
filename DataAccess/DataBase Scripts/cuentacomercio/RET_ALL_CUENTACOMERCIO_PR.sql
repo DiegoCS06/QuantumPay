@@ -2,13 +2,6 @@
 AS
 BEGIN
     SELECT 
-        idCuenta,
-        nombreUsuario,
-        contrasena,
-        cedulaJuridica,
-        telefono,
-        correoElectronico,
-        direccion
-    FROM cuentaComercio
+        idCuenta, nombreUsuario, contrasena, cedulaJuridica, telefono, correoElectronico, direccion, IdComercio
+    FROM CuentaComercio;
 END
-GO

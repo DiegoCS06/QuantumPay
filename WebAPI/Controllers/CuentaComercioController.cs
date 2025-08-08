@@ -18,13 +18,11 @@ namespace WebAPI.Controllers
     {
         [HttpPost]
         [Route("Create")]
-
         public async Task<ActionResult> Create([FromBody] CuentaComercio cuentaComercio)
         {
             try
             {
                 cuentaComercio.Contrasena = BCrypt.Net.BCrypt.HashPassword(cuentaComercio.Contrasena);
-
                 var cm = new CuentaComercioManager();
                 await cm.Create(cuentaComercio);
                 return Ok(cuentaComercio);

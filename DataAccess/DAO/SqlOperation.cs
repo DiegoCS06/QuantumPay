@@ -53,7 +53,6 @@ namespace DataAccess.DAOs
             };
             Parameters.Add(param);
         }
-
         internal void AddVarcharParam(string paramName, string value, int size)
         {
             var param = new SqlParameter(paramName, System.Data.SqlDbType.NVarChar, size)
@@ -66,6 +65,11 @@ namespace DataAccess.DAOs
         internal void AddStringParameter(string v, int idCuentaBancaria)
         {
             throw new NotImplementedException();
+        }
+          
+        public void AddParam(string paramName, object value)
+        {
+            Parameters.Add(new SqlParameter(paramName, value ?? DBNull.Value));
         }
     }
 }

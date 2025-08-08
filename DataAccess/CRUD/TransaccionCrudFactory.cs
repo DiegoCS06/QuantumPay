@@ -90,12 +90,40 @@ namespace DataAccess.CRUD
             var op = new SQLOperation { ProcedureName = "SP_SEL_TRANSACCIONES_POR_CUENTA" };
             op.AddIntParam("P_IdCuentaBancaria", cuentaId);
             var rows = _sqlDao.ExecuteQueryProcedure(op);
+            
+            if (typeof(T) == typeof(List<Transaccion>))
+            {
+                var transacciones = new List<Transaccion>();
+                foreach (var row in lstResult)
+                {
+                    transacciones.Add(BuildTransaccion(row));
+                }
+                return (T)(object)transacciones;
+            }
+            else if (lstResult.Count > 0)
+            {
+                var cliente = BuildTransaccion(lstResult[0]);
+                return (T)(object)cliente;
+            }
+            return default(T);
+        }
 
-            var list = new List<Transaccion>();
-            foreach (var r in rows)
-                list.Add(BuildTransaccion(r));
+        public T RetrieveByComercio<T>(int idComercio)
+        {
+            var op = new SQLOperation { ProcedureName = "RET_TRANSACCION_BY_COMERCIO_PR" };
+            op.AddIntParam("P_IdCuentaComercio", idComercio);
+            var lstResult = _sqlDao.ExecuteQueryProcedure(op);
 
-            return list;
+            if (typeof(T) == typeof(List<Transaccion>))
+            {
+                var transacciones = new List<Transaccion>();
+                foreach (var row in lstResult)
+                {
+                    transacciones.Add(BuildTransaccion(row));
+                }
+                return (T)(object)transacciones;
+            }
+            return default(T);
         }
 
         public List<Transaccion> RetrieveByComercio(int comercioId)
@@ -137,7 +165,9 @@ namespace DataAccess.CRUD
                 Comision = Convert.ToDecimal(r["Comision"]),
                 DescuentoAplicado = Convert.ToDecimal(r["DescuentoAplicado"]),
                 Fecha = (DateTime)r["Fecha"],
-                MetodoPago = (string)r["MetodoPago"]
+                MetodoPago = (string)r["MetodoPago"],
+                NombreCliente = r.ContainsKey("NombreCliente") ? r["NombreCliente"]?.ToString() : "",
+                CodigoIdentidadInstitucionBancaria = r.ContainsKey("CodigoIdentidadInstitucionBancaria") ? r["CodigoIdentidadInstitucionBancaria"]?.ToString() : ""
             };
         }
 

@@ -10,26 +10,30 @@ namespace CoreApp
 {
     public class CuentaComercioManager : BaseManager
     {
+        private readonly CuentaComercioCrudFactory _crudFactory;
+
+        public CuentaComercioManager()
+        {
+            _crudFactory = new CuentaComercioCrudFactory();
+        }
 
         public async Task Create(CuentaComercio cuentaComercio)
         {
             try
             {
-                var cCrud = new CuentaComercioCrudFactory();
-
-                var cExist = cCrud.RetrieveByUserName<CuentaComercio>(cuentaComercio.NombreUsuario);
+                var cExist = _crudFactory.RetrieveByUserName<CuentaComercio>(cuentaComercio.NombreUsuario);
 
                 if (cExist == null)
                 {
-                    cExist = cCrud.RetrieveByEmail<CuentaComercio>(cuentaComercio.CorreoElectronico);
+                    cExist = _crudFactory.RetrieveByEmail<CuentaComercio>(cuentaComercio.CorreoElectronico);
 
                     if (cExist == null)
                     {
-                        cExist = cCrud.RetrieveByTelefono<CuentaComercio>(cuentaComercio.Telefono);
+                        cExist = _crudFactory.RetrieveByTelefono<CuentaComercio>(cuentaComercio.Telefono);
 
                         if (cExist == null)
                         {
-                            cCrud.Create(cuentaComercio);
+                            await Task.Run(() => _crudFactory.Create(cuentaComercio));
                         }
                         else
                         {
@@ -46,53 +50,46 @@ namespace CoreApp
                     throw new Exception("Ese nombre de usuario no esta disponible");
                 }
             }
-
             catch (Exception ex)
             {
                 ManageException(ex);
+                throw;
             }
         }
 
         public List<CuentaComercio> RetrieveAll()
         {
-            var cCrud = new CuentaComercioCrudFactory();
-            return cCrud.RetrieveAll<CuentaComercio>();
-
+            return _crudFactory.RetrieveAll<CuentaComercio>();
         }
 
         public CuentaComercio RetrieveById(int Id)
         {
-            var cCrud = new CuentaComercioCrudFactory();
-            return cCrud.RetrieveById<CuentaComercio>(Id);
+            return _crudFactory.RetrieveById<CuentaComercio>(Id);
         }
 
         public CuentaComercio RetrieveByEmail(string CorreoElectronico)
         {
-            var cCrud = new CuentaComercioCrudFactory();
-            return cCrud.RetrieveByEmail<CuentaComercio>(CorreoElectronico);
+            return _crudFactory.RetrieveByEmail<CuentaComercio>(CorreoElectronico);
         }
 
         public CuentaComercio RetrieveByUserName(string NombreUsuario)
         {
-            var cCrud = new CuentaComercioCrudFactory();
-            return cCrud.RetrieveByUserName<CuentaComercio>(NombreUsuario);
+            return _crudFactory.RetrieveByUserName<CuentaComercio>(NombreUsuario);
         }
 
         public CuentaComercio RetrieveByTelefono(int Telefono)
         {
-            var cCrud = new CuentaComercioCrudFactory();
-            return cCrud.RetrieveByTelefono<CuentaComercio>(Telefono);
+            return _crudFactory.RetrieveByTelefono<CuentaComercio>(Telefono);
         }
 
         public void Update(CuentaComercio cuentaComercio)
         {
             try
             {
-                var cCrud = new CuentaComercioCrudFactory();
-                var cExist = cCrud.RetrieveById<CuentaComercio>(cuentaComercio.Id);
+                var cExist = _crudFactory.RetrieveById<CuentaComercio>(cuentaComercio.Id);
                 if (cExist != null)
                 {
-                    cCrud.Update(cuentaComercio);
+                    _crudFactory.Update(cuentaComercio);
                 }
                 else
                 {
@@ -109,12 +106,11 @@ namespace CoreApp
         {
             try
             {
-                var cCrud = new CuentaComercioCrudFactory();
                 var cuentaComercio = new CuentaComercio { Id = id };
-                var cExist = cCrud.RetrieveById<CuentaComercio>(cuentaComercio.Id);
+                var cExist = _crudFactory.RetrieveById<CuentaComercio>(cuentaComercio.Id);
                 if (cExist != null)
                 {
-                    cCrud.Delete(cuentaComercio);
+                    _crudFactory.Delete(cuentaComercio);
                 }
                 else
                 {
@@ -125,6 +121,16 @@ namespace CoreApp
             {
                 ManageException(ex);
             }
+        }
+
+        public async Task AsociarComercioAsync(int cuentaId, int comercioId)
+        {
+            await _crudFactory.AsociarComercioAsync(cuentaId, comercioId);
+        }
+
+        public async Task<CuentaComercio> GetByIdAsync(int id)
+        {
+            return await Task.Run(() => _crudFactory.RetrieveById<CuentaComercio>(id));
         }
     }
 }

@@ -15,11 +15,15 @@ namespace CoreApp
         {
             if (t == null) throw new ArgumentNullException(nameof(t));
             if (t.Monto <= 0) throw new ArgumentException("Monto debe ser > 0");
-
-            _crud.Create(t);
+                        _crud.Create(t);
             await Task.CompletedTask;
         }
 
+        public List<Transaccion> OrdenarPorComercio(int idComercio)
+        {
+            var cCrud = new TransaccionCrudFactory();
+            return cCrud.RetrieveByComercio<List<Transaccion>>(idComercio);
+        }
 
         public Transaccion Update(Transaccion t)
         {

@@ -1,27 +1,17 @@
 ﻿CREATE PROCEDURE CRE_CUENTACOMERCIO_PR
-    @P_nombreUsuario NVARCHAR(20),
-    @P_contrasena NVARCHAR(120),
-    @P_cedulaJuridica NVARCHAR(20),
-    @P_telefono INT,
-    @P_correoElectronico NVARCHAR(50),
-    @P_direccion NVARCHAR(100)
+    @P_NombreUsuario NVARCHAR(20),
+    @P_Contrasena NVARCHAR(120),
+    @P_CedulaJuridica NVARCHAR(20),
+    @P_Telefono INT,
+    @P_CorreoElectronico NVARCHAR(50),
+    @P_Direccion NVARCHAR(100),
+    @P_IdComercio INT = NULL
 AS
 BEGIN
-    INSERT INTO cuentaComercio (
-        nombreUsuario,
-        contrasena,
-        cedulaJuridica,
-        telefono,
-        correoElectronico,
-        direccion
+    INSERT INTO CuentaComercio (
+        nombreUsuario, contrasena, cedulaJuridica, telefono, correoElectronico, direccion, IdComercio
     )
     VALUES (
-        @P_nombreUsuario,
-        @P_contrasena,
-        @P_cedulaJuridica,
-        @P_telefono,
-        @P_correoElectronico,
-        @P_direccion
-    )
+        @P_NombreUsuario, @P_Contrasena, @P_CedulaJuridica, @P_Telefono, @P_CorreoElectronico, @P_Direccion, @P_IdComercio
+    );
 END
-GO

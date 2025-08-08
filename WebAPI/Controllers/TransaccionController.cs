@@ -80,8 +80,16 @@ namespace WebAPI.Controllers
         {
             try
             {
-                new TransaccionManager().Delete(id);
-                return NoContent();
+                var user = HttpContext.User;
+                var userId = user.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+                var userRole = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                var cm = new TransaccionManager();
+                var result = cm.OrdenarPorComercio(idComercio);
+                if (result == null || !result.Any())
+                {
+                    return Ok(new List<Transaccion>());
+                }
+                return Ok(result); // <-- Devuelve la lista directamente
             }
             catch (System.Exception ex)
             {

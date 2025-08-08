@@ -19,5 +19,7 @@ namespace DTOs
         public decimal DescuentoAplicado { get; set; }
         public DateTime Fecha { get; set; }
         public string MetodoPago { get; set; }
+        public string NombreCliente { get; set; }
+        public string CodigoIdentidadInstitucionBancaria { get; set; }
     }
 }

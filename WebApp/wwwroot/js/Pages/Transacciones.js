@@ -47,6 +47,8 @@ function TransaccionesViewController() {
             },
             columns: [
                 { data: "id" },
+                { data: 'nombreCliente' }, // Nuevo
+                { data: 'codigoIdentidadInstitucionBancaria' }, // Nuevo
                 { data: "idCuentaCliente" },
                 { data: "idCuentaBancaria" },
                 { data: "idCuentaComercio" },

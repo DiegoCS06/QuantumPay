@@ -125,12 +125,19 @@ namespace CoreApp
 
         public async Task AsociarComercioAsync(int cuentaId, int comercioId)
         {
-            await _crudFactory.AsociarComercioAsync(cuentaId, comercioId);
+            await Task.Run(() => AsociarComercio(cuentaId, comercioId));
         }
 
         public async Task<CuentaComercio> GetByIdAsync(int id)
         {
             return await Task.Run(() => _crudFactory.RetrieveById<CuentaComercio>(id));
+        }
+
+        public void AsociarComercio(int cuentaId, int comercioId)
+        {
+            // Aquí deberías actualizar la cuenta para asociar el comercio
+            var crud = new CuentaComercioCrudFactory();
+            crud.AsociarComercio(cuentaId, comercioId);
         }
     }
 }

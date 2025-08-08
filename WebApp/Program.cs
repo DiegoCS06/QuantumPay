@@ -9,10 +9,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddHttpClient();
 builder.Services.AddControllers();
 builder.Services.AddSingleton<TransaccionManager>();
 builder.Services.AddSingleton<ComisionManager>();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<WebAPI.Services.ComercioService>();
+builder.Services.AddScoped<WebAPI.Services.TransaccionService>();
+builder.Services.AddScoped<WebAPI.Services.CuentaComercioService>();
 
 // Servicios para el panel de comercio:
 builder.Services.AddHttpClient<TransaccionService>(client =>

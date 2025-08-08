@@ -1,0 +1,33 @@
+@model WebApp.Pages.ComercioPages.ComercioHomeModel
+
+<form method="post" asp-page-handler="RegistrarComercio">
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label asp-for="NuevoComercio.Nombre"></label>
+        <input asp-for="NuevoComercio.Nombre" class="form-control" />
+        <span asp-validation-for="NuevoComercio.Nombre" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-success">Registrar</button>
+</form>
+@if (ViewData["ComercioError"] != null)
+{
+    <div class="alert alert-danger mt-3">@ViewData["ComercioError"]</div>
+}
+@if (ViewData["ComercioCreado"] != null)
+{
+    <div class="alert alert-success mt-3">@ViewData["ComercioCreado"]</div>
+}
+@if (!ViewContext.ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <ul>
+        @foreach (var entry in ViewContext.ViewData.ModelState)
+        {
+            foreach (var error in entry.Value.Errors)
+            {
+                <li>@entry.Key: @error.ErrorMessage</li>
+            }
+        }
+        </ul>
+    </div>
+}

@@ -9,6 +9,26 @@
 
 <h2 class="mb-4">Panel del Comercio</h2>
 
+<!-- Botón para abrir el modal de nuevo comercio (siempre visible) -->
+<button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#crearComercioModal">
+    Nuevo Comercio
+</button>
+
+<!-- Modal con el formulario para crear comercio -->
+<div class="modal fade" id="crearComercioModal" tabindex="-1" aria-labelledby="crearComercioModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crearComercioModalLabel">Registrar Nuevo Comercio</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                @await Html.PartialAsync("_RegistrarComercioPartial", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
 @if (comercio != null && comercio.estadoSolicitud.ToLower().StartsWith("aprobad"))
 {
     <h3>Transacciones del Comercio</h3>
@@ -106,35 +126,12 @@
 @if (Model.Comercio == null)
 {
     <div class="alert alert-warning">No se encontró un comercio asociado a esta cuenta.</div>
-
-    <div class="card mt-4">
-        <div class="card-header bg-primary text-white">
-            Crear un nuevo comercio
-        </div>
-        <div class="card-body">
-            <form method="post">
-                <div class="mb-3">
-                    <label asp-for="NuevoComercio.Nombre" class="form-label">Nombre del Comercio</label>
-                    <input asp-for="NuevoComercio.Nombre" class="form-control" maxlength="100" required />
-                    <span asp-validation-for="NuevoComercio.Nombre" class="text-danger"></span>
-                </div>
-                <button type="submit" class="btn btn-success">Crear Comercio</button>
-            </form>
-            @if (ViewData["ComercioCreado"] != null)
-            {
-                <div class="alert alert-success mt-3">@ViewData["ComercioCreado"]</div>
-            }
-            @if (ViewData["ComercioError"] != null)
-            {
-                <div class="alert alert-danger mt-3">@ViewData["ComercioError"]</div>
-            }
-        </div>
-    </div>
 }
+
 else if (comercio.estadoSolicitud == "rechazada")
 {
     <div class="alert alert-danger">
-        Su comercio fue rechazado. Por favor contacte al soporte.
+        Su comercio de nombre: <strong>@comercio.Nombre</strong> fue rechazado. Por favor contacte al soporte.
     </div>
 }
 else if (comercio.estadoSolicitud == "pendiente")
@@ -142,6 +139,15 @@ else if (comercio.estadoSolicitud == "pendiente")
     <div class="alert alert-info">
         Su comercio está pendiente de aprobación. Espere la validación del administrador.
     </div>
+}
+
+@if (ViewData["ClaimsInfo"] != null)
+{
+    <div>@ViewData["ClaimsInfo"]</div>
+}
+@if (ViewData["ComercioError"] != null)
+{
+    <div class="alert alert-danger mt-3">@ViewData["ComercioError"]</div>
 }
 
 @section Scripts {
@@ -158,6 +164,16 @@ else if (comercio.estadoSolicitud == "pendiente")
                         container.style.display = 'none';
                     }
                 });
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Solo abre el modal si el submit fue del formulario de comercio
+            var abrirModal = '@ViewData["AbrirModalComercio"]' === 'True';
+            if (abrirModal) {
+                var modal = new bootstrap.Modal(document.getElementById('crearComercioModal'));
+                modal.show();
             }
         });
     </script>

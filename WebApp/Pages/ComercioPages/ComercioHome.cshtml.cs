@@ -21,6 +21,8 @@ namespace WebApp.Pages.ComercioPages
 
         public Comercio? Comercio { get; set; }
         public List<Transaccion> Transacciones { get; set; } = new();
+
+        [BindProperty]
         public ComercioInputModel NuevoComercio { get; set; } = new();
 
         [BindProperty]
@@ -38,10 +40,10 @@ namespace WebApp.Pages.ComercioPages
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var cuentaIdStr = User.FindFirstValue("UserId");
+            var cuentaIdStr = User.FindFirstValue("CuentaId") ?? User.FindFirstValue("UserId");
             if (!int.TryParse(cuentaIdStr, out int cuentaId))
             {
-                ViewData["ComercioError"] = "No se pudo identificar la cuenta.";
+                ViewData["ComercioError"] = $"No se pudo identificar la cuenta. Claims: CuentaId={User.FindFirstValue("CuentaId")}, UserId={User.FindFirstValue("UserId")}";
                 return Page();
             }
 
@@ -59,17 +61,27 @@ namespace WebApp.Pages.ComercioPages
             return Page();
         }
 
+        // Handler para el formulario principal (fuera del modal)
         public async Task<IActionResult> OnPostAsync()
         {
-            var cuentaIdStr = User.FindFirstValue("CuentaId");
+            ViewData["AbrirModalComercio"] = true;
+
+            // Elimina los errores que no sean de NuevoComercio
+            foreach (var key in ModelState.Keys
+                .Where(k => !k.StartsWith("NuevoComercio"))
+                .ToList())
+            {
+                ModelState.Remove(key);
+            }
+
+            var cuentaIdStr = User.FindFirstValue("CuentaId") ?? User.FindFirstValue("UserId");
             if (!int.TryParse(cuentaIdStr, out int cuentaId))
             {
-                ViewData["ComercioError"] = "No se pudo identificar la cuenta.";
+                ViewData["ComercioError"] = $"No se pudo identificar la cuenta. Claims: CuentaId={User.FindFirstValue("CuentaId")}, UserId={User.FindFirstValue("UserId")}";
                 await OnGetAsync();
                 return Page();
             }
 
-            // ⬇️ Binding manual
             if (!await TryUpdateModelAsync(NuevoComercio, "NuevoComercio"))
             {
                 ViewData["ComercioError"] = "Por favor complete todos los campos correctamente.";
@@ -84,22 +96,128 @@ namespace WebApp.Pages.ComercioPages
                 return Page();
             }
 
-            var nuevoComercio = new Comercio
-            {
-                Nombre = NuevoComercio.Nombre,
-                IdCuenta = cuentaId,
-                estadoSolicitud = "pendiente"
-            };
-
+            bool creadoCorrectamente = false;
             try
             {
-                await _comercioService.CreateComercioAsync(nuevoComercio);
-                ViewData["ComercioCreado"] = "Comercio creado correctamente. Espere la aprobación del administrador.";
-                NuevoComercio = new ComercioInputModel();
+                var comercioNuevo = new Comercio
+                {
+                    Nombre = NuevoComercio.Nombre,
+                    IdCuenta = cuentaId,
+                    estadoSolicitud = "pendiente"
+                };
+
+                await _comercioService.CreateComercioAsync(comercioNuevo);
+
+                // Verifica si el comercio se creó realmente
+                var comercioCreado = await _comercioService.GetByCuentaIdAsync(cuentaId);
+                if (comercioCreado != null)
+                {
+                    await _cuentaComercioService.AsociarComercioAsync(cuentaId, comercioCreado.Id);
+                    ViewData["ComercioCreado"] = "Comercio creado correctamente. Espere la aprobación del administrador.";
+                    NuevoComercio = new ComercioInputModel();
+                    creadoCorrectamente = true;
+                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ViewData["ComercioError"] = "Error al crear el comercio: " + ex.Message;
+                // Verifica si el comercio se creó a pesar de la excepción
+                var comercioCreado = await _comercioService.GetByCuentaIdAsync(cuentaId);
+                if (comercioCreado != null)
+                {
+                    await _cuentaComercioService.AsociarComercioAsync(cuentaId, comercioCreado.Id);
+                    ViewData["ComercioCreado"] = "Comercio creado correctamente. Espere la aprobación del administrador.";
+                    NuevoComercio = new ComercioInputModel();
+                    creadoCorrectamente = true;
+                }
+            }
+
+            if (!creadoCorrectamente)
+            {
+                ViewData["ComercioError"] = "Error al crear el comercio.";
+            }
+
+            await OnGetAsync();
+            return Page();
+        }
+
+        // Handler para el modal (botón "Nuevo Comercio")
+        public async Task<IActionResult> OnPostRegistrarComercioAsync()
+        {
+            ViewData["AbrirModalComercio"] = true;
+
+            // Elimina los errores que no sean de NuevoComercio
+            foreach (var key in ModelState.Keys
+                .Where(k => !k.StartsWith("NuevoComercio"))
+                .ToList())
+            {
+                ModelState.Remove(key);
+            }
+
+            var cuentaIdStr = User.FindFirstValue("CuentaId") ?? User.FindFirstValue("UserId");
+            if (!int.TryParse(cuentaIdStr, out int cuentaId))
+            {
+                ViewData["ComercioError"] = $"No se pudo identificar la cuenta. Claims: CuentaId={User.FindFirstValue("CuentaId")}, UserId={User.FindFirstValue("UserId")}";
+                await OnGetAsync();
+                return Page();
+            }
+
+            if (!await TryUpdateModelAsync(NuevoComercio, "NuevoComercio"))
+            {
+                ViewData["ComercioError"] = "Por favor complete todos los campos correctamente.";
+                await OnGetAsync();
+                return Page();
+            }
+
+            foreach (var key in ModelState.Keys.Where(k => k.StartsWith("NuevoComercio")).ToList())
+            {
+                ModelState.Remove(key);
+            }
+
+            if (!TryValidateModel(NuevoComercio))
+            {
+                ViewData["ComercioError"] = "Por favor complete todos los campos correctamente.";
+                await OnGetAsync();
+                return Page();
+            }
+
+            bool creadoCorrectamente = false;
+            try
+            {
+                var comercioNuevo = new Comercio
+                {
+                    Nombre = NuevoComercio.Nombre,
+                    IdCuenta = cuentaId,
+                    estadoSolicitud = "pendiente"
+                };
+
+                await _comercioService.CreateComercioAsync(comercioNuevo);
+
+                // Verifica si el comercio se creó realmente
+                var comercioCreado = await _comercioService.GetByCuentaIdAsync(cuentaId);
+                if (comercioCreado != null)
+                {
+                    await _cuentaComercioService.AsociarComercioAsync(cuentaId, comercioCreado.Id);
+                    ViewData["ComercioCreado"] = "Comercio creado correctamente. Espere la aprobación del administrador.";
+                    NuevoComercio = new ComercioInputModel();
+                    creadoCorrectamente = true;
+                }
+            }
+            catch (Exception)
+            {
+                // Verifica si el comercio se creó a pesar de la excepción
+                var comercioCreado = await _comercioService.GetByCuentaIdAsync(cuentaId);
+                if (comercioCreado != null)
+                {
+                    await _cuentaComercioService.AsociarComercioAsync(cuentaId, comercioCreado.Id);
+                    ViewData["ComercioCreado"] = "Comercio creado correctamente. Espere la aprobación del administrador.";
+                    NuevoComercio = new ComercioInputModel();
+                    creadoCorrectamente = true;
+                }
+            }
+
+            if (!creadoCorrectamente)
+            {
+                ViewData["ComercioError"] = "Error al crear el comercio.";
             }
 
             await OnGetAsync();
@@ -108,25 +226,31 @@ namespace WebApp.Pages.ComercioPages
 
         public async Task<IActionResult> OnPostAgregarAdminAsync()
         {
-
-            foreach (var key in ModelState.Keys.Where(k => k.StartsWith("NuevoComercio")).ToList())
+            foreach (var key in ModelState.Keys
+                .Where(k => !k.StartsWith("NuevoAdmin"))
+                .ToList())
             {
                 ModelState.Remove(key);
             }
 
             if (!ModelState.IsValid)
             {
-                ViewData["AdminError"] = "Por favor complete todos los campos correctamente.";
+                var errors = ModelState
+                    .Where(x => x.Value.Errors.Count > 0)
+                    .Select(x => $"{x.Key}: {string.Join(", ", x.Value.Errors.Select(e => e.ErrorMessage))}")
+                    .ToList();
+
+                ViewData["AdminError"] = "Errores de validación: " + string.Join(" | ", errors);
                 await OnGetAsync();
                 return Page();
             }
 
             try
             {
-                var cuentaIdStr = User.FindFirstValue("UserId");
+                var cuentaIdStr = User.FindFirstValue("CuentaId") ?? User.FindFirstValue("UserId");
                 if (!int.TryParse(cuentaIdStr, out int cuentaId))
                 {
-                    ViewData["AdminError"] = "No se pudo identificar la cuenta.";
+                    ViewData["ComercioError"] = $"No se pudo identificar la cuenta. Claims: CuentaId={User.FindFirstValue("CuentaId")}, UserId={User.FindFirstValue("UserId")}";
                     await OnGetAsync();
                     return Page();
                 }

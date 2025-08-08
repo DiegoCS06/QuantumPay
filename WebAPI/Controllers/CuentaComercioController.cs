@@ -231,5 +231,20 @@ namespace WebAPI.Controllers
             cm.Update(user);
             return Ok("Contraseña actualizada correctamente.");
         }
+
+        [HttpPut("AsociarComercio")]
+        public IActionResult AsociarComercio(int cuentaId, int comercioId)
+        {
+            try
+            {
+                var manager = new CuentaComercioManager();
+                manager.AsociarComercio(cuentaId, comercioId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

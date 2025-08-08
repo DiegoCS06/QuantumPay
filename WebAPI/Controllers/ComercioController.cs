@@ -3,11 +3,10 @@ using DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace WebAPI.Controllers
 {
-    [Authorize(Roles = "Admin,Cliente")]
+    [Authorize(Roles = "Admin,Cliente,CuentaComercio")]
     [Route("api/[controller]")]
     [ApiController]
     public class ComercioController : ControllerBase
@@ -33,11 +32,10 @@ namespace WebAPI.Controllers
         public ActionResult RetrieveAll()
         {
             try
-            {                
+            {
                 var cm = new ComercioManager();
-
-                var all = cm.RetrieveAll();
-                return Ok(all);
+                var lstResults = cm.RetrieveAll();
+                return Ok(lstResults);
             }
             catch (Exception ex)
             {
@@ -135,4 +133,3 @@ namespace WebAPI.Controllers
         }
     }
 }
-

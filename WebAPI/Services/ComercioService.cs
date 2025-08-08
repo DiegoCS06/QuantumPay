@@ -44,7 +44,7 @@ public class ComercioService
         }
         var response = await _httpClient.PostAsJsonAsync("api/Comercio/Create", comercio);
         response.EnsureSuccessStatusCode();
-        
+
         var responseString = await response.Content.ReadAsStringAsync();
         return int.Parse(responseString);
     }

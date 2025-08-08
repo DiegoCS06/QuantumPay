@@ -43,23 +43,19 @@ function TransaccionesViewController() {
                 error: function (xhr, status, err) {
                     console.error("DataTable AJAX error:", status, err);
                 },
-                headers: { 'Authorization': 'Bearer ' + userToken },
-            },
-            columns: [
-                { data: "id" },
-                { data: "idCuentaCliente" },
-                { data: "idCuentaBancaria" },
-                { data: "idCuentaComercio" },
-                { data: "monto" },
-                { data: "comision" },
-                { data: "descuentoAplicado" },
-                { data: "fecha" },
-                { data: "metodoPago" }
-            ]
-        };
-
-        if (!$.fn.dataTable.isDataTable("#tblTransacciones")) {
-            $("#tblTransacciones").DataTable(dtCfg);
+                columns: [
+                    { data: 'id' },
+                    { data: 'nombreCliente' }, // Nuevo
+                    { data: 'codigoIdentidadInstitucionBancaria' }, // Nuevo
+                    { data: 'idCuentaBancaria' },
+                    { data: 'idCuentaComercio' },
+                    { data: 'monto' },
+                    { data: 'comision' },
+                    { data: 'descuentoAplicado' },
+                    { data: 'fecha' },
+                    { data: 'metodoPago' }
+                ]
+            });
         } else {
             $("#tblTransacciones").DataTable().ajax.url(url).load();
         }

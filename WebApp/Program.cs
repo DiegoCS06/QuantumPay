@@ -3,6 +3,7 @@ using CoreApp;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using System;
+using WebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,12 +14,31 @@ builder.Services.AddSingleton<TransaccionManager>();
 builder.Services.AddSingleton<ComisionManager>();
 builder.Services.AddHttpContextAccessor();
 
+// Servicios para el panel de comercio:
+builder.Services.AddHttpClient<TransaccionService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:5001/");
+});
+builder.Services.AddHttpClient<CuentaComercioService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:5001/");
+});
+builder.Services.AddHttpClient<ComercioService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:5001/");
+});
+
+builder.Services.AddHttpClient<PromocionService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:5001/");
+});
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost", policy =>
     {
         policy
-            .WithOrigins("https://localhost:7060")  // Or "*" para pruebas, pero no recomendado en producción
+            .WithOrigins("https://localhost:7060")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -49,20 +69,20 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/Welcome");  // Excepción
 });
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 app.UseStatusCodePagesWithReExecute("/Error/{0}");
-//app.MapFallbackToPage("/Welcome");
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 
 app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
@@ -70,16 +90,14 @@ app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(
 app.UseRouting();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapGet("/", context =>
 {
-    context.Response.Redirect("/Welcome"); 
+    context.Response.Redirect("/Welcome");
     return Task.CompletedTask;
 });
 app.MapRazorPages();
-
 app.MapControllers();
 
 app.Run();

@@ -11,11 +11,11 @@ namespace CoreApp
     {
         private readonly TransaccionCrudFactory _crud = new();
 
-        public async Task Create(Transaccion t)
+        public List<Transaccion> OrdenarPorComercio(int idComercio)
         {
-            if (t == null) throw new ArgumentNullException(nameof(t));
-            if (t.Monto <= 0) throw new ArgumentException("Monto debe ser > 0");
-
+            var cCrud = new TransaccionCrudFactory();
+            return cCrud.RetrieveByComercio<List<Transaccion>>(idComercio);
+        }
             _crud.Create(t);
             await Task.CompletedTask;
         }

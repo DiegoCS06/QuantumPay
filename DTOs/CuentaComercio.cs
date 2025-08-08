@@ -9,6 +9,7 @@ namespace DTOs
     public class CuentaComercio : BaseDTO
     {
         public int Id { get; set; }
+        public int? IdComercio { get; set; }
         public string NombreUsuario { get; set; }
         public string Contrasena { get; set; }
         public string CedulaJuridica { get; set; }

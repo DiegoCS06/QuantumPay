@@ -1,18 +1,21 @@
 ﻿@page
 @using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.AdminPages.AutorizacionComercioModel
-@section Scripts{
+@attribute [Authorize(Roles = "Admin")]
+
+@section Scripts {
     <script>
+        // Captura el token JWT desde la cookie
         var userToken = '@HttpContext.Request.Cookies["jwt_token"]';
     </script>
     <script src="~/js/pages/autorizacioncomercio.js"></script>
 }
-@attribute [Authorize(Roles = "Admin")]
 
 <div class="text-end">
     <a asp-page="/AdminPages/AdminHome" class="btn btn-outline-dark">⬅️ Volver</a>
 </div>
-<div class="    bs-docs-section">
+
+<div class="bs-docs-section">
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
@@ -20,7 +23,9 @@
                     🛍️ Comercios Registrados
                 </div>
                 <div class="card-body">
-                    <table id="tblcomercio" class="table table-bordered table-striped table-hover">
+                    <table id="tblcomercio"
+                           class="table table-bordered table-striped table-hover"
+                           style="width:100%;">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -34,40 +39,42 @@
             </div>
         </div>
     </div>
-    <div class="row">
+
+    <div class="row mt-4">
         <div class="col-lg-6">
             <div class="ns-component">
                 <form>
                     <fieldset>
-                        <legend>Banco</legend>
+                        <legend>Comercio</legend>
+
                         <div class="form-group">
-                            <label for="txtId" class="form-label mt-$">ID Comercio</label>
+                            <label for="txtId" class="form-label">ID Comercio</label>
                             <input id="txtId" readonly type="number" class="form-control" />
                         </div>
 
                         <div class="form-group">
-                            <label for="txtIdCuenta" class="form-label mt-$">Cuenta</label>
+                            <label for="txtIdCuenta" class="form-label">Cuenta</label>
                             <input id="txtIdCuenta" readonly type="number" class="form-control" />
                         </div>
 
                         <div class="form-group">
-                            <label for="txtNombre" class="form-label mt-$">Nombre</label>
+                            <label for="txtNombre" class="form-label">Nombre</label>
                             <input id="txtNombre" readonly type="text" class="form-control" />
                         </div>
 
                         <div class="form-group">
-                            <label for="txtEstadoSolicitud" class="form-label mt-$">Estado Solicitud</label>
+                            <label for="txtEstadoSolicitud" class="form-label">Estado Solicitud</label>
                             <input id="txtEstadoSolicitud" type="text" class="form-control" />
                         </div>
-                        
                     </fieldset>
                 </form>
+
                 <br />
-                <button id="btnCreate" class="source-button btn btn-primary btn-xs" type="button">Save</button>
-                <button id="btnUpdate" class="source-button btn btn-info btn-xs" type="button">Update</button>
-                <button id="btnDelete" class="source-button btn btn-danger btn-xs" type="button">Delete</button>
+
+                <button id="btnCreate" class="btn btn-primary btn-xs">Save</button>
+                <button id="btnUpdate" class="btn btn-info btn-xs">Update</button>
+                <button id="btnDelete" class="btn btn-danger btn-xs">Delete</button>
             </div>
         </div>
-
     </div>
 </div>

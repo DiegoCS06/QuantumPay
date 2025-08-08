@@ -11,15 +11,17 @@
     this.loadTable = function () {
         const ca = new ControlActions();
         const url = ca.GetUrlApiService(this.Api + "/RetrieveAll");
+
         if (!$.fn.dataTable.isDataTable("#tblComisiones")) {
             $("#tblComisiones").DataTable({
                 processing: true,
                 ajax: {
-                    url: url, dataSrc: "",
+                    url: url,
+                    dataSrc: "",
                     headers: {
                         'Authorization': 'Bearer ' + userToken
                     }
-                },                
+                },
                 columns: [
                     { data: "id" },
                     { data: "idInstitucionBancaria" },
@@ -29,13 +31,15 @@
                 ]
             });
         } else {
-            $("#tblComisiones").DataTable().ajax.url(url).load();
+            $("#tblComisiones").DataTable()
+                .ajax
+                .url(url)
+                .load();
         }
     };
 
     this.bindEvents = function () {
         const ca = new ControlActions();
-        const self = this;
 
         $("#btnCreate").click(function () {
             const dto = {
@@ -44,7 +48,9 @@
                 porcentaje: parseFloat($("#txtPorcentaje").val()),
                 montoMaximo: parseFloat($("#txtMontoMaximo").val())
             };
-            ca.PostToAPI(self.Api + "/Create", dto, function () { self.loadTable(); });
+            ca.PostToAPI(self.Api + "/Create", dto, () => self.loadTable(), {
+                'Authorization': 'Bearer ' + userToken
+            });
         });
 
         $("#btnUpdate").click(function () {
@@ -55,12 +61,16 @@
                 porcentaje: parseFloat($("#txtPorcentaje").val()),
                 montoMaximo: parseFloat($("#txtMontoMaximo").val())
             };
-            ca.PutToAPI(self.Api + "/Update", dto, function () { self.loadTable(); });
+            ca.PutToAPI(self.Api + "/Update", dto, () => self.loadTable(), {
+                'Authorization': 'Bearer ' + userToken
+            });
         });
 
         $("#btnDelete").click(function () {
             const id = parseInt($("#txtId").val(), 10);
-            ca.DeleteToAPI(self.Api + "/Delete/" + id, {}, function () { self.loadTable(); });
+            ca.DeleteToAPI(self.Api + "/Delete/" + id, {}, () => self.loadTable(), {
+                'Authorization': 'Bearer ' + userToken
+            });
         });
 
         $("#tblComisiones tbody").on("click", "tr", function () {

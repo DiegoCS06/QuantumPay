@@ -16,6 +16,8 @@
             Realizar Pago
         </div>
         <div class="card-body">
+            <input type="hidden" id="hdnClienteId" value="@User.FindFirst("UserId")?.Value" />
+            <input type="hidden" id="hdnNombreCliente" value="@Model.NombreCliente" />
             <div class="form-group">
                 <label for="ddlCuentas">Cuenta Bancaria</label>
                 <select id="ddlCuentas" class="form-control"></select>

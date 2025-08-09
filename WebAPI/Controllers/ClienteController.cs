@@ -19,7 +19,7 @@ namespace WebAPI.Controllers
     public class ClienteController : ControllerBase
     {
         private readonly CloudinaryManager _cloudinaryManager = new CloudinaryManager();// Instancia del administrador de Cloudinary
-
+        [AllowAnonymous]
         [HttpPost]
         [Route("Create")]
 

@@ -165,13 +165,12 @@ namespace DataAccess.CRUD
             throw new NotImplementedException();
         }
 
-        public async Task AsociarComercioAsync(int cuentaId, int comercioId)
+        public void AsociarComercio(int cuentaId, int comercioId)
         {
-            var query = "UPDATE CuentaComercio SET IdComercio = @ComercioId WHERE Id = @CuentaId";
-            using (var connection = GetConnection())
-            {
-                await connection.ExecuteAsync(query, new { CuentaId = cuentaId, ComercioId = comercioId });
-            }
+            var sqlOperation = new SQLOperation() { ProcedureName = "UPD_CUENTACOMERCIO_ASOCIAR_PR" };
+            sqlOperation.AddIntParam("cuentaId", cuentaId);
+            sqlOperation.AddIntParam("comercioId", comercioId);
+            _sqlDao.ExecuteProcedure(sqlOperation);
         }
         private IDbConnection GetConnection()
         {

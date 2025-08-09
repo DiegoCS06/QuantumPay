@@ -60,13 +60,7 @@ namespace WebAPI.Services
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
 
-            var request = new
-            {
-                CuentaId = cuentaId,
-                ComercioId = comercioId
-            };
-            var response = await _httpClient.PostAsJsonAsync("api/CuentaComercio/asociar-comercio", request);
-            response.EnsureSuccessStatusCode();
+            await _httpClient.PutAsync($"api/CuentaComercio/AsociarComercio?cuentaId={cuentaId}&comercioId={comercioId}", null);
         }
     }
 }

@@ -70,11 +70,11 @@ builder.Services.AddAuthentication(options =>
 var app = builder.Build();
 
 // --- 6) Pipeline
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 app.UseHttpsRedirection();
 

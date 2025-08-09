@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using System.Security.Claims;
 
 namespace WebAPI.Controllers
@@ -16,16 +18,12 @@ namespace WebAPI.Controllers
     [Authorize(Roles = "Admin,Cliente")]
     public class ClienteController : ControllerBase
     {
-        // ====================================
-        // Acciones públicas (no requieren cookie)
-        // ====================================
-
+        private readonly CloudinaryManager _cloudinaryManager = new CloudinaryManager();// Instancia del administrador de Cloudinary
         [AllowAnonymous]
-        [HttpPost("Create")]
-        public async Task<ActionResult<Cliente>> Create(
-            [FromBody] Cliente cliente,
-            [FromQuery] string emailCode,
-            [FromQuery] string smsCode)
+        [HttpPost]
+        [Route("Create")]
+
+        public async Task<ActionResult> Create(Cliente cliente, [FromQuery] string emailCode, [FromQuery] string smsCode)
         {
             try
             {
@@ -64,12 +62,28 @@ namespace WebAPI.Controllers
                 {
                     return BadRequest("Las imágenes deben estar en formato base64 válido.");
                 }
+                // Decodificar las imágenes de base64 a bytes
+                byte[] cedulaBytes = Convert.FromBase64String(cliente.fotoCedula);
+                byte[] selfieBytes = Convert.FromBase64String(cliente.fotoPerfil);
 
-                var cedulaBytes = Convert.FromBase64String(cliente.fotoCedula);
-                var selfieBytes = Convert.FromBase64String(cliente.fotoPerfil);
+                try
+                {
+                    string folder= "clientes";
+                    string urlFotoCedula = _cloudinaryManager.UploadBase64Image(cliente.fotoCedula, folder, "cedula_" + Guid.NewGuid().ToString());
+                    string urlFotoPerfil = _cloudinaryManager.UploadBase64Image(cliente.fotoPerfil, folder, "perfil_" + Guid.NewGuid().ToString());
+                    // Actualizar las propiedades con las URLs
+                    cliente.fotoCedula = urlFotoCedula;
+                    cliente.fotoPerfil = urlFotoPerfil;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[CREATE] Error uploading images to Cloudinary: {ex.Message}");
+                    return StatusCode(500, "Error al subir las imágenes." + ex.Message);
+                }
 
-                // 5) Comparar rostro con cédula
-                if (!await faceVerifier.VerifyFaceAsync(selfieBytes, cedulaBytes))
+                // Verificar selfie vs cédula
+                bool faceMatch = await faceVerifier.VerifyFaceAsync(selfieBytes, cedulaBytes);
+                if (!faceMatch)
                     return BadRequest("La selfie no coincide con la imagen de la cédula.");
 
                 // 6) Hashear la contraseña y crear el cliente

@@ -23,16 +23,24 @@ namespace WebAPI.Controllers
 
             try
             {
+                // 1. Get user info from JWT
+                var userEmail = User.Identity.Name;
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+                int userId = 0;
+                int.TryParse(userIdClaim, out userId);
+
+                // 2. Retrieve client name (NombreCliente) from DB
+                var clienteManager = new ClienteManager();
+                var cliente = clienteManager.RetrieveById(userId);
+                transaccion.NombreCliente = cliente?.nombre ?? "";
+
+                // 3. Retrieve institucion bancaria info and bank code
+                var institucionBancariaManager = new InstitucionBancariaManager();
+                var institucionBancaria = institucionBancariaManager.RetrieveById(transaccion.IdCuentaBancaria);
+                transaccion.CodigoIdentidadInstitucionBancaria = institucionBancaria?.codigoIdentidad ?? "";
+
                 await _manager.Create(transaccion);
                 return Ok(new { message = "Transacción creada exitosamente." });
-            }
-            catch (SqlException ex)
-            {
-                if (ex.Message.Contains("FOREIGN KEY constraint"))
-                {
-                    return BadRequest(new { error = "Alguna de las entidades relacionadas (cliente, comercio o banco) no existe o es inválida." });
-                }
-                return BadRequest(new { error = "Error de base de datos: " + ex.Message });
             }
             catch (Exception ex)
             {

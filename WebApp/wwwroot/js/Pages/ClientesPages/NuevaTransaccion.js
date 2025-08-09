@@ -8,7 +8,7 @@ function NuevaTransaccionController() {
 
     this.userToken = userToken;
     this.clienteId = parseInt($("#hdnClienteId").val() || "0", 10);
-    this.userName = $("#hdnEmail").val() || "";
+    this.nombreCliente = $("#hdnNombreCliente").val() || "";
     
     this.init = () => {
         this.loadDropdowns();
@@ -62,19 +62,40 @@ function NuevaTransaccionController() {
                 comision: 0,
                 descuentoAplicado: 0,
                 fecha: new Date().toISOString(),
-                metodoPago: $("#txtMetodoPago").val()
+                metodoPago: $("#txtMetodoPago").val(),
+                nombreCliente: this.nombreCliente,
+                codigoIdentidadInstitucionBancaria: codigoIdentidadInstitucionBancaria
             };
 
-            ca.PostToAPI(
-                `${this.api}/Create?email=${encodeURIComponent(this.userName)}`,
-                dto,
-                () => {
+            $.ajax({
+                url: "/api/Transaccion/Create",
+                type: "POST",
+                data: JSON.stringify(dto),
+                contentType: "application/json",
+                headers: { "Authorization": "Bearer " + this.userToken },
+                success: function(response) {
                     window.location.href = "/ClientesPages/ClienteHome";
                 },
-                { Authorization: "Bearer " + this.userToken }
-            );
+                error: function(response) {
+                    // handle error as above
+                }
+            });
         });
     };
 }
 
 $(document).ready(() => new NuevaTransaccionController().init());
+
+// Add these variables at the top, populated from Razor or AJAX
+var nombreCliente = '@Model.NombreCliente'; // Razor injects this
+var codigoIdentidadInstitucionBancaria = '';
+
+$("#ddlComercios").change(async function() {
+    var comercioId = $(this).val();
+    // Fetch the commerce details to get the bank code
+    const response = await fetch(`/api/Comercio/GetByCuentaId/${comercioId}`);
+    if (response.ok) {
+        const comercio = await response.json();
+        codigoIdentidadInstitucionBancaria = comercio.codigoIdentidadInstitucionBancaria;
+    }
+});

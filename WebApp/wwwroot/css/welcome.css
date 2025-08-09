@@ -1,8 +1,34 @@
-﻿.welcome-container {
+﻿body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #4a90e2, #357ab8);
+    color: #333;
+    display: flex;
+/*    align-items: center;
+*/    justify-content: center;
+    min-height: 100vh;
+}
+    .welcome-container {
     max-width: 500px;
     margin: 0 auto;
     padding: 40px 20px;
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+}
+
+/*body {
+    background-image: url('../img/background.png');
+    background-repeat: repeat;*/ /* Repite la imagen en ambas direcciones */
+    /*background-size: 100px 100px;*/ /* Tamaño reducido del patrón */
+    /*background-position: top left;*/ /* Inicia en la esquina superior izquierda */
+    /*margin: 0;
+    padding: 0;
+}*/
+
+.logo {
+    max-width: 150px; /* Ajusta según el tamaño deseado */
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }

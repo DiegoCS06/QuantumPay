@@ -1,4 +1,12 @@
-﻿/* Reiniciar estilos básicos solo para esta vista */
+﻿body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #4a90e2, #357ab8);
+    color: #333;
+    display: flex;
+
+}
+
+/* Reiniciar estilos básicos solo para esta vista */
 .create-account-container * {
     box-sizing: border-box;
     font-family: Arial, sans-serif;
@@ -7,7 +15,7 @@
 /* Contenedor principal centrado */
 .create-account-container {
     max-width: 500px;
-    margin: 100px auto; /* centro horizontal + separación vertical */
+    margin: 100px auto;
     padding: 40px;
     background-color: #f9f9f9;
     border-radius: 15px;
@@ -15,14 +23,14 @@
 }
 
     /* Título */
-    .create-account-container h1 {
+    .create-account-container h2 {
         text-align: center;
         margin-bottom: 30px;
         font-size: 28px;
         color: #333;
     }
 
-    /* Etiquetas e inputs */
+    /* Etiquetas */
     .create-account-container label {
         display: block;
         margin-bottom: 6px;
@@ -30,9 +38,15 @@
         font-weight: bold;
     }
 
+    /* Campos de entrada */
     .create-account-container input[type="text"],
     .create-account-container input[type="email"],
-    .create-account-container input[type="password"] {
+    .create-account-container input[type="password"],
+    .create-account-container input[type="date"],
+    .create-account-container input[type="file"],
+    .create-account-container input[type="tel"],
+    .create-account-container input[type="number"],
+    .create-account-container select {
         width: 100%;
         padding: 10px 15px;
         margin-bottom: 20px;
@@ -42,10 +56,12 @@
         transition: border-color 0.3s;
     }
 
-    .create-account-container input:focus {
-        outline: none;
-        border-color: #007bff;
-    }
+        /* Enfoque en inputs */
+        .create-account-container input:focus,
+        .create-account-container select:focus {
+            outline: none;
+            border-color: #007bff;
+        }
 
     /* Botón de envío */
     .create-account-container button[type="submit"] {
@@ -64,6 +80,11 @@
         background-color: #0056b3;
     }
 
+    /* Secciones condicionales de tipo de usuario */
+    .create-account-container .user-fields {
+        margin-top: 10px;
+    }
+
     /* Mensaje de error o validación */
     .create-account-container .text-danger {
         color: red;
@@ -72,6 +93,22 @@
         margin-bottom: 15px;
     }
 
+    /* Enlace para login */
+    .create-account-container .login-link {
+        margin-top: 25px;
+        text-align: center;
+        font-size: 14px;
+    }
+
+        .create-account-container .login-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+            .create-account-container .login-link a:hover {
+                text-decoration: underline;
+            }
+
 /* Responsive para móviles */
 @media (max-width: 600px) {
     .create-account-container {
@@ -79,7 +116,7 @@
         padding: 30px 20px;
     }
 
-        .create-account-container h1 {
+        .create-account-container h2 {
             font-size: 24px;
         }
 }

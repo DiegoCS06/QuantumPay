@@ -27,7 +27,7 @@ jobs:
         run: dotnet build ./WebAPI/WebAPI.csproj --configuration Debug
 
       - name: dotnet publish WEB API
-        run: dotnet publish ./WebAPI/WebAPI.csproj -c Debug -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish ./WebAPI/WebAPI.csproj -c Debug -o "${{env.DOTNET_ROOT}}/myapp"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4

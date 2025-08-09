@@ -1,15 +1,20 @@
 ﻿@page
 @using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.Comisiones.ComisionesModel
-
-@{
-}
 @attribute [Authorize(Roles = "Admin")]
-<script src="~/js/pages/Comisiones.js" asp-append-version="true"></script>
 
-<div class="text-end">
+@section Scripts {
+    <script>
+        // Captura el JWT desde la cookie
+        var userToken = '@HttpContext.Request.Cookies["jwt_token"]';
+    </script>
+    <script src="~/js/pages/Comisiones.js" asp-append-version="true"></script>
+}
+
+<div class="text-end mb-3">
     <a asp-page="/AdminPages/AdminHome" class="btn btn-outline-dark">⬅️ Volver</a>
 </div>
+
 <div class="bs-docs-section">
     <div class="row">
         <div class="col-sm-12">
@@ -18,7 +23,9 @@
                     Comisiones
                 </div>
                 <div class="card-body" style="overflow-x: auto; width: 100%;">
-                    <table id="tblComisiones" class="table table-bordered table-striped table-hover">
+                    <table id="tblComisiones"
+                           class="table table-bordered table-striped table-hover"
+                           style="width:100%;">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -28,6 +35,7 @@
                                 <th>Tope</th>
                             </tr>
                         </thead>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
@@ -38,35 +46,35 @@
         <legend>Formulario Comisión</legend>
         <div class="col-lg-6">
             <form>
-                <fieldset>
-                    <div class="form-group">
+                <fieldset class="border p-3">
+                    <div class="form-group mb-2">
                         <label for="txtId">ID Comisión</label>
                         <input id="txtId" readonly type="number" class="form-control" />
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-2">
                         <label for="txtIdInstitucionBancaria">Banco</label>
                         <input id="txtIdInstitucionBancaria" type="number" class="form-control" />
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-2">
                         <label for="txtIdCuentaComercio">Comercio (opcional)</label>
                         <input id="txtIdCuentaComercio" type="number" class="form-control" />
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-2">
                         <label for="txtPorcentaje">% Comisión</label>
                         <input id="txtPorcentaje" type="number" step="0.0001" class="form-control" />
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-2">
                         <label for="txtMontoMaximo">Tope Monto</label>
                         <input id="txtMontoMaximo" type="number" class="form-control" />
                     </div>
+
+                    <div class="mt-3">
+                        <button id="btnCreate" class="btn btn-primary btn-xs me-2" type="button">Crear</button>
+                        <button id="btnUpdate" class="btn btn-info btn-xs me-2" type="button">Actualizar</button>
+                        <button id="btnDelete" class="btn btn-danger btn-xs" type="button">Eliminar</button>
+                    </div>
                 </fieldset>
             </form>
-
-            <br />
-            <button id="btnCreate" class="btn btn-primary btn-xs" type="button">Crear</button>
-            <button id="btnUpdate" class="btn btn-info btn-xs" type="button">Actualizar</button>
-            <button id="btnDelete" class="btn btn-danger btn-xs" type="button">Eliminar</button>
         </div>
     </div>
 </div>
-

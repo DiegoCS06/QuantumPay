@@ -16,6 +16,7 @@
     <PackageReference Include="AWSSDK.Rekognition" Version="4.0.1.12" />
     <PackageReference Include="CloudinaryDotNet" Version="1.27.6" />
     <PackageReference Include="dotenv.net" Version="4.0.0" />
+    <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
   </ItemGroup>
 

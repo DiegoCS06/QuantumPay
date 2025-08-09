@@ -1,4 +1,4 @@
-﻿using CoreApp;
+using CoreApp;
 using DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System;

@@ -1,24 +1,32 @@
 ﻿@page
 @using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.ClientesPages.ComerciosModel
-@{
-}
 @attribute [Authorize(Roles = "Cliente")]
-<script src="~/js/pages/cuentacomercio.js"></script>
 
-<div class="text-end">
-    <a asp-page="/ClientesPages/ClienteHome" class="btn btn-outline-dark">⬅️Volver</a>
+@section Scripts {
+    <script>
+        // Captura el JWT desde la cookie
+        var userToken = '@HttpContext.Request.Cookies["jwt_token"]';
+    </script>
+    <script src="~/js/pages/cuentacomercio.js"></script>
+}
+
+<div class="text-end mb-3">
+    <a asp-page="/ClientesPages/ClienteHome" class="btn btn-outline-dark">⬅️ Volver</a>
 </div>
-<div class="    bs-docs-section">
+
+<div class="bs-docs-section">
     <div class="row">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card" style="overflow-x: auto; width: 100%;">
-                    <div class="card-header bg-success text-white">
-                        🛍️ Comercios Registrados
-                    </div>
-                    <table id="tblcuentaComercio" class="table table-bordered table-striped table-hover">
-                        <thead>
+        <div class="col-sm-12">
+            <div class="card" style="overflow-x: auto; width: 100%;">
+                <div class="card-header bg-success text-white">
+                    🛍️ Comercios Registrados
+                </div>
+                <div class="card-body p-0">
+                    <table id="tblcuentaComercio"
+                           class="table table-bordered table-striped table-hover"
+                           style="min-width: 600px; width: 100%;">
+                        <thead class="table-light">
                             <tr>
                                 <th>ID Cuenta</th>
                                 <th>Nombre Usuario</th>
@@ -28,6 +36,7 @@
                                 <th>Dirección</th>
                             </tr>
                         </thead>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>

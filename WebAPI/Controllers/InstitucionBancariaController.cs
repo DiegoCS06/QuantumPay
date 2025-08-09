@@ -1,13 +1,16 @@
 ﻿using BaseManager;
 using CoreApp;
 using DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace WebAPI.Controllers
 {
+    [Authorize(Roles = "Admin,Cliente,InstitucionBancaria")]
     [Route("api/[controller]")]
     [ApiController]
-    public class InstitucionBancariaController : ControllerBase
+    public class InstitucionBancariaController : ControllerBase 
     {
         [HttpPost]
         [Route("Create")]
@@ -28,13 +31,14 @@ namespace WebAPI.Controllers
         }
         [HttpGet]
         [Route("RetrieveAll")]
-        public ActionResult RetrieveAll()
+        public ActionResult<IEnumerable<InstitucionBancaria>> RetrieveAll()
         {
             try
             {
-                var im = new InstitucionBancariaManager();
-                var lstResults = im.RetrieveAll();
-                return Ok(lstResults);
+                var tm = new InstitucionBancariaManager();
+                
+                var all = tm.RetrieveAll();
+                return Ok(all);
             }
             catch (Exception ex)
             {
@@ -48,6 +52,9 @@ namespace WebAPI.Controllers
         {
             try
             {
+                var user = HttpContext.User;
+                var userId = user.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+                var userRole = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 var im = new InstitucionBancariaManager();
                 var result = im.RetrieveById(Id);
                 if (result == null)
@@ -69,6 +76,9 @@ namespace WebAPI.Controllers
         {
             try
             {
+                var user = HttpContext.User;
+                var userId = user.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+                var userRole = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 var im = new InstitucionBancariaManager();
                 var result = im.RetrieveByCodigoIdentidad(codigoIdentidad);
 
@@ -91,6 +101,9 @@ namespace WebAPI.Controllers
         {
             try
             {
+                var user = HttpContext.User;
+                var userId = user.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+                var userRole = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 var im = new InstitucionBancariaManager();
                 var result = im.RetrieveByTelefono(telefono);
 
@@ -113,6 +126,9 @@ namespace WebAPI.Controllers
         {
             try
             {
+                var user = HttpContext.User;
+                var userId = user.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+                var userRole = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 var im = new InstitucionBancariaManager();
                 var result = im.RetrieveByEmail(correoElectronico);
 

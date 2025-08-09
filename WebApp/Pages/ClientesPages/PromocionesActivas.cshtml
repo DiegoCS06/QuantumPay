@@ -1,22 +1,32 @@
 ﻿@page
 @using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.ClientesPages.PromocionesActivasModel
-@{
-}
 @attribute [Authorize(Roles = "Cliente")]
 
-<div class ="text-end">
+@section Scripts {
+    <script>
+        // Captura el JWT desde la cookie
+        var userToken = '@HttpContext.Request.Cookies["jwt_token"]';
+    </script>
+    <script src="~/js/pages/promocionesActivas.js"></script>
+}
+
+<div class="text-end mb-3">
     <a asp-page="/ClientesPages/ClienteHome" class="btn btn-outline-dark">⬅️ Volver</a>
 </div>
+
 <legend>Promociones Activas</legend>
-<div class="row">
+
+<div class="row mb-4">
     <div class="col-sm-12">
-        <div class="card">
+        <div class="card mb-3">
             <div class="card-header bg-success text-white">
                 🔖 Promociones Bancarias
             </div>
-            <div class="card-body" style="overflow-x: auto; width: 100%;">
-                <table class="table table-bordered table-hover">
+            <div class="card-body" style="overflow-x:auto; width:100%;">
+                <table id="tblPromocionesBancos"
+                       class="table table-bordered table-hover"
+                       style="width:100%;">
                     <thead class="thead-dark">
                         <tr>
                             <th>ID</th>
@@ -26,17 +36,21 @@
                             <th>Vigencia</th>
                         </tr>
                     </thead>
+                    <tbody></tbody>
                 </table>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-header bg-success text-white">
-                    🔖 Promociones de Comercios
-                </div>
-                <table class="table table-bordered table-hover">
+
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                🔖 Promociones de Comercios
+            </div>
+            <div class="card-body" style="overflow-x:auto; width:100%;">
+                <table id="tblPromocionesComercios"
+                       class="table table-bordered table-hover"
+                       style="width:100%;">
                     <thead class="thead-dark">
                         <tr>
                             <th>ID</th>
@@ -46,8 +60,9 @@
                             <th>Vigencia</th>
                         </tr>
                     </thead>
+                    <tbody></tbody>
                 </table>
             </div>
         </div>
-     </div>
-  </div>
+    </div>
+</div>

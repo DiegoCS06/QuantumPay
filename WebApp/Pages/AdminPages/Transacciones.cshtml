@@ -4,6 +4,9 @@
 @attribute [Authorize(Roles = "Admin")]
 
 @section Scripts {
+    <script>
+        var userToken = '@HttpContext.Request.Cookies["jwt_token"]';
+    </script>
     <script src="~/js/pages/transacciones.js"></script>
 }
 
@@ -37,6 +40,8 @@
                 <thead class="thead-dark">
                     <tr>
                         <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Código Banco</th>
                         <th>Cuenta Bancaria</th>
                         <th>Cuenta Comercio</th>
                         <th>Monto</th>

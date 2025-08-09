@@ -1,81 +1,101 @@
 ﻿@page
 @using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.ClientesPages.AgregarCuentaModel
-@{
-}
 @attribute [Authorize(Roles = "Cliente")]
 
-<div class="text-end">
-    <a asp-page="/ClientesPages/ClienteHome" class="btn btn-outline-dark">⬅️ Volver</a>
-</div>
-<div class="row">
-    <div class="col-sm-6" >
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                💳 Cuentas Registradas
-            </div>
-            <div class="card-body">
-                <table class="table table-bordered table-striped table-hover">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Banco</th>
-                            <th>Tipo de Cuenta</th>
-                            <th>Número IBAN</th>
-                            <th>Saldo</th>
-                        </tr>
-                    </thead>
-                </table>
+@{
+    ViewData["Title"] = "Agregar Cuenta";
+}
+
+<!-- Hidden fields con datos del cliente -->
+<input type="hidden" id="hdnClienteId" value="@Model.ClienteId" />
+<input type="hidden" id="hdnClienteEmail" value="@Model.ClienteEmail" />
+
+@section Scripts {
+    <script>
+        // Captura el JWT desde la cookie
+        var userToken = '@HttpContext.Request.Cookies["jwt_token"]';
+    </script>
+    <script src="~/js/ControlActions.js"></script>
+    <script src="~/js/Pages/ClientesPages/CuentaCliente.js" asp-append-version="true"></script>
+}
+
+<div class="container mt-4">
+    <div class="text-end mb-3">
+        <a asp-page="/ClientesPages/ClienteHome" class="btn btn-outline-dark">⬅️ Volver</a>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    💳 Cuentas Registradas
+                </div>
+                <div class="card-body" style="overflow-x: auto; width: 100%;">
+                    <table id="tblCuentaCliente"
+                           class="table table-bordered table-striped table-hover"
+                           style="min-width: 600px; width: 100%;">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Banco</th>
+                                <th>Tipo de Cuenta</th>
+                                <th>Número IBAN</th>
+                                <th>Saldo</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="col-lg-6">
-    <legend>Formulario Cuenta Bancaria</legend>
-    <form>
-        <fieldset>
-            <div class="form-group">
-                <label for="txtId">ID Cuenta</label>
-                <input id="txtId" readonly type="number" class="form-control" />
-            </div>
 
-            <div class="form-group">
-                <label for="txtNombreCliente">Nombre del Cliente</label>
-                <input id="txtNombreCliente" type="text" class="form-control" />
-            </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <fieldset class="border p-3">
+                <legend class="w-auto">Formulario Cuenta Bancaria</legend>
+                <form>
+                    <div class="form-group mb-2">
+                        <label for="txtId">ID Cuenta</label>
+                        <input id="txtId" readonly type="number" class="form-control" />
+                    </div>
 
-            <div class="form-group">
-                <label for="txtNumeroCuenta">Número de Cuenta</label>
-                <input id="txtNumeroCuenta" type="text" class="form-control" />
-            </div>
+                    <div class="form-group mb-2">
+                        <label for="txtNumeroCuenta">Número de Cuenta</label>
+                        <input id="txtNumeroCuenta" type="text" class="form-control" />
+                    </div>
 
-            <div class="form-group">
-                <label for="selectBanco">Banco</label>
-                <select id="selectBanco" class="form-control">
-                    <option value="">-- Seleccione un banco --</option>
-                    <option value="BAC">BAC</option>
-                    <option value="BCR">BCR</option>
-                    <option value="Banco Nacional">Banco Nacional</option>
-                    <option value="Scotiabank">Scotiabank</option>
-                </select>
-            </div>
+                    <div class="form-group mb-2">
+                        <label for="selectBanco">Banco</label>
+                        <select id="selectBanco" class="form-control">
+                            <option value="">-- Seleccione un banco --</option>
+                            <option value="BAC">BAC</option>
+                            <option value="BCR">BCR</option>
+                            <option value="Banco Nacional">Banco Nacional</option>
+                            <option value="Scotiabank">Scotiabank</option>
+                        </select>
+                    </div>
 
-            <div class="form-group">
-                <label for="selectTipoCuenta">Tipo de Cuenta</label>
-                <select id="selectTipoCuenta" class="form-control">
-                    <option value="">-- Seleccione un tipo --</option>
-                    <option value="Ahorros">Ahorros</option>
-                    <option value="Corriente">Corriente</option>
-                </select>
-            </div>
-        </fieldset>
-    </form>
+                    <div class="form-group mb-2">
+                        <label for="selectTipoCuenta">Tipo de Cuenta</label>
+                        <select id="selectTipoCuenta" class="form-control">
+                            <option value="">-- Seleccione un tipo --</option>
+                            <option value="Ahorros">Ahorros</option>
+                            <option value="Corriente">Corriente</option>
+                        </select>
+                    </div>
 
-    <div>
-        <button id="btnCreateCuenta" class="btn btn-primary btn-xs" type="button">Crear</button>
-        <button id="btnUpdateCuenta" class="btn btn-info btn-xs" type="button">Actualizar</button>
-        <button id="btnDeleteCuenta" class="btn btn-danger btn-xs" type="button">Eliminar</button>
+                    <div class="form-group mb-2">
+                        <label for="txtSaldo">Saldo Inicial</label>
+                        <input id="txtSaldo" type="number" step="0.01" class="form-control" />
+                    </div>
+
+                    <div class="mt-3">
+                        <button id="btnCreateCuenta" class="btn btn-primary btn-xs me-2" type="button">Crear</button>
+                        <button id="btnUpdateCuenta" class="btn btn-info btn-xs me-2" type="button">Actualizar</button>
+                        <button id="btnDeleteCuenta" class="btn btn-danger btn-xs" type="button">Eliminar</button>
+                    </div>
+                </form>
+            </fieldset>
+        </div>
     </div>
-    
-    
-
-</div>  
+</div>

@@ -1,23 +1,31 @@
 ﻿@page
 @using Microsoft.AspNetCore.Authorization
 @model WebApp.Pages.BancoPages.TransaccionesModel
-@{
-}
 @attribute [Authorize(Roles = "InstitucionBancaria")]
 
-<script src="~/js/pages/transacciones.js"></script>
-<div class="text-end">
+@section Scripts {
+    <script>
+        // Captura el JWT desde la cookie
+        var userToken = '@HttpContext.Request.Cookies["jwt_token"]';
+    </script>
+    <script src="~/js/pages/transacciones.js"></script>
+}
+
+<div class="text-end mb-3">
     <a asp-page="/BancoPages/BancoHome" class="btn btn-outline-dark">⬅️ Volver</a>
 </div>
-<div class="    bs-docs-section">
+
+<div class="bs-docs-section">
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-header bg-success text-white">
-                    📄 Listado de Transacciones
+                    Listado de Transacciones
                 </div>
-                <div class="card-body" style="overflow-x: auto; width: 100%;">
-                    <table id="tblTransacciones" class="display" style="width:100%">
+                <div class="card-body" style="overflow-x: auto; width:100%;">
+                    <table id="tblTransacciones"
+                           class="display table table-striped table-bordered table-hover"
+                           style="width:100%">
                         <thead class="thead-dark">
                             <tr>
                                 <th>ID</th>

@@ -1,0 +1,9 @@
+CREATE PROCEDURE dbo.SP_DEL_CLIENTE_CUENTA
+    @Id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM dbo.ClienteCuenta
+      WHERE Id = @Id;
+END
+GO

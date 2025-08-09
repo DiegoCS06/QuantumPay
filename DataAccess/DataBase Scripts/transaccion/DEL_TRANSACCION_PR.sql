@@ -1,0 +1,7 @@
+﻿CREATE PROCEDURE DEL_TRANSACCION_PR
+    @P_Id INT
+AS
+BEGIN
+    DELETE FROM transaccion
+    WHERE Id = @P_Id;
+END

@@ -33,10 +33,15 @@
                     error: function (xhr, status, error) {
                         console.error("Error AJAX DataTable:", status, error);
                         console.log("Response text:", xhr.responseText);
+                    },
+                    headers: {
+                        'Authorization': 'Bearer ' + userToken
                     }
                 },
                 columns: [
                     { data: 'id' },
+                    { data: 'nombreCliente' }, // Nuevo
+                    { data: 'codigoIdentidadInstitucionBancaria' }, // Nuevo
                     { data: 'idCuentaBancaria' },
                     { data: 'idCuentaComercio' },
                     { data: 'monto' },

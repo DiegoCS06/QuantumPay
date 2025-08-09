@@ -58,6 +58,7 @@ namespace DataAccess.DAOs
                     //Set de los parametros
                     foreach (var param in sqlOperation.Parameters)
                     {
+                        Console.WriteLine($"{param.ParameterName}: {param.Value} ({param.Value?.GetType()}) [{param.SqlDbType}]");
                         command.Parameters.Add(param);
                     }
                     //Ejectura el SP

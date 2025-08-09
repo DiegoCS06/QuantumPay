@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Amazon.Rekognition.Model;
+using DataAccess.DAOs;
+using DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DataAccess.DAOs;
-using DTOs;
 
 namespace DataAccess.CRUD
 {
@@ -15,12 +16,13 @@ namespace DataAccess.CRUD
         public override void Create(BaseDTO dto)
         {
             var t = (Transaccion)dto;
-            var op = new SQLOperation { ProcedureName = "SP_INS_TRANSACCION" };
-            op.AddVarcharParam("P_IdCuentaBancaria", t.IdCuentaBancaria, 30);
+            var op = new SQLOperation { ProcedureName = "CRE_TRANSACCION_PR" };
+            op.AddIntParam("P_IdCuentaBancaria", t.IdCuentaBancaria);
             op.AddIntParam("P_IdCuentaComercio", t.IdCuentaComercio);
-            op.AddDoubleParam("P_Monto", (double)t.Monto);
-            op.AddDoubleParam("P_Comision", (double)t.Comision);
-            op.AddDoubleParam("P_DescuentoAplicado", (double)t.DescuentoAplicado);
+            op.AddIntParam("P_IdCuentaCliente", t.IdCuentaCliente);
+            op.AddDecimalParam("P_Monto", t.Monto, 18, 2);
+            op.AddDecimalParam("P_Comision", t.Comision, 18, 2);
+            op.AddDecimalParam("P_DescuentoAplicado", t.DescuentoAplicado, 18, 2);
             op.AddDateTimeParam("P_Fecha", t.Fecha);
             op.AddStringParameter("P_MetodoPago", t.MetodoPago);
             _sqlDao.ExecuteProcedure(op);
@@ -29,88 +31,165 @@ namespace DataAccess.CRUD
         public override void Update(BaseDTO dto)
         {
             var t = (Transaccion)dto;
-            var op = new SQLOperation { ProcedureName = "SP_UPD_TRANSACCION" };
+            var op = new SQLOperation { ProcedureName = "UPD_TRANSACCION_PR" };
             op.AddIntParam("P_Id", t.Id);
-            op.AddVarcharParam("P_IdCuentaBancaria", t.IdCuentaBancaria, 30);
+            op.AddIntParam("P_IdCuentaBancaria", t.IdCuentaBancaria);
             op.AddIntParam("P_IdCuentaComercio", t.IdCuentaComercio);
-            op.AddDoubleParam("P_Monto", (double)t.Monto);
-            op.AddDoubleParam("P_Comision", (double)t.Comision);
-            op.AddDoubleParam("P_DescuentoAplicado", (double)t.DescuentoAplicado);
+            op.AddIntParam("P_IdCuentaCliente", t.IdCuentaCliente);
+            op.AddDecimalParam("P_Monto", t.Monto, 18, 2);
+            op.AddDecimalParam("P_Comision", t.Comision, 18, 2);
+            op.AddDecimalParam("P_DescuentoAplicado", t.DescuentoAplicado, 18, 2);
             op.AddDateTimeParam("P_Fecha", t.Fecha);
             op.AddStringParameter("P_MetodoPago", t.MetodoPago);
             _sqlDao.ExecuteProcedure(op);
         }
-
-
-        public override void Delete(BaseDTO dto) => throw new NotImplementedException();
-        public override T Retrieve<T>() => throw new NotImplementedException();
-        public override T RetrieveById<T>(int Id) => throw new NotImplementedException();
+        public override T Retrieve<T>()
+        {
+            throw new NotImplementedException();
+        }
 
 
         public override List<T> RetrieveAll<T>()
         {
-            var op = new SQLOperation { ProcedureName = "SP_RET_ALL_TRANSACCION" };
-            var rows = _sqlDao.ExecuteQueryProcedure(op);
-            var lst = new List<T>();
-            foreach (var r in rows)
+            var lstTransacciones = new List<T>();
+
+            var sqlOperation = new SQLOperation() { ProcedureName = "RET_ALL_TRANSACCION_PR" };
+
+            var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
+
+            if (lstResult.Count > 0)
             {
-                var x = new Transaccion
+                foreach (var row in lstResult)
                 {
-                    Id = (int)r["Id"],
-                    IdCuentaBancaria = r["IdCuentaBancaria"].ToString(),
-                    IdCuentaComercio = (int)r["IdCuentaComercio"],
-                    Monto = Convert.ToDecimal(r["Monto"]),
-                    Comision = Convert.ToDecimal(r["Comision"]),
-                    DescuentoAplicado = Convert.ToDecimal(r["DescuentoAplicado"]),
-                    Fecha = (DateTime)r["Fecha"],
-                    MetodoPago = r["MetodoPago"].ToString()
-                };
-                lst.Add((T)Convert.ChangeType(x, typeof(T)));
+                    var cliente = BuildTransaccion(row);
+                    lstTransacciones.Add((T)(object)cliente);
+                }
             }
-            return lst;
+
+            return lstTransacciones;
         }
 
-        public List<Transaccion> RetrieveByBanco(string iban)
+        public override T RetrieveById<T>(int id)
         {
-            var op = new SQLOperation { ProcedureName = "SP_RET_TRANS_POR_CUENTA" };
-            op.AddVarcharParam("P_IdCuentaBancaria", iban, 30);
-            var rows = _sqlDao.ExecuteQueryProcedure(op);
-            var lst = new List<Transaccion>();
-            foreach (var r in rows)
-                lst.Add(new Transaccion
+            var op = new SQLOperation { ProcedureName = "RET_TRANSACCION_BY_ID_PR" };
+            op.AddIntParam("P_Id", id);
+            var lstResult = _sqlDao.ExecuteQueryProcedure(op);
+
+            if (lstResult.Count > 0)
+            {
+                var row = lstResult[0];
+                var cliente = BuildTransaccion(row);
+
+                return (T)Convert.ChangeType(cliente, typeof(T));
+            }
+
+            return default(T);
+        }
+
+        public T RetrieveByBanco<T>(int idCuentaBancaria)
+        {
+            var op = new SQLOperation { ProcedureName = "RET_TRANSACCION_BY_BANCO_PR" };
+            op.AddIntParam("P_IdCuentaBancaria", idCuentaBancaria);
+            var lstResult = _sqlDao.ExecuteQueryProcedure(op);
+
+            if (typeof(T) == typeof(List<Transaccion>))
+            {
+                var transacciones = new List<Transaccion>();
+                foreach (var row in lstResult)
                 {
-                    Id = (int)r["Id"],
-                    IdCuentaBancaria = r["IdCuentaBancaria"].ToString(),
-                    IdCuentaComercio = (int)r["IdCuentaComercio"],
-                    Monto = Convert.ToDecimal(r["Monto"]),
-                    Comision = Convert.ToDecimal(r["Comision"]),
-                    DescuentoAplicado = Convert.ToDecimal(r["DescuentoAplicado"]),
-                    Fecha = (DateTime)r["Fecha"],
-                    MetodoPago = (string)r["MetodoPago"]
-                });
-            return lst;
+                    transacciones.Add(BuildTransaccion(row));
+                }
+                return (T)(object)transacciones;
+            }
+            else if (lstResult.Count > 0)
+            {
+                var cliente = BuildTransaccion(lstResult[0]);
+                return (T)(object)cliente;
+            }
+            return default(T);
         }
 
-        public List<Transaccion> RetrieveByComercio(int idComercio)
+        public T RetrieveByComercio<T>(int idComercio)
         {
-
-            var op = new SQLOperation { ProcedureName = "SP_RET_TRANS_POR_COMERCIO" };
+            var op = new SQLOperation { ProcedureName = "RET_TRANSACCION_BY_COMERCIO_PR" };
             op.AddIntParam("P_IdCuentaComercio", idComercio);
-            var rows = _sqlDao.ExecuteQueryProcedure(op);
-            var lst = new List<Transaccion>();
-            foreach (var r in rows)
-                lst.Add(new Transaccion
+            var lstResult = _sqlDao.ExecuteQueryProcedure(op);
+
+            if (typeof(T) == typeof(List<Transaccion>))
+            {
+                var transacciones = new List<Transaccion>();
+                foreach (var row in lstResult)
                 {
-                    Id = (int)r["Id"],
-                    IdCuentaBancaria = (string)r["IdCuentaBancaria"],
-                    IdCuentaComercio = (int)r["IdCuentaComercio"],
-                    Monto = Convert.ToDecimal(r["Monto"]),
-                    Comision = Convert.ToDecimal(r["Comision"]),
-                    DescuentoAplicado = Convert.ToDecimal(r["DescuentoAplicado"]),
-                    Fecha = (DateTime)r["Fecha"],
-                    MetodoPago = (string)r["MetodoPago"]
-                });
-            return lst;
+                    transacciones.Add(BuildTransaccion(row));
+                }
+                return (T)(object)transacciones;
+            }
+            return default(T);
         }
+
+        public T RetrieveByCliente<T>(int idCliente)
+        {
+
+            var op = new SQLOperation { ProcedureName = "RET_TRANSACCION_BY_CLIENTE_PR" };
+            op.AddIntParam("P_IdCuentaCliente", idCliente);
+            var lstResult = _sqlDao.ExecuteQueryProcedure(op);
+            if (lstResult.Count > 0)
+            {
+                var row = lstResult[0];
+                var cliente = BuildTransaccion(row);
+
+                return (T)Convert.ChangeType(cliente, typeof(T));
+            }
+
+            return default(T);
+        }
+
+        public override void Delete(BaseDTO baseDTO)
+        {
+            var transaccion = baseDTO as Transaccion;
+            var sqlOperation = new SQLOperation() { ProcedureName = "DEL_TRANSACCION_PR" };
+            sqlOperation.AddIntParam("P_Id", transaccion.Id);
+            _sqlDao.ExecuteProcedure(sqlOperation);
+        }
+
+        public List<Transaccion> RetrieveAllById(int userId, string userRole)
+        {
+            var lstTransacciones = new List<Transaccion>();
+
+            var sqlOperation = new SQLOperation() { ProcedureName = "RET_ALL_TRANSACCION_PR" };
+
+            var lstResult = _sqlDao.ExecuteQueryProcedure(sqlOperation);
+
+            if (lstResult.Count > 0)
+            {
+                foreach (var row in lstResult)
+                {
+                    var cliente = BuildTransaccion(row);
+                    lstTransacciones.Add((Transaccion)(object)cliente);
+                }
+            }
+
+            return lstTransacciones.Where(t => t.IdCuentaCliente == t.Id).ToList();
+        }
+
+        private Transaccion BuildTransaccion(Dictionary<string, object> r)
+        {
+            return new Transaccion()
+            {
+                Id = (int)r["Id"],
+                IdCuentaBancaria = (int)r["IdCuentaBancaria"],
+                IdCuentaComercio = (int)r["IdCuentaComercio"],
+                IdCuentaCliente = (int)r["IdCuentaCliente"],
+                Monto = Convert.ToDecimal(r["Monto"]),
+                Comision = Convert.ToDecimal(r["Comision"]),
+                DescuentoAplicado = Convert.ToDecimal(r["DescuentoAplicado"]),
+                Fecha = (DateTime)r["Fecha"],
+                MetodoPago = (string)r["MetodoPago"],
+                NombreCliente = r.ContainsKey("NombreCliente") ? r["NombreCliente"]?.ToString() : "",
+                CodigoIdentidadInstitucionBancaria = r.ContainsKey("CodigoIdentidadInstitucionBancaria") ? r["CodigoIdentidadInstitucionBancaria"]?.ToString() : ""
+            };
+        }
+
+
     }
 }

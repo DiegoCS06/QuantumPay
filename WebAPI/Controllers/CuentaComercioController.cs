@@ -4,25 +4,25 @@ using CoreApp;
 using DTOs;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
+    [Authorize(Roles = "Admin,Cliente,CuentaComercio")]
     [Route("api/[controller]")]
     [ApiController]
     public class CuentaComercioController : ControllerBase
     {
         [HttpPost]
         [Route("Create")]
-
         public async Task<ActionResult> Create([FromBody] CuentaComercio cuentaComercio)
         {
             try
             {
                 cuentaComercio.Contrasena = BCrypt.Net.BCrypt.HashPassword(cuentaComercio.Contrasena);
-
                 var cm = new CuentaComercioManager();
                 await cm.Create(cuentaComercio);
                 return Ok(cuentaComercio);
@@ -61,7 +61,7 @@ namespace WebAPI.Controllers
                     return Ok(new List<object>());
                 }
 
-                return Ok(new List<object> { result});
+                return Ok(new List<object> { result });
             }
             catch (Exception ex)
             {
@@ -230,6 +230,21 @@ namespace WebAPI.Controllers
             user.Contrasena = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
             cm.Update(user);
             return Ok("Contraseña actualizada correctamente.");
+        }
+
+        [HttpPut("AsociarComercio")]
+        public IActionResult AsociarComercio(int cuentaId, int comercioId)
+        {
+            try
+            {
+                var manager = new CuentaComercioManager();
+                manager.AsociarComercio(cuentaId, comercioId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

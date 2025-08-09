@@ -10,7 +10,6 @@ namespace CoreApp
 {
     public class ClienteManager : BaseManager
     {
-
         public async Task Create(Cliente cliente)
         {
             try

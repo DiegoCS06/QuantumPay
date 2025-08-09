@@ -1,10 +1,12 @@
 ﻿using CoreApp;
 using DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
+    [Authorize(Roles = "Admin,Cliente,CuentaComercio")]
     [Route("api/[controller]")]
     [ApiController]
     public class ComercioController : ControllerBase
@@ -112,6 +114,22 @@ namespace WebAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpGet("GetByCuentaId/{cuentaId}")]
+        public ActionResult<Comercio> GetByCuentaId(int cuentaId)
+        {
+            var ccm = new CuentaComercioManager();
+            var cuenta = ccm.RetrieveById(cuentaId);
+            if (cuenta == null || !cuenta.IdComercio.HasValue)
+                return NotFound();
+
+            var cm = new ComercioManager();
+
+            var comercio = cm.RetrieveById(cuenta.IdComercio.Value);
+            if (comercio == null)
+                return NotFound();
+
+            return Ok(comercio);
+        }
     }
 }
-
